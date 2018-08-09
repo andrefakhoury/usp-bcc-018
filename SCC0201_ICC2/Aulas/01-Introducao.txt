@@ -1,0 +1,13 @@
+Projeto e Analise
+	- Algoritmos
+	- Problema
+		- Buscas
+		- Ordenacao
+	- Eficiencia
+		- Tempo de Execucao
+		- Memoria (Principal)
+	- Busca, processamento de dados e ordenacao de memoria em disco
+
+- 2 Provas e n Trabalhos
+	> Menor nota de trabalho desconsiderada
+

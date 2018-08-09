@@ -1,0 +1,64 @@
+Analise
+	Contagem de Operacoes
+	- Tipo da operacao:
+		a. aritmetica
+		b. atribuicao
+		c. acesso a ponteiro/array
+		d. comparacoes
+		e. retorno de funcoes
+		f. entrada/saida
+	- Repeticoes
+
+---------------------------------------------
+	//     b      d    a,b
+1	for (i = 0; i < n; i++) { -> f(n) [linhas 1, 2, 3, e pega o bloco f1, 7]
+2		maiores = 0; //b
+3		valor = v[i]; //b, c
+		//     b      d    a,b
+4		for (j = 0; j < n; j++)  -> f1(n) [linhas 4, 5, 6]
+5			if (v[j] > valor) //c, d
+6				maiores++; a, b
+
+7		printf("%d\n", maiores); //e, f
+	}
+
+
+	^
+    |        x
+    |       x
+    |      x
+    |    x
+    | x
+    +----------->
+
+---------------------------------------------
+1 - b + d + (a+b+d)*n
+2 - b*n
+3 - (b + c)*n
+4 - (b + d + (a + b + d)*n) * n
+5 - (n*(c + d)) * n
+6 - (n*(a + b)) * n //pior caso
+7 - (e + f)*n
+---------------------------------------------
+
+1. Comecar pelo laco mais interno
+	f1(n) = 2an + 2bn + cn + 2dn + b + d
+2. Caso externo
+	f(n) = an + 3bn + cn + dn + en + fn + f1(n)*n + b + d =	
+	f(n) = 2ann + 2bnn + cnn + 2dnn + an + 4bn + cn + 2dn + en + fn + b + d
+-> Quadratico
+
+---------------------------------------------
+
+Equacoes de Recorrencia
+
+void imprime(int* v) {
+	if (*v != -1) {
+		imprime(v+1);
+		prinf("%d ", *v);
+	}
+}
+f(n) = a + f(n-1) //EQUACAO DE RECORRENCIA
+	 = a + a + f(n-2) = k*a + (n-k); (com n-k = 0 => k = n)
+	f(n) = an + b //FORMA FECHADA
+
