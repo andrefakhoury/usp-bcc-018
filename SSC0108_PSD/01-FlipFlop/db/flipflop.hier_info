@@ -1,0 +1,27 @@
+|ff_D_MS
+Qm <= latch_D:inst.Q
+D => latch_D:inst.D
+Clock => latch_D:inst.Clock
+Clock => inst434.IN0
+Qs <= latch_D:inst1.Q
+nQs <= latch_D:inst1.nQ
+
+
+|ff_D_MS|latch_D:inst
+Q <= inst2.DB_MAX_OUTPUT_PORT_TYPE
+D => inst4.IN0
+D => inst.IN1
+Clock => inst1.IN1
+Clock => inst.IN0
+nQ <= inst3.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|ff_D_MS|latch_D:inst1
+Q <= inst2.DB_MAX_OUTPUT_PORT_TYPE
+D => inst4.IN0
+D => inst.IN1
+Clock => inst1.IN1
+Clock => inst.IN0
+nQ <= inst3.DB_MAX_OUTPUT_PORT_TYPE
+
+
