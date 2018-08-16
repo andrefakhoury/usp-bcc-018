@@ -1,0 +1,8 @@
+Feature Engineering
+	Perguntas que fazem sentido no contexto
+
+Biblioteca
+	SciKit Learning (sklearn)
+
+
+http://blog.alura.com.br/primeiros-passos-em-inteligencia-artificial-ia/
