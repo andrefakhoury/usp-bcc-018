@@ -1,0 +1,61 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/10723801/Desktop/Projetos PSD/simulation/modelsim
+Eshift_register
+Z1 w1535050086
+Z2 DPx10 cycloneive 20 cycloneive_atom_pack 0 22 ]PeG<A<fLl[4lkbYF16fR3
+Z3 DPx10 cycloneive 21 cycloneive_components 0 22 3Lldj3nU[3c?WmiD[DfQk3
+Z4 DPx4 ieee 16 vital_primitives 0 22 G>kiXP8Q9dRClKfK1Zn7j1
+Z5 DPx6 altera 11 dffeas_pack 0 22 H7KhBC387U^Q=<:@P;Bo21
+Z6 DPx4 ieee 12 vital_timing 0 22 J>EBealN09f8GzldA[z2>3
+Z7 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z8 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+Z9 DPx6 altera 28 altera_primitives_components 0 22 <GB;XbRDX3XJJa<`aNII72
+R0
+Z10 8psd-projects.vho
+Z11 Fpsd-projects.vho
+l0
+L37
+V=::6Ce@W;2J2K2VEz0K[X1
+!s100 Dc;L[7PDY5]HUiZQ_`bCM2
+Z12 OV;C;10.3c;59
+31
+Z13 !s110 1535050093
+!i10b 1
+Z14 !s108 1535050093.031000
+Z15 !s90 -reportprogress|300|-93|-work|work|psd-projects.vho|
+Z16 !s107 psd-projects.vho|
+!i113 1
+Z17 o-93 -work work
+Z18 tExplicit 1
+Astructure
+R2
+R3
+R4
+R5
+R6
+R7
+R8
+R9
+DEx4 work 14 shift_register 0 22 =::6Ce@W;2J2K2VEz0K[X1
+l194
+L61
+V85=5zmK6WZAHcIO=]BML90
+!s100 2D3231;TPSAHemB0cIDO00
+R12
+31
+R13
+!i10b 1
+R14
+R15
+R16
+!i113 1
+R17
+R18

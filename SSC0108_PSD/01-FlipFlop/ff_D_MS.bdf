@@ -54,23 +54,7 @@ agreement for further details.
 )
 (pin
 	(output)
-	(rect 520 56 696 72)
-	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
-	(text "Qm" (rect 90 0 107 12)(font "Arial" ))
-	(pt 0 8)
-	(drawing
-		(line (pt 0 8)(pt 52 8))
-		(line (pt 52 4)(pt 78 4))
-		(line (pt 52 12)(pt 78 12))
-		(line (pt 52 12)(pt 52 4))
-		(line (pt 78 4)(pt 82 8))
-		(line (pt 82 8)(pt 78 12))
-		(line (pt 78 12)(pt 82 8))
-	)
-)
-(pin
-	(output)
-	(rect 520 72 696 88)
+	(rect 496 72 672 88)
 	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
 	(text "Qs" (rect 90 0 104 12)(font "Arial" ))
 	(pt 0 8)
@@ -86,7 +70,7 @@ agreement for further details.
 )
 (pin
 	(output)
-	(rect 520 88 696 104)
+	(rect 496 88 672 104)
 	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
 	(text "nQs" (rect 90 0 110 12)(font "Arial" ))
 	(pt 0 8)
@@ -215,10 +199,6 @@ agreement for further details.
 	)
 )
 (connector
-	(pt 344 80)
-	(pt 344 24)
-)
-(connector
 	(pt 208 96)
 	(pt 208 160)
 )
@@ -260,33 +240,15 @@ agreement for further details.
 )
 (connector
 	(pt 320 80)
-	(pt 344 80)
-)
-(connector
-	(pt 344 80)
 	(pt 368 80)
 )
 (connector
 	(pt 464 80)
-	(pt 520 80)
+	(pt 496 80)
 )
 (connector
 	(pt 464 96)
-	(pt 520 96)
+	(pt 496 96)
 )
-(connector
-	(pt 520 64)
-	(pt 488 64)
-)
-(connector
-	(pt 488 64)
-	(pt 488 24)
-)
-(connector
-	(pt 344 24)
-	(pt 488 24)
-)
-(junction (pt 344 80))
 (junction (pt 208 96))
-(text "SLAVE" (rect 408 32 449 46)(font "Arial" (font_size 8)))
 (text "MASTER" (rect 256 32 305 46)(font "Arial" (color 255 0 0)(font_size 8)))

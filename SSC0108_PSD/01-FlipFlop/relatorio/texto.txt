@@ -1,6 +1,0 @@
-Primeiramente, fizemos um latch tipo D, que apresenta a saída Q de acordo com as entradas D e Clock. 
-As saídas apenas apresentaram mudanças baseadas em Q quando o clock subia.
-
-Por fim, fizemos um Flip-Flop tipo D Mestre-escravo, utilizando o bloco do latch tipo D. Este Flip-Flop apresenta a saída Q
-e entradas D e Clock. A saída tem seu valor alterado por Q apenas quando o Clock diminui (muda de 1 para 0). A saída Qm apenas
-representa a transição da saída do mestre para a entrada do escravo.

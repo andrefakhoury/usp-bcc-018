@@ -41,3 +41,19 @@ Modularizacao em C
 		gcc -o a.out STR.o Exemplo.o
 
 	
+
+Alocacao Sequencial
+	Elementos ficam necessariamente na sequencia na memoria
+Alocacao Estatica
+	Aloca td em compilacao (int[])
+	Fica alocado ate o final da execucao
+
+
+FILA
+Fila em vetor circular:
+	Nao precisa ficar pensando em shift de elementos, etc
+	Se remover, aumenta o inicio
+	Se adicionar, aumenta o fim
+	So ta cheia qd inicio==fim
+	Bem loco isso
+
