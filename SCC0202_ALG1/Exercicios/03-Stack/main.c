@@ -1,4 +1,3 @@
-// ## PREI FOR AC ## //
 #include <stdio.h>
 #include "pilha.h"
 #define tamMax 300
