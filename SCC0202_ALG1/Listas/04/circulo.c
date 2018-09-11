@@ -26,7 +26,14 @@ float circulo_area(CIRCULO* circulo) {
 	return PI * circulo->raio * circulo->raio;
 }
 
+//Funcao que calcula a distancia de um Ponto p a um Circulo r
+/* Foi declarada em circulo.c pois o circulo ja utiliza o tipo Ponto em sua implementacao.
+ * A unica mudanca necessaria foi adicionar funcoes no ponto que retornam o X e Y, pois fora
+ * de ponto.c nao é permitido o acesso desses dados. */
 float distancia(PONTO* p, CIRCULO* r) {
+	if (p == NULL || r == NULL)
+		return -1;
+	
 	float x1 = ponto_x(p);
 	float y1 = ponto_y(p);
 	float x2 = ponto_x(r->ponto_c);

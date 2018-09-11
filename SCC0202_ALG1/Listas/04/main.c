@@ -16,7 +16,11 @@ int main() {
 	scanf("%f%f%f", &cX, &cY, &cRaio);
 	c = circulo_criar(cX, cY, cRaio);
 
-	if (distancia(p, c) < cRaio) {
+	float dist = distancia(p, c);
+	
+	if (dist == -1) {
+		printf("Ocorreu algum erro.\n");
+	} else if (dist < cRaio) {
 		printf("Ponto interno.\n");
 	} else {
 		printf("Ponto nao interno.\n");
