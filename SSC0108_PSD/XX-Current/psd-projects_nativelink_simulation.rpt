@@ -1,0 +1,55 @@
+Info: Start Nativelink Simulation process
+
+========= EDA Simulation Settings =====================
+
+Sim Mode              :  Gate
+Family                :  cycloneive
+Quartus root          :  c:/altera/14.1/quartus/bin64/
+Quartus sim root      :  c:/altera/14.1/quartus/eda/sim_lib
+Simulation Tool       :  modelsim-altera
+Simulation Language   :  vhdl
+Version               :  93
+Simulation Mode       :  GUI
+Sim Output File       :  psd-projects.vho
+Sim SDF file          :  psd-projects__vhdl.sdo
+Sim dir               :  simulation\modelsim
+
+=======================================================
+
+Info: Starting NativeLink simulation with ModelSim-Altera software
+Sourced NativeLink script c:/altera/14.1/quartus/common/tcl/internal/nativelink/modelsim.tcl
+Warning: File psd-projects_run_msim_gate_vhdl.do already exists - backing up current file as psd-projects_run_msim_gate_vhdl.do.bak2
+Probing transcript
+ModelSim-Altera Info: # Reading C:/altera/14.1/modelsim_ase/tcl/vsim/pref.tcl
+ModelSim-Altera Info: # do psd-projects_run_msim_gate_vhdl.do
+ModelSim-Altera Info: # if {[file exists gate_work]} {
+ModelSim-Altera Info: # 	vdel -lib gate_work -all
+ModelSim-Altera Info: # }
+ModelSim-Altera Info: # vlib gate_work
+ModelSim-Altera Info: # vmap work gate_work
+ModelSim-Altera Info: # Model Technology ModelSim PE vmap 10.3c Lib Mapping Utility 2014.09 Sep 20 2014
+ModelSim-Altera Info: # vmap -modelsim_quiet work gate_work 
+ModelSim-Altera Info: # Copying C:/altera/14.1/modelsim_ase/win32aloem/../modelsim.ini to modelsim.ini
+ModelSim-Altera Info: # Modifying modelsim.ini
+ModelSim-Altera Warning: # ** Warning: Copied C:/altera/14.1/modelsim_ase/win32aloem/../modelsim.ini to modelsim.ini.
+ModelSim-Altera Info: #          Updated modelsim.ini.
+ModelSim-Altera Info: # 
+ModelSim-Altera Info: # vcom -93 -work work {psd-projects.vho}
+ModelSim-Altera Info: # Model Technology ModelSim ALTERA vcom 10.3c Compiler 2014.09 Sep 20 2014
+ModelSim-Altera Info: # Start time: 15:48:13 on Aug 23,2018
+ModelSim-Altera Info: # vcom -reportprogress 300 -93 -work work psd-projects.vho 
+ModelSim-Altera Info: # -- Loading package STANDARD
+ModelSim-Altera Info: # -- Loading package TEXTIO
+ModelSim-Altera Info: # -- Loading package std_logic_1164
+ModelSim-Altera Info: # -- Loading package VITAL_Timing
+ModelSim-Altera Info: # -- Loading package VITAL_Primitives
+ModelSim-Altera Info: # -- Loading package dffeas_pack
+ModelSim-Altera Info: # -- Loading package altera_primitives_components
+ModelSim-Altera Info: # -- Loading package cycloneive_atom_pack
+ModelSim-Altera Info: # -- Loading package cycloneive_components
+ModelSim-Altera Info: # -- Compiling entity shift_register
+ModelSim-Altera Info: # -- Compiling architecture structure of shift_register
+ModelSim-Altera Info: # End time: 15:48:13 on Aug 23,2018, Elapsed time: 0:00:00
+ModelSim-Altera Info: # Errors: 0, Warnings: 0
+ModelSim-Altera Info: # 
+Info: NativeLink simulation flow was successful

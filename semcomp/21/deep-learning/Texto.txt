@@ -1,0 +1,3 @@
+http://setosa.io/ev/image-kernels/
+http://scs.ryerson.ca/~aharley/vis/conv/flat.html
+https://demos.algorithmia.com/colorize-photos/
