@@ -1,0 +1,1 @@
+Um Tipo Abstrato de Dados é um modelo que encapsula um modelo de dados e um conjunto de procedimentos que ocorrem sobre ele. Sua característica fundamental é a abstração das variáveis utilizadas, ou seja, ocorre a ocultação dos detalhes de implementação, o encapsulamento de dados e comportamento.
