@@ -3,13 +3,13 @@
 #include <string.h>
 #include "pilha.h"
 
-int main(int argc, char* argv[]){
+int main() {
     char exp[TamPilha];
     elem x, y;
     Pilha p;
     int i;
     
-    printf("Digite a expressao: ");
+    printf("Digite o calculo:  ");
     scanf("%s", exp);
     
     cria_pilha(&p);
