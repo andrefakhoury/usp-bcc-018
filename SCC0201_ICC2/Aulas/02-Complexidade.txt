@@ -62,8 +62,7 @@ f(n) = a + f(n-1) //EQUACAO DE RECORRENCIA
 	 = a + a + f(n-2) = k*a + (n-k); (com n-k = 0 => k = n)
 	f(n) = an + b //FORMA FECHADA
 
-
--------------------------------
+---------------------------------------------
 Analise
 	1) Conjunto de operações
 	2) Forma fechada (eq recorrencia)

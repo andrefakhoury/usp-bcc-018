@@ -9,6 +9,7 @@ int menu(int* op) {
 	printf("5: Busca Sequencial Recursiva\n");
 	printf("6: Busca Binaria \n");
 	printf("7: Busca Binaria Recursiva\n");
+	printf("8: Quick Sort\n");
 	printf("0: Sair\n");
 	scanf("%d", op); printf("\n\n");
 	return *op;
@@ -28,6 +29,18 @@ void chamaBusca(int* vet, int N, int min, int max, int op) {
 		if (pos == FAIL) printf("Chave nao encontrada\n\n");
 		else printf("Chave encontrada na pos %d\n\n", pos);
 	}
+}
+
+int pivoInicial(int l, int r) {
+	return l;
+}
+
+int pivoCentral(int l, int r) {
+	return (l+r)/2;
+}
+
+int pivoRand(int l, int r) {
+	return (rand()%(r-l)+l);
 }
 
 int main(int argc, char* argv[]) {
@@ -50,6 +63,9 @@ int main(int argc, char* argv[]) {
 					if (DEBUG) imprimeVetor(vet, N);
 					break;
 			case 3: mergeSort(vet, 1, N);
+					if (DEBUG) imprimeVetor(vet, N);
+					break;
+			case 8: quickSort(vet, 0, N-1, pivoCentral);
 					if (DEBUG) imprimeVetor(vet, N);
 					break;
 			default: chamaBusca(vet, N, min, max, op);

@@ -1,12 +1,23 @@
 #include <stdio.h>
 #include "list.h"
+#include "stack.h"
+#include "queue.h"
 
 int main() {
-	list* l = list_create();
-	list_insert(l, 20);
-	list_insert(l, 60);
-	list_print(l);
-	list_destroy(l);
+	queue* q = NULL;
+	q = queue_create();
+	int v;
 
-	return 0;
+	queue_insert(q, 10);
+	queue_print(q);
+	
+	queue_insert(q, 30);
+	queue_print(q);
+
+	queue_remove(q, &v);
+	queue_print(q);
+
+	printf("%d\n", queue_size(q));
+
+	queue_destroy(q);
 }

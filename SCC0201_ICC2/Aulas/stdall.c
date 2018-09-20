@@ -40,7 +40,7 @@ int buscaSequencialRec(int* v, int tam, int at, int chave) {
 					Fn = k*c + c
 					n/(2^k) = 1
 					k = logN
-		Fechada: Fn = c logN + c */
+		Fechada: Fn = c*logN + c */
 int buscaBinaria(int* v, int tam, int chave) {
 	int l = 0, r = tam, mid;
 	while(l < r) {
@@ -115,4 +115,46 @@ void mergeSort(int* v, int l, int r) {
 	for (int i = l; i <= r; i++) v[i] = aux[i-l];
 
 	free(aux);
+}
+
+/*
+	Melhor: N logN
+	Pior: N**2
+
+	Pior quando ja ta ordenado e pega o pivo inicial
+	Ou quando as mesmas chaves se repetem varias vezes
+	Nao eh estavel
+*/
+void quickSort(int* v, int l, int r, int (*eep)(int, int)) {
+	if (l >= r) return;
+
+	int p = eep(l, r);
+
+	int tmp = v[p];
+	v[p] = v[l];
+	v[l] = tmp;
+	p = l;
+
+	int i = l+1; //percorre lista 1 - procura <=
+	int j = r; //percorre lista 2 - procura >
+
+	while (i < j) {	
+		while (i < r && v[i] <= v[p]) i++;
+		while (v[j] > v[p]) j--;
+
+		if (j > i) {
+			tmp = v[i];
+			v[i] = v[j];
+			v[j] = tmp;
+		}
+	}
+
+	p = j;
+	tmp = v[p];
+	v[p] = v[l];
+	v[l] = tmp;
+
+	//3: chamadas recursivas
+	quickSort(v, l, p-1, eep);
+	quickSort(v, p+1, r, eep);
 }
