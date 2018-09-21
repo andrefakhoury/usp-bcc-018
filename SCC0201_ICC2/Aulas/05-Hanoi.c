@@ -12,12 +12,8 @@ void torre(int n, char orig, char dest, char aux) {
 }
 
 void hanoi(int n, char orig, char inter, char dest, int* k) {
-	if (n == 1) {
-		(*k)++;
-		//printf("%d: %c to %c\n", *k, orig, dest);
-		return;
-	}
-
+	if (n == 1) { printf("%d: %c to %c\n", *k, orig, dest); return; }
+	
 	hanoi(n-1, orig, dest, inter, k);
 	hanoi(1, orig, inter, dest, k);
 	hanoi(n-1, inter, orig, dest, k);
