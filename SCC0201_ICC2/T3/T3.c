@@ -25,6 +25,8 @@ typedef struct _node {
 Node* createNode() {
 	Node* n = (Node*) malloc(sizeof(Node));
 	n->isEndOfWord = false;
+
+	//cada no da Trie possui um ponteiro para cada outra letra do alfabeto
 	for (int i = 0; i < alphabetSize; i++)
 		n->next[i] = NULL;
 	return n;
@@ -67,14 +69,6 @@ void insertInTrie(Node* root, char* word) {
 	}
 
 	trie->isEndOfWord = true;
-}
-
-//Retorna se uma string representa o fim de um bloco de texto do arquivo JSON
-//O(M), em que M = tamanho da palavra
-bool isEndOfBlock(char* word) {
-	int i;
-	for (i = 0; word[i] != '\0'; i++);
-	return (i >= 2 && word[i-1] == ',' && word[i-2] == '\"');
 }
 
 //Lê um dicionário de arquivos e armazena suas palavras na trie
@@ -139,6 +133,14 @@ void findInTrie(Node* root, char* word) {
 	aux[ind] = '\0';
 	if (!trie->isEndOfWord || !isInTrie)
 		printWord(aux);
+}
+
+//Retorna se uma string representa o fim de um bloco de texto do arquivo JSON
+//O(M), em que M = tamanho da palavra
+bool isEndOfBlock(char* word) {
+	int i;
+	for (i = 0; word[i] != '\0'; i++);
+	return (i >= 2 && word[i-1] == ',' && word[i-2] == '\"');
 }
 
 //A partir de um arquivo JSON, localiza as palavras contidas nos tweets e as procura na trie

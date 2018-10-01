@@ -1,5 +1,5 @@
 all:
-	gcc src/*.c -I include/ -o main -g -Wall
+	gcc src/*.c main.c -I include/ -o main -g -Wall
 run:
 	./main
 debug:
