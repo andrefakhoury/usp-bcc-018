@@ -23,6 +23,7 @@ int queue_insert(queue* q, var x) {
 	node* n = (node*) malloc(sizeof(node));
 	if (!n) return ERROR;
 
+	n->next = NULL;
 	n->value = x;
 
 	if (!q->begin)
