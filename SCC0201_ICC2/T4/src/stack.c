@@ -25,6 +25,7 @@ void destroy_stack(stack* s) {
 		while(s->top != NULL) {
 			n = s->top;
 			s->top = s->top->next;
+			free(n->value);
 			free(n);
 		}
 		s->top = NULL;
@@ -43,6 +44,7 @@ void push_stack(stack* s, void* x) {
 
 void pop_stack(stack* s) {
 	node* aux = s->top->next;
+	free(s->top->value);
 	free(s->top);
 	s->top = aux;
 }

@@ -11,58 +11,59 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #include "stack.h"
 
-#define qttOperation 5
-#define MAXOPERATION 1024
+#define qttOperation 5 /* Numero maximo de operandos */
+#define MAXOPERATION 2048 /* Numero maximo de caracteres da expressao */
 
-typedef struct order {
-	int o[qttOperation];
-} order;
-
+/*	Struct para cada no da arvore, que tera seu valor (numeral ou caractere representativo da expressao)
+	e seus dois filhos (se for unaria, tera apenas o filho da esquerda); */
 typedef struct node {
 	double val;
 	char op;
-	node *left, *right;
+	struct node *left, *right;
 } node;
 
+//retorna TRUE se o caractere c enviado for um numero ou ponto
 bool isNumber(char c) {
 	return (c >= '0' && c <= '9') || c == '.';
 }
 
+//retorna TRUE se o caractere enviado for um delimitador (){}[]
 bool isDelimiter(char c) {
 	return c == '{' || c == '}' || c == '(' || c == ')' || c == '[' || c == ']';
 }
 
+//deixa a expressao de uma maneira mais limpa para ser manipulada
+//exemplo: log{3+4**2} vira l{3+4^2}
 void beautify(char* op) {
 	char* aux = (char*) malloc(MAXOPERATION * sizeof(char));
 	int ind = 0;
 	for (int i = 0; op[i] != ',' && op[i] != ';'; i++) {
 		if (op[i] == '-' || op[i] == '+' || op[i] == '/') {
 			aux[ind++] = op[i];
-			aux[ind++] = ' ';
 		} else if (op[i] == '*' && op[i+1] == '*') {
 			aux[ind++] = '^';
-			aux[ind++] = ' ';
+			i++;
 		} else if (op[i] == '*') {
 			aux[ind++] = '*';
-			aux[ind++] = ' ';
 		} else if (op[i] == 'l') {
 			aux[ind++] = 'l';
-			i += 2;
+			aux[ind++] = op[i+3];
+			i += 3;
 		} else if (op[i] == 's') {
 			aux[ind++] = 's';
-			aux[ind++] = ' ';
-			aux[ind++] = '{';
-			aux[ind++] = ' ';
+			aux[ind++] = op[i+4];
+			i += 4;
+		} else if (op[i] == 'e') {
+			aux[ind++] = 'e';
+			aux[ind++] = op[i+3];
 			i += 3;
 		} else if (isNumber(op[i])) {
 			aux[ind++] = op[i];
-			if (!isNumber(op[i+1]))
-				aux[ind++] = ' ';
 		} else if (isDelimiter(op[i])) {
 			aux[ind++] = op[i];
-			aux[ind++] = ' ';
 		}
 	}
 	aux[ind] = '\0';
@@ -71,6 +72,7 @@ void beautify(char* op) {
 	free(aux);
 }
 
+//compara se os caracteres enviados representam o mesmo delimitador, abrindo ou fechando
 bool compareDelimiter(char a, char b) {
 	if (a == '(') return b == ')';
 	if (a == '{') return b == '}';
@@ -82,6 +84,7 @@ bool compareDelimiter(char a, char b) {
 }
 
 
+//checa se uma expressao e valida (operandos em posicao certa, delimitadores corretos, etc)
 bool checkExpression(char* op) {
 	bool lastWasOperator = true;
 
@@ -111,9 +114,8 @@ bool checkExpression(char* op) {
 				}
 			}
 			lastWasOperator = false;
-		} else if (!isNumber(op[i]) && op[i] != ' ') {
+		} else if (!isNumber(op[i]) && op[i] != 's' && op[i] != 'e' && op[i] != 'l' && op[i] != ' ') {
 			if (lastWasOperator) {
-				printf(" %c ", op[i]);
 				ret = false;
 				break;
 			}
@@ -131,17 +133,21 @@ bool checkExpression(char* op) {
 	return ret;
 }
 
+//retorna um double a partir de uma string de tamanho n
 double numFromString(char* s, int n) {
 	char temp[MAXOPERATION];
-	for (int i = 0; i < n && s[i] != ' ' && s[i] != '\0'; i++)
+	int i;
+	for (i = 0; i < n && isNumber(s[i]) && s[i] != '\0'; i++)
 		temp[i] = s[i];
-	temp[i] = '\0'
+	temp[i] = '\0';
 	double ret;
 	sscanf(temp, "%lf", &ret);
 	return ret;
 }
 
-node* buildTree(char* s, int n) {
+//constroi uma arvore de forma recursiva.
+//a cada chamada, e procurada a expressao de menor valor aritmetico, e a partir dela, sao feitos os filhos da esquerda e direita
+node* buildTree(char* s, int n, char* order) {
 	if (n < 0)
 		return NULL;
 
@@ -151,54 +157,126 @@ node* buildTree(char* s, int n) {
 
 	int low = -1;
 	bool onlyOneNumber = true;
-	for (int i = 0; i < n; i++) { //search for the lower expression operator
-		if (!isNumber(s[i])) onlyOneNumber = false;
+
+	//search for the lower expression operator
+	stack* stk = create_stack(sizeof(char));
+	for (int k = 0; k < qttOperation; k++) {
+		for (int i = 0; i < n; i++) {
+
+			if (isDelimiter(s[i])) {
+				if (s[i] == '(' || s[i] == '{' || s[i] == '[')
+					push_stack(stk, s+i);
+				else
+					pop_stack(stk);
+			}
+
+			if (empty_stack(stk)) {
+				if (!isNumber(s[i]) && s[i] != ' ' && onlyOneNumber)
+					onlyOneNumber = false;
+				if (s[i] == order[k]) low = i;
+			}
+
+		}
 	}
+	destroy_stack(stk);
 
 	if (onlyOneNumber) {
-		node* n = (node*) malloc(sizeof(node));
-		n->val = numFromString(s, n);
-		n->op = -1;
-		n->right = n->left = NULL;
-		return n;
+		node* nd = (node*) malloc(sizeof(node));
+		nd->val = numFromString(s, n);
+		nd->op = -1;
+		nd->right = nd->left = NULL;
+		return nd;
 	}
 
-	if (low == -1)
-		return buildTree(s+1, n-1);
+	if (low == -1) {
+		if (s[0] == 'l' || s[0] == 'e' || s[0] == 's') {
+			node* nd = (node*) malloc(sizeof(node));
+			nd->val = -1;
+			nd->op = s[0];
+			nd->left = buildTree(s+2, n-3, order);
+			nd->right = NULL;
+			return nd;
+		}
+
+		return buildTree(s+1, n-2, order);
+	}
 	else {
-		node* n = (node*) malloc(sizeof(node));
-		n->val = -1;
-		n->op = s[low];
-		n->left = buildTree(s, low);
-		n->right = buildTree(s+low, n-low);
-		return n;
+		node* nd = (node*) malloc(sizeof(node));
+		nd->val = -1;
+		nd->op = s[low];
+		nd->left = buildTree(s, low, order);
+		nd->right = buildTree(s+low+1, n-low-1, order);
+		return nd;
 	}
 }
 
-double solveAndFreeTree(node* t) {
-	
-}
+//a partir da arvore formada, resolve as operacoes de forma recursiva e desaloca os nos.
+double solveAndFreeTree(node* t, bool* error) {
+	double ret = 0;
+	if (t == NULL) return 0;
+	if (t->val != -1 && t->op == -1) ret = t->val;
+	else {
+		if (t->op == '+')
+			ret = solveAndFreeTree(t->left, error) + solveAndFreeTree(t->right, error);
+		else if (t->op == '-')
+			ret = solveAndFreeTree(t->left, error) - solveAndFreeTree(t->right, error);
+		else if (t->op == '/') {
+			double v1 = solveAndFreeTree(t->left, error);
+			double v2 = solveAndFreeTree(t->right, error);
+			if (v2 != 0) ret = v1/v2;
+			else *error = true;
+		}
+		else if (t->op == '*')
+			ret = solveAndFreeTree(t->left, error) * solveAndFreeTree(t->right, error);
+		else if (t->op == '^')
+			ret = pow(solveAndFreeTree(t->left, error), solveAndFreeTree(t->right, error));
+		else if (t->op == 'l') {
+			double v = solveAndFreeTree(t->left, error);
+			if (v <= 0) *error = true;
+			else ret = log2(v);
+		}
+		else if (t->op == 's') {
+			double v = solveAndFreeTree(t->left, error);
+			if (v < 0) *error = true;
+			else ret = sqrt(v);
+		}
+		else if (t->op == 'e')
+			ret = exp(solveAndFreeTree(t->left, error));
+	}
 
+	free(t);
+	return ret;
+}
 
 int main() {
-	char operators[qttOperation][2];
+	char operators[qttOperation][3];
+	char order[qttOperation];
 	
 	//read the operators
 	for (int i = 0; i < qttOperation; i++) {
 		scanf(" %s", operators[i]);
-		printf("%s\n", operators[i]);
+
+		if (!strcmp(operators[i], "**"))
+			order[i] = '^';
+		else
+			order[i] = operators[i][0];
 	}
 
-	char* operation = (char*) malloc(MAXOPERATION * sizeof(char));
-	while(scanf(" %s", operation) != EOF) {
+	char* operation;
+	while(scanf(" %m[^\n\r]", &operation) != EOF) {
 		beautify(operation);
-		printf("%s\n", operation);
 		if (!checkExpression(operation)) {
-			printf("Expressão incorreta.\n");
+			printf("Expressao incorreta.\n");
 		} else {
-			node* root = buildTree(operation, strlen(operation));
-			printf("%.2lf\n", solveAndFreeTree(root));
+			node* root = buildTree(operation, strlen(operation), order);
+			bool error = false;
+			double v = solveAndFreeTree(root, &error);
+			if (!error)
+				printf("%.2lf\n", v);
+			else
+				printf("Expressao incorreta.\n");
 		}
+		free(operation);
 	}
 
 	return 0;
