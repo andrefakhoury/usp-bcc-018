@@ -249,10 +249,10 @@ double solveAndFreeTree(node* t, bool* error) {
 }
 
 int main() {
-	char operators[qttOperation][3];
+	char operators[qttOperation][3]; 
 	char order[qttOperation];
 	
-	//read the operators
+	//Le os operadores e guarda a ordem de relevancia
 	for (int i = 0; i < qttOperation; i++) {
 		scanf(" %s", operators[i]);
 

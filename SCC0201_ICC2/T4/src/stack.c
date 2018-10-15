@@ -12,6 +12,7 @@ struct stack {
 	size_t elem_size;
 };
 
+/* Cria uma stack vazia, com o tamanho de cada elemento mandado por parametro */
 stack* create_stack(size_t elem_size) {
 	stack* s = (stack*) malloc(sizeof(stack));
 	s->top = NULL;
@@ -19,6 +20,7 @@ stack* create_stack(size_t elem_size) {
 	return s;
 }
 
+/* Desaloca a stack e todos os seus elementos */
 void destroy_stack(stack* s) {
 	if (s != NULL) {
 		node* n;
@@ -33,6 +35,7 @@ void destroy_stack(stack* s) {
 	}
 }
 
+/* Insere um elemento na stack */
 void push_stack(stack* s, void* x) {
 	node* n = (node*) malloc(sizeof(node));
 
@@ -42,6 +45,7 @@ void push_stack(stack* s, void* x) {
 	s->top = n;
 }
 
+/* Remove o elemento do topo da stack */
 void pop_stack(stack* s) {
 	node* aux = s->top->next;
 	free(s->top->value);
@@ -49,20 +53,19 @@ void pop_stack(stack* s) {
 	s->top = aux;
 }
 
+/* Retorna o elemento do topo da stack */
 void* top_stack(stack* s) {
 	return s->top == NULL ? NULL : s->top->value;
 }
 
+/* Retorna o tamanho da stack */
 int stack_size(node* n) {
 	if (n == NULL)
 		return 0;
 	return 1 + stack_size(n->next);
 }
 
-bool full_stack(stack* s, int p) {
-	return stack_size(s->top) == p;
-}
-
+/* Retorna um boolean informando se a stack esta vazia */
 bool empty_stack(stack* s) {
 	return s->top == NULL;
 }
