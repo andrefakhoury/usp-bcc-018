@@ -12,5 +12,6 @@ void list_print(list*);
 int list_size(list*);
 int list_find(list*, var);
 int list_remove(list*, var);
+void list_sort(list*);
 
 #endif
