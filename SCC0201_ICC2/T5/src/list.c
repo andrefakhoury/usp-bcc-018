@@ -56,8 +56,39 @@ char* tituloPonteiro(nodo* n) {
 	return n->valor->titulo;
 }
 
+void insere_pos(lista* l, tab* x, int pos) {
+	nodo *actual, *viejo;
+	nodo *p = malloc(sizeof(nodo));
+
+	p->valor = x;
+
+	actual = l->principio;
+	while(actual != NULL && pos > 1) {
+		actual = actual->hijo;
+		pos--;
+	}
+
+	if (l->principio == actual) {
+		p->padre = NULL;
+		p->hijo = l->principio;
+		l->principio->padre = p;
+		l->principio = p;
+	} else if (actual == NULL) {
+		p->hijo = NULL;
+		p->padre = l->final;
+		l->final->hijo = p;
+		l->final = p;
+    } else {
+        viejo = actual->padre;
+        p->hijo = actual;
+        p->padre = viejo;
+        viejo->hijo = p;
+        actual->padre = p;
+    }
+}
+
 void actualiza_tab(lista* l, char* titulo, int posicion) {
-	if (l == NULL || l->principio == NULL)
+	if (l == NULL || l->principio == NULL || l->tamano == 1)
 		return;
 
 	nodo* elegido = l->principio;
@@ -66,60 +97,38 @@ void actualiza_tab(lista* l, char* titulo, int posicion) {
 	if (elegido == NULL)
 		return;
 
-	nodo* viejo = l->principio;
-	while(viejo != l->final && --posicion)
-		viejo = viejo->hijo;
+	// printf("elegido: %p: %s [%s/%s]\n", elegido, tituloPonteiro(elegido), tituloPonteiro(elegido->padre), tituloPonteiro(elegido->hijo));
 
-	if (elegido == viejo)
-		return;
+	tab* valor = elegido->valor;
 
-	printf("elegido: %p: %s [%s/%s]\n", elegido, tituloPonteiro(elegido), tituloPonteiro(elegido->padre), tituloPonteiro(elegido->hijo));
-	printf("viejo: %p: %s [%s/%s]\n", viejo, tituloPonteiro(viejo), tituloPonteiro(viejo->padre), tituloPonteiro(viejo->hijo));
+	//limpa elegido
+	if (elegido == l->principio) {
+		l->principio = elegido->hijo;
+	} else if (elegido == l->final) {
+		l->final = elegido->padre;
+	}
 
-	// if (elegido == l->final)
-	// 	l->final = elegido->padre;
+	if (elegido->hijo != NULL)
+		elegido->hijo->padre = elegido->padre;
+	if (elegido->padre != NULL)
+		elegido->padre->hijo = elegido->hijo;
 
-	nodo *antEle = elegido->padre;
-	nodo *antViejo = viejo->padre;
+	free(elegido);
 
-	antEle->hijo = elegido->hijo;
-	
-	elegido->hijo = viejo;
-	elegido->padre = viejo->padre;
+	insere_pos(l, valor, posicion);
+}
 
-	viejo->padre = elegido;
-	
-	if (viejo != l->principio)
-		antViejo->hijo = elegido;
-	else
-		l->principio = elegido;
-
-
-
-
-
-	// if (elegido == l->final) {
-	// 	l->final = elegido->padre;
-	// } else if (elegido == l->principio) {
-	// 	l->principio = elegido->hijo;
-	// } else if (viejo == l->final) {
-	// 	l->final = elegido;
-	// } else if (viejo == l->principio) {
-	// 	l->principio = elegido;
-	// }
-
-	// nodo* ayuda = viejo->padre;
-
-	// viejo->padre = elegido;
-	// elegido->padre->hijo = elegido->hijo;
-	// if (elegido->hijo != NULL)
-	// 	elegido->hijo->padre = elegido->padre;
-	// elegido->padre = ayuda;
-
+int tamano_intervalo(lista* l) {
+	node *n = l->principio;
+	int min = l->principio->
 }
 
 void ordena_lista(lista* l) {
-	printf("hola\n");
+	if (l == NULL || l->principio == NULL)
+		return;
+
+	int n = l->tamano;
+	int k = tamano_intervalo(l);
 }
 
 void muestra_lista(lista* l) {	
