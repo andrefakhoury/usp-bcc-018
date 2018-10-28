@@ -3,12 +3,14 @@
 #include "list.h"
 #include "tab.h"
 
+//nueva tab en la lista
 void nueva(lista* l) {
 	tab* t = malloc(sizeof(tab));
 	scanf(" %[^\n] %s %d %d %d %d", t->titulo, t->sitio, &(t->dia), &(t->mes), &(t->hora), &(t->min));
 	nueva_tab(l, t);	
 }
 
+//cambia dos tabs de posicion
 void actualiza(lista* l) {
 	char titulo[32];
 	int pos;
@@ -21,15 +23,14 @@ void actualiza(lista* l) {
 int main() {
 	lista* l = crea_lista();
 	
-	int op;
-	
+	int op;	
 	while(scanf("%d", &op), op < 5) {
 		switch(op) {
 			case 1: nueva(l); 			
 					break;
 			case 2: actualiza(l);
 					break;
-			case 3: ordena_lista(l);
+			case 3: l = ordena_lista(l);
 					break;
 			case 4: muestra_lista(l);
 					break;
@@ -37,6 +38,7 @@ int main() {
 		}
 	}
 	
+	//free
 	limpa_lista(l);
 	return 0;
 }
