@@ -1,3 +1,0 @@
-Registrador de Deslocamento
-
-A partir do flip flop feito anteriormente, fizemos um registrador de deslocamento.

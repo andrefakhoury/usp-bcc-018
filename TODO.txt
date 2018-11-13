@@ -1,7 +1,0 @@
-Imprimir as paradas de Discreta
-
-
-[DISCRETA] Imprimir
-[DISCRETA] Lista RSA
-[ALG] Trabalho
-[FISICA] Prova
