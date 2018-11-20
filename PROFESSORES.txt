@@ -1,0 +1,17 @@
+7600109	Laboratório de Física Geral (2+0) - 
+SCC0215	Organização de Arquivos (3+1) - Ciferri
+SCC0216	Modelagem Computacional em Grafos (3+1) - Thiago Pardo
+SMA0355	Cálculo III (4+0) - 
+SSC0103	Programação Orientada a Objetos (4+2) - Delamaro
+SSC0902	Organização e Arquitetura de Computadores (4+1) - Sarita
+SSC0119	Prática em Organização de Computadores (2+1) - Simoes
+
+
+SSC0119	Prática em Organização de Computadores (4+0) - Simoes
+SCC0210	Algoritmos Avançados (3+2) - João E.S.B. Neto
+SCC0209	Empreendedores em Informática (4+1) - Solange Oliveira
+Rezende
+SCC0261	Multimídia (3+0) -
+SCC0263	Técnicas de Programação para Web (4+2) - 
+SCC0265	Sistemas Interativos Web (3+0) -
+SCC0296	Atividades Acadêmicas Científicas, de Extensão e Culturais II (1+1) - Moacir

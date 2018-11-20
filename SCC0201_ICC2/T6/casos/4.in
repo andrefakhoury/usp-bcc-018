@@ -1,0 +1,16 @@
+cad nome1 123456789
+cad nome2 987654321
+aut nome1 123456789
+aut nome2 192837465
+exib
+del nome2 987654321
+aut nome1 123456798
+exib
+cad nome3 192837465
+cad nome4 918273645
+exib
+del nome1 123457689
+del nome1 123456789
+aut nome3 192837465
+aut nome1 123456789
+exib
