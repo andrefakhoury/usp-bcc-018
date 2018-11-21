@@ -1,0 +1,23 @@
+Listas Ordenadas
+	Comeca a lista ja ordenada; insere todos de forma ordenada;
+	Pior apenas na insercao, mas melhor na remocao e busca
+	Tambem da pra so ordenar uma lista nao ordenada
+
+Listas - outras
+	No de cabecalho - cabecalho, sentinela, etc
+		Guardar informacoes globais da lista;	
+		Auxilio para tarefas (buscas, etc) -> nao precisa checar NULL
+		Em lista circular - saber se eh o ultimo elemento (deixa o sentinela no inicio, se apontar pra ele eh o ultimo)
+		Desvantagem - mais de uma estrutura de no
+	Lista nao homogenea (generica)
+		void*, union, ...
+	Lista generalizada
+		Tem como elemento ATOMO ou OUTRA SUB-LISTA
+			Cabeca - primeiro elemento da lista
+			Cauda - o resto
+		Tem varios ponteiros, q podem apontar pra outra sub-lista ou para outro atomo
+			A sub-lista vai apontar para a outra lista, q segue o mesmo esquema
+
+Matriz Esparsa
+	Listas cruzadas - dois vetores, de linhas e colunas, q apontam pros elementos
+	Listas circulares - duas listas com no de cabecalho, de linhas e colunas, q apontam pros proximos elementos
