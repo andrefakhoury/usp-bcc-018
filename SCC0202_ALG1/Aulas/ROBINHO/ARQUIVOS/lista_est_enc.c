@@ -38,6 +38,7 @@ int insere_comeco(Lista *l, elem x) {
     if (aux == -1)
         return 1; // erro
     l->vet[aux].info = x; // copia info
+    
     // atualiza encadeamento
     l->vet[aux].prox = l->ini;
     l->ini = aux;

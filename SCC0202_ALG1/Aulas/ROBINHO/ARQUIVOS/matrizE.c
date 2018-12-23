@@ -157,11 +157,9 @@ int somaLinha(MatrizE m, int lin, elem x) {
             insere(m, lin, col, x); // insere nova caixa
         // processa coluna aux->col
         aux->info += x;
-        if (aux->info == 0) {
-            aux = aux->proximacol;
-            remover(m, lin, col);
-        } else
-            aux = aux->proximacol;
+        aux = aux->proximacol;
+        
+        if (aux->info == 0) remover(m, lin, col);
         col++;
     }
     // processa colunas entre col e o numero total de colunas

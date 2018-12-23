@@ -26,6 +26,3 @@ int profundidade(ListaGen l);
 int iguais(ListaGen l1, ListaGen l2);
 int iguaisEst(ListaGen l1, ListaGen l2);
 /*******************************************************/
-
-
-

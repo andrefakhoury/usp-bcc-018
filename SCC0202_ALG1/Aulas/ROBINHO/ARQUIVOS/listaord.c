@@ -4,7 +4,6 @@
 
 void cria(ListaOrd *l) {
     l->ini = NULL;
-    return;
 }
 
 void busca_interna(ListaOrd *l, elem x, No **ant, No **p) {
@@ -17,7 +16,6 @@ void busca_interna(ListaOrd *l, elem x, No **ant, No **p) {
         *ant = *p;
         *p = (*p)->prox;
     }
-    return;
 }
 
 int insere(ListaOrd *l, elem x) {
@@ -61,9 +59,11 @@ void imprime(ListaOrd l) {
 }
 
 int busca(ListaOrd l, elem x) {
-    while(l.ini != NULL && l.ini->info < x)
-        l.ini = l.ini->prox;
-    return (l.ini != NULL && l.ini->info == x);
+	l->sentinela->info = x;
+	
+    while(l.ini->info < x) l.ini = l.ini->prox;
+
+    return (l.ini != l->sentinela);
 }
 
 int esta_vazia(ListaOrd l) {

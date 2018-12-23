@@ -21,3 +21,15 @@ Listas - outras
 Matriz Esparsa
 	Listas cruzadas - dois vetores, de linhas e colunas, q apontam pros elementos
 	Listas circulares - duas listas com no de cabecalho, de linhas e colunas, q apontam pros proximos elementos
+
+Arvore
+	Parada padrao q a gente ja sabe
+	Nivel - altura de um vertice
+	Grau  - maximo de filhos
+	Altura - nivel da raiz
+
+ABB
+	Filho esquerdo eh menor, filho direito eh maior
+
+AVL
+	ABB Balanceada
