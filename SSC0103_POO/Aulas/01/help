@@ -1,0 +1,7 @@
+javac -sourcepath src/ -d bin/ src/Teste.java
+java -cp bin/ Teste
+
+
+
+se for usar class q ja existe precisa falar onde ta
+javac -sourcepath src/ -d bin/ -cp bin/ src/Teste.java
