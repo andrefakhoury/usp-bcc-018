@@ -2,17 +2,22 @@
 #include <stdio.h>
 
 int main() {
-	int n = 10;
-	Graph* g = createGraph(n);
+	int n = 10, u, v, w;
+	bool error;
 
-	addEdge(g, 0, 1);
-	addEdge(g, 1, 2);
-	addEdge(g, 2, 4);
+	Graph* g = createGraph(&n, &error);
 
-	print(g, 0);
+	u = 0, v = 1, w = 1; addEdge(g, &u, &v, &w, &error);
+	u = 1, v = 3, w = 2; addEdge(g, &u, &v, &w, &error);
+	u = 3, v = 5, w = 4; addEdge(g, &u, &v, &w, &error);
 
-	printf("%d\n", dist(g, 0, 5));
+	printGraph(g);
 
+	Graph* p = genTranspostGraph(g, &error);
+	printGraph(p);
 
+	int** degree = vertexByDegree(g, &error);
 
+	
+	destroyGraph(g);
 }

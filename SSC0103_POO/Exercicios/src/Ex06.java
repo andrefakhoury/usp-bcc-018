@@ -1,9 +1,11 @@
 public class Ex06 {
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String args[])  {
         double x = 0, menor, maior;
 
         System.out.printf("Digite um valor de ponto flutuante: ");
+
+
 
         try {
             x = EntradaTeclado.leDouble();
