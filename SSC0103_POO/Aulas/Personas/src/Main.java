@@ -8,5 +8,6 @@ public class Main {
         ag.imprimeAgenda();
         ag.removePessoa("Jorge");
         ag.imprimeAgenda();
+        ag.imprimePessoa(ag.buscaPessoa("Moreira"));
     }
 }
