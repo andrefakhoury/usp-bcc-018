@@ -17,3 +17,5 @@ bool emptyAdjList(Graph* g, int* u, bool* error);
 int firstAdjList(Graph* g, int* u, bool* error);
 void smallestEdge(Graph* g, int* u, int* v, bool* error);
 int** vertexByDegree(Graph* g, bool* error);
+int degreeOfVertex(Graph* g, int u);
+bool euler(Graph* g);

@@ -7,17 +7,12 @@ int main() {
 
 	Graph* g = createGraph(&n, &error);
 
-	u = 0, v = 1, w = 1; addEdge(g, &u, &v, &w, &error);
-	u = 1, v = 3, w = 2; addEdge(g, &u, &v, &w, &error);
-	u = 3, v = 5, w = 4; addEdge(g, &u, &v, &w, &error);
+	u = 1, v = 2, w = 1; addEdge(g, &u, &v, &w, &error);
+	u = 2, v = 3, w = 1; addEdge(g, &u, &v, &w, &error); 
+	u = 3, v = 4, w = 1; addEdge(g, &u, &v, &w, &error);
+	u = 4, v = 1, w = 1; addEdge(g, &u, &v, &w, &error);
 
-	printGraph(g);
+	euler(g);
 
-	Graph* p = genTranspostGraph(g, &error);
-	printGraph(p);
-
-	int** degree = vertexByDegree(g, &error);
-
-	
 	destroyGraph(g);
 }

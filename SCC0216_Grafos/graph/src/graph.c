@@ -66,6 +66,7 @@ void addEdge(Graph* g, int* u, int* v, elem* w, bool* error) {
 	} else {
 		*error = false;
 		g->mat[*u][*v] = *w;
+		g->mat[*v][*u] = *w;
 	}
 }
 
@@ -75,6 +76,7 @@ void removeEdge(Graph* g, int* u, int* v, bool* error) {
 	} else {
 		*error = false;
 		g->mat[*u][*v] = NOEDGE;
+		g->mat[*v][*u] = NOEDGE;
 	}
 }
 
@@ -82,14 +84,14 @@ bool checkEdge(Graph* g, int* u, int* v) {
 	return *u < g->vertex && *v < g->vertex && g->mat[*u][*v];
 }
 
-int dfs(Graph* g, int u, int v, int vis) {
-	vis |= 1 << u;
+int dfs(Graph* g, int u, int v, int* vis) {
+	(*vis) |= 1 << u;
 	if (u == v) return 0;
 
 	int ret = 0x3f3f3f3f;
 	for (int i = 0; i < g->vertex; i++) {
 		if (g->mat[u][i] != NOEDGE) {
-			if (!(vis&(1<<i)))
+			if (!((*vis)&(1<<i)))
 				ret = min(ret, g->mat[u][i] + dfs(g, i, v, vis));
 		}
 	}
@@ -190,6 +192,23 @@ void smallestEdge(Graph* g, int* u, int* v, bool* error) {
 	}
 }
 
+int degreeOfVertex(Graph* g, int u) {
+	int ret = 0;
+	for (int i = 0; i < g->vertex; i++) {
+		if (g->mat[u][i] != NOEDGE)
+			ret++;
+	}
+
+	for (int i = 0; i < g->vertex; i++) {
+		if (g->mat[i][u] != NOEDGE)
+			ret++;
+	}
+
+
+
+	return ret;
+}
+
 int** vertexByDegree(Graph* g, bool* error) {
 	if (g == NULL) {
 		*error = true;
@@ -230,3 +249,59 @@ int** vertexByDegree(Graph* g, bool* error) {
 	return deg;
 }
 
+void eulerRec(Graph* g, int v1) {
+	bool erro;
+	for (int i = 1; i < g->vertex; i++) {
+		if (g->mat[v1][i] != NOEDGE) {
+
+			int v2 = i;
+			int vis = 2;
+
+			dfs(g, v1, -1, vis)
+
+			if (degV2 > 1) {
+				int v2 = i;
+				printf("%d->%d ", v1, v2);
+				removeEdge(g, &v1, &v2, &erro);
+				eulerRec(g, v2);
+				return;
+			}
+		}
+	}
+
+	for (int i = 1; i < g->vertex; i++) {
+		if (g->mat[v1][i] != NOEDGE) {
+			int degV2 = degreeOfVertex(g, i);
+			if (degV2 == 1) {
+				int v2 = i;
+				printf("%d->%d ", v1, v2);
+				removeEdge(g, &v1, &v2, &erro);
+				eulerRec(g, v2);
+				return;
+			}
+		}
+	}
+
+
+}
+
+bool euler(Graph* g) {
+	for (int i = 1; i < g->vertex; i++) {
+		if (degreeOfVertex(g, i) % 2 != 0) {
+			printf("%d -> %d\n", i, degreeOfVertex(g, i));
+			return !printf("Nao eh possivel!\n");
+		}
+	}
+
+	eulerRec(g, 1);
+	return true;
+}
+
+int mat[MAXN][MAXN];
+
+void packMain(int i, int j, int d, Graph* g) {
+	packMain(i+1, j, d+1, g);
+	packMain(i, j+1, d+1, g);
+	packMain(i-1, j, d+1, g);
+	packMain(i, j-1, d+1, g);
+}
