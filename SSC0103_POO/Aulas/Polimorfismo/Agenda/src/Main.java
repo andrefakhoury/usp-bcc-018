@@ -1,5 +1,9 @@
 public class Main {
 
+    /**
+     * Testador da agenda e pessoas
+     * @param args
+     */
     public static void main(String[] args) {
         Agenda ag = new Agenda();
         ag.add(new PessoaFisica("Jorge", "rua", "aa", "001", "12/12/1222", "solteiro"));
