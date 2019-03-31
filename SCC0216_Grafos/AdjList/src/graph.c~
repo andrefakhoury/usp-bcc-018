@@ -1,0 +1,43 @@
+#include "graph.h"
+
+typedef struct EdgeNode {
+	int v;
+	elem weight;
+	struct EdgeNode *next;
+};
+
+typedef stuct {
+	EdgeNode *begin, *end;
+} VertexNode;
+
+struct Graph {
+	vertexNode adj[MAXV];
+	size_t qttVertex;
+};
+
+Graph* graph_create(size_t qttVertex, bool* error) {
+	if (qttVertex >= MAXV) {
+		*error = true;
+		return NULL;
+	}
+
+	Graph* g = malloc(sizeof(Graph));
+	if (!g) {
+		*error = true;
+		return NULL;
+	}
+	
+	*error = false;
+	g->qttVertex = qttVertex;
+	for (int i = 0; i < qttVertex; i++) {
+		g->adj[i].begin = malloc(sizeof(EdgeNode));
+		g->adj[i].begin->weigth = 0;
+		g->adj[i].begin->next = NULL;
+		g->adj[i].end = g->adj[i].begin;
+	}
+
+	return g;
+}
+
+
+

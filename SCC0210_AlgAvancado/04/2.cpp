@@ -25,14 +25,17 @@ int find(string& s) {
 
 string up(string& s, int id) {
 	string r = s;
-	if (id < 3) return r;
+	if (id < 4) return r;
 	swap(r[id], r[id-3]);
 	return r;
 }
 
+00010203
+04050607
+
 string down(string& s, int id) {
 	string r = s;
-	if (id > 5) return r;
+	if (id > 15) return r;
 	swap(r[id], r[id+3]);
 	return r;
 }
@@ -51,24 +54,6 @@ string right(string& s, int id) {
 	return r;
 }
 
-vector<pair<char, string> > getPos(string& u, int id) {
-	vector<pair<char, string> > ret;
-	string op;
-	op = up(u, id);
-	if (op != u) ret.push_back(make_pair('u', op));
-
-	op = down(u, id);
-	if (op != u) ret.push_back(make_pair('d', op));
-
-	op = left(u, id);
-	if (op != u) ret.push_back(make_pair('l', op));
-
-	op = right(u, id);
-	if (op != u) ret.push_back(make_pair('r', op));
-
-	return ret;
-}
-
 string bfs(string& s) {
 	unordered_map<string, string> dist;
 	priority_queue<pair<int, string> > pq;
@@ -85,7 +70,7 @@ string bfs(string& s) {
 		v = up(u, id);
 		if (v != u) {
 			if (dist.find(v) == dist.end() or dist[u].size()+1 < dist[v].size()) {
-				dist[v] = dist[u] + 'u';
+				dist[v] = dist[u] + 'U';
 				int w = dist[v].size() + h(v) + 1;
 				pq.push(make_pair(-w, v));
 			}
@@ -94,7 +79,7 @@ string bfs(string& s) {
 		v = down(u, id);
 		if (v != u) {
 			if (dist.find(v) == dist.end() or dist[u].size()+1 < dist[v].size()) {
-				dist[v] = dist[u] + 'd';
+				dist[v] = dist[u] + 'D';
 				int w = dist[v].size() + h(v) + 1;
 				pq.push(make_pair(-w, v));
 			}
@@ -103,7 +88,7 @@ string bfs(string& s) {
 		v = left(u, id);
 		if (v != u) {
 			if (dist.find(v) == dist.end() or dist[u].size()+1 < dist[v].size()) {
-				dist[v] = dist[u] + 'l';
+				dist[v] = dist[u] + 'L';
 				int w = dist[v].size() + h(v) + 1;
 				pq.push(make_pair(-w, v));
 			}
@@ -112,14 +97,14 @@ string bfs(string& s) {
 		v = right(u, id);
 		if (v != u) {
 			if (dist.find(v) == dist.end() or dist[u].size()+1 < dist[v].size()) {
-				dist[v] = dist[u] + 'r';
+				dist[v] = dist[u] + 'R';
 				int w = dist[v].size() + h(v) + 1;
 				pq.push(make_pair(-w, v));
 			}
 		}
 	}
 
-	return "unsolvable";
+	return "This puzzle is not solvable.";
 }
 
 int main() {
