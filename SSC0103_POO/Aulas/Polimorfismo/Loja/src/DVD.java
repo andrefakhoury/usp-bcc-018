@@ -1,20 +1,21 @@
 /**
- * Classe de um DVD, que e um tipo de Produto
+ * Classe que representa um DVD.
  */
 
 public class DVD extends Produto {
-    private String nome, artista;
+    private String nome, produtora;
 
     /**
      * Construtor do DVD, a partir de informacoes basicas
      * @param codBar Codigo de barras do DVD
+     * @param preco Preco do DVD
      * @param nome Nome do DVD
-     * @param artista Artista do DVD
+     * @param produtora Produtora do DVD
      */
-    public DVD(String codBar, String nome, String artista) {
-        super(codBar);
+    public DVD(String codBar, double preco, String nome, String produtora) {
+        super(codBar, preco);
         this.nome = nome;
-        this.artista = artista;
+        this.produtora = produtora;
     }
 
     /**
@@ -34,27 +35,27 @@ public class DVD extends Produto {
     }
 
     /**
-     * Retorna o nome do Artista do DVD
-     * @return nome do artista armazenado
+     * Retorna o nome da produtora do DVD
+     * @return nome da produtora armazenado
      */
-    public String getArtista() {
-        return artista;
+    public String getProdutora() {
+        return produtora;
     }
 
     /**
-     * Altera o artista armazenado
-     * @param artista Novo artista a ser armazenado
+     * Altera o produtora armazenado
+     * @param produtora Nova produtora a ser armazenado
      */
-    public void setArtista(String artista) {
-        this.artista = artista;
+    public void setProdutora(String produtora) {
+        this.produtora = produtora;
     }
 
     /**
      * Retorna uma string com as informacoes basicas do DVD
-     * @return String com o nome e artista do DVD
+     * @return String com o nome e produtora do DVD
      */
     @Override
     public String toString() {
-        return nome + " - " + artista;
+        return super.toString() + nome + " - " + produtora;
     }
 }

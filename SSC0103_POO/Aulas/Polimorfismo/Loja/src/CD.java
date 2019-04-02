@@ -1,5 +1,5 @@
 /**
- * Classe para representar CD, que e um tipo de produto
+ * Classe para representar um CD.
  */
 
 public class CD extends Produto {
@@ -8,11 +8,12 @@ public class CD extends Produto {
     /**
      * Construtor do CD a partir de informacoes basicas
      * @param codBar Codigo de barras do CD
+     * @param preco Preco do CD
      * @param nome Nome do CD
      * @param artista Artista do CD
      */
-    public CD(String codBar, String nome, String artista) {
-        super(codBar);
+    public CD(String codBar, double preco, String nome, String artista) {
+        super(codBar, preco);
         this.nome = nome;
         this.artista = artista;
     }
@@ -55,6 +56,6 @@ public class CD extends Produto {
      */
     @Override
     public String toString() {
-        return nome + " - " + artista;
+        return super.toString() + nome + " - " + artista;
     }
 }

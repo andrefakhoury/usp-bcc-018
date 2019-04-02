@@ -1,44 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="045b80b4-8f40-485a-999f-7f88ad0b2c8b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../05/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/.idea/description.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/05.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/out/production/05/Agenda.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/out/production/05/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/out/production/05/Pessoa.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/out/production/05/PessoaFisica.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/out/production/05/PessoaJuridica.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/src/Agenda.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/src/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/src/Pessoa.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/src/PessoaFisica.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../05/Agenda/src/PessoaJuridica.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/.idea/description.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/Figuras.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/out/production/Figuras/Circulo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/out/production/Figuras/Figura.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/out/production/Figuras/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/out/production/Figuras/Quadrado.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/out/production/Figuras/Retangulo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/src/Circulo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/src/Figura.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/src/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/src/Quadrado.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Figuras/src/Retangulo.java" beforeDir="false" />
-    </list>
+    <list default="true" id="045b80b4-8f40-485a-999f-7f88ad0b2c8b" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +9,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -93,6 +56,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -110,7 +74,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -144,16 +107,13 @@
   <component name="ToolWindowManager">
     <frame x="-3" y="-1" width="1926" height="1057" extended-state="6" />
     <layout>
-      <window_info id="Image Layers" />
-      <window_info id="Designer" />
-      <window_info id="UI Designer" />
-      <window_info id="Capture Tool" />
-      <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2497332" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2524013" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -161,14 +121,17 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Palette" />
-      <window_info anchor="right" id="Theme Preview" />
-      <window_info anchor="right" id="Capture Analysis" />
-      <window_info anchor="right" id="Palette&#9;" />
-      <window_info anchor="right" id="Maven" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info anchor="right" id="Maven" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
     </layout>
     <layout-to-restore>
       <window_info id="Image Layers" order="0" />

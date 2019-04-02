@@ -1,5 +1,5 @@
 /**
- * Classe que representa um Livro, que e um tipo de produto.
+ * Classe que representa um Livro.
  */
 
 public class Livro extends Produto {
@@ -9,12 +9,13 @@ public class Livro extends Produto {
     /**
      * Construtor do livro a partir de parametros basicos
      * @param codBar Codigo de Barras do livro
+     * @param preco Preco do livro
      * @param nome Nome do livro
      * @param autor Autor do Livro
      * @param numPaginas Numero de paginas do livro
      */
-    public Livro(String codBar, String nome, String autor, int numPaginas) {
-        super(codBar);
+    public Livro(String codBar, double preco, String nome, String autor, int numPaginas) {
+        super(codBar, preco);
         this.nome = nome;
         this.autor = autor;
         this.numPaginas = numPaginas;
@@ -74,6 +75,6 @@ public class Livro extends Produto {
      */
     @Override
     public String toString() {
-        return nome + " - " + autor + " (" + numPaginas + ")";
+        return super.toString() + nome + " - " + autor + " (" + numPaginas + ")";
     }
 }

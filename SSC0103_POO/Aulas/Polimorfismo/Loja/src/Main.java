@@ -1,9 +1,13 @@
 public class Main {
 
+    /**
+     * Main para testar as classes desenvolvidas
+     * @param args
+     */
     public static void main(String[] args) {
-        Livro l = new Livro("1234", "Harry Potter", "JKR", 300);
-        CD c = new CD("4321", "Queen 2", "Queen");
-        DVD d = new DVD("21AB", "A Grande Familia OST", "Agostinho Carrara");
+        Livro l = new Livro("1234", 12.50,"Harry Potter", "JKR", 300);
+        CD c = new CD("4321", 9.99, "Queen 2", "Queen");
+        DVD d = new DVD("21AB", 14.50, "Madagascar 3", "Rei Julian");
 
         Loja loja = new Loja();
         loja.addProduto(l, 10);
