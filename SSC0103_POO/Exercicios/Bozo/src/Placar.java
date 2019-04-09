@@ -17,9 +17,9 @@ public class Placar {
      * @param posicao
      * @param dados
      */
-    public void add(int posicao, int[] dados) throws Exception {
+    public void add(int posicao, int[] dados) throws BozoException {
         if (this.pontos[posicao-1] != -1) {
-            throw new Exception("Posicao invalida\n");
+            throw new BozoException("Posicao invalida\n");
         }
 
         if (posicao < 7) { // quantidade * posicao
