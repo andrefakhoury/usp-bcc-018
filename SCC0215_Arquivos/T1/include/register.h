@@ -45,5 +45,7 @@ void csv_printRegister(DataRegister dr, FILE* dest);
 size_t register_size(DataRegister dr);
 void fillEmpty(char* src, size_t totalSize, int all);
 void printEmpty(size_t size, FILE* dest);
+int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas);
+void register_toStream(DataRegister dr);
 
 #endif
