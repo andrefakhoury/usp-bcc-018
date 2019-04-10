@@ -38,7 +38,7 @@ typedef struct _Data {
 } DataRegister;
 
 void csv_ignoreLine(FILE* fp);
-void csv_loadHeader(HeaderRegister* hr);
+void csv_loadHeader(HeaderRegister* hr, FILE* source);
 void csv_printHeader(HeaderRegister hr, FILE* dest);
 int csv_readRegister(FILE* fp, DataRegister* dr);
 void csv_printRegister(DataRegister dr, FILE* dest);

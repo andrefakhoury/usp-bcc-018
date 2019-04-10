@@ -9,14 +9,9 @@ void csv_ignoreLine(FILE* fp) {
 }
 
 void fillEmpty(char* src, size_t totalSize, int all) {
-	int i;
+	int i = all ? 1 : strlen(src) + 1;
+	src[i-1] = '\0';
 
-	if (all) {
-		src[0] = '\0';
-		i = 1;
-	} else {
-		i = strlen(src) + 1;
-	}
 	while (i < totalSize) {
 		src[i] = '@';
 		i++;
@@ -29,28 +24,28 @@ void printEmpty(size_t size, FILE* dest) {
 		fwrite(&empty, 1, 1, dest);
 }
 
-void csv_loadHeader(HeaderRegister* hr) {
+void csv_loadHeader(HeaderRegister* hr, FILE* source) {	
 	hr->status = '1';
 	hr->topoLista = -1;
 
 	hr->tagCampo1 = 'i';
-	strcpy(hr->desCampo1, "numero de identificacao do servidor");
+	fscanf(source, "%[^,],", hr->desCampo1);
 	fillEmpty(hr->desCampo1, 40, 0);
 
 	hr->tagCampo2 = 's';
-	strcpy(hr->desCampo2, "salario do servidor");
+	fscanf(source, "%[^,],", hr->desCampo2);
 	fillEmpty(hr->desCampo2, 40, 0);
 
 	hr->tagCampo3 = 't';
-	strcpy(hr->desCampo3, "telefone celular do servidor");
+	fscanf(source, "%[^,],", hr->desCampo3);
 	fillEmpty(hr->desCampo3, 40, 0);
 
 	hr->tagCampo4 = 'n';
-	strcpy(hr->desCampo4, "nome do servidor");
+	fscanf(source, "%[^,],", hr->desCampo4);
 	fillEmpty(hr->desCampo4, 40, 0);
 
 	hr->tagCampo5 = 'c';
-	strcpy(hr->desCampo5, "cargo do servidor");
+	fscanf(source, "%[^\n\r] ", hr->desCampo5);
 	fillEmpty(hr->desCampo5, 40, 0);
 }
 

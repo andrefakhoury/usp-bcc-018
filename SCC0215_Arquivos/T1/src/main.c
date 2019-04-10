@@ -6,13 +6,12 @@ void CSV_toBinary() {
 	scanf(" %s", fileName);
 
 	FILE* fp = fopen(fileName, "r");
+	FILE* outBin = fopen("binario.bin", "wb");
 
 	HeaderRegister hr;
 
-	csv_loadHeader(&hr);
-	csv_printHeader(hr, stdout);
-
-	csv_ignoreLine(fp);
+	csv_loadHeader(&hr, fp);
+	csv_printHeader(hr, outBin);
 
 	DataRegister dr;
 
@@ -21,20 +20,21 @@ void CSV_toBinary() {
 		size_t curSize = register_size(dr);
 
 		if (totalSize + curSize > MAXPAGE) {
-			printEmpty(MAXPAGE - totalSize, stdout);
+			printEmpty(MAXPAGE - totalSize, outBin);
 			totalSize = 0;
 		}
 
 		totalSize += curSize;
 
-		csv_printRegister(dr, stdout);
+		csv_printRegister(dr, outBin);
 	}
 
 	if (totalSize != 0) {
-		printEmpty(MAXPAGE - totalSize, stdout);
+		printEmpty(MAXPAGE - totalSize, outBin);
 	}
 
 	fclose(fp);
+	fclose(outBin);
 }
 
 int main() {
