@@ -255,8 +255,74 @@ void register_toStream(DataRegister dr) {
 	printf("\n");
 }
 
-char bin_checkHeader(FILE* bin) {
-	char status;
-	fread(&status, 1, 1, bin);
-	return status;
+void bin_loadHeader(FILE* bin, HeaderRegister* hr) {
+	fread(&hr->status, 1, 1, bin);
+	fread(&hr->topoLista, 8, 1, bin);
+
+	fread(&hr->tagCampo1, 1, 1, bin);
+	fread(&hr->desCampo1, 40, 1, bin);
+
+	fread(&hr->tagCampo2, 1, 1, bin);
+	fread(&hr->desCampo2, 40, 1, bin);
+
+	fread(&hr->tagCampo3, 1, 1, bin);
+	fread(&hr->desCampo3, 40, 1, bin);
+
+	fread(&hr->tagCampo4, 1, 1, bin);
+	fread(&hr->desCampo4, 40, 1, bin);
+
+	fread(&hr->tagCampo5, 1, 1, bin);
+	fread(&hr->desCampo5, 40, 1, bin);
+}
+
+/**
+ * int idServidor;
+	double salarioServidor;
+	char telefoneServidor[14];
+
+	varSizeRegister nomeServidor;
+	varSizeRegister cargoServidor;*/
+
+int register_check(char tag, char value[], HeaderRegister hr, DataRegister dr) {
+	if (dr.removido == '*') return 0;
+
+	if (tag == hr.tagCampo1) {
+		int reg;
+		sscanf(value, "%d", &reg);
+		return reg == dr.idServidor;
+	} else if (tag == hr.tagCampo2) {
+		double salario;
+		sscanf(value, "%lf", &salario);
+		return salario == dr.salarioServidor;
+	} else if (tag == hr.tagCampo3) {
+		return !strcmp(dr.telefoneServidor, value);
+	} else if (tag == hr.tagCampo4) {
+		return dr.nomeServidor.size > 0 && !strcmp(dr.nomeServidor.desc, value);
+	} else if (tag == hr.tagCampo5) {
+		return dr.cargoServidor.size > 0 && !strcmp(dr.cargoServidor.desc, value);
+	}
+
+	return 0;
+}
+
+void register_printFormatted(DataRegister dr, HeaderRegister hr) {
+	printf("%s: %d\n", hr.desCampo1, dr.idServidor);
+
+	if (dr.salarioServidor >= 0)
+		printf("%s: %.2lf\n", hr.desCampo2, dr.salarioServidor);
+	else printf("%s: valor nao declarado\n", hr.desCampo2);
+
+	if (strlen(dr.telefoneServidor) > 0)
+		printf("%s: %s\n", hr.desCampo3, dr.telefoneServidor);
+	else printf("%s: valor nao declarado\n", hr.desCampo3);
+	
+	if (dr.nomeServidor.size > 0) {
+		printf("%s: %s\n", hr.desCampo4, dr.nomeServidor.desc);
+	} else printf("%s: valor nao declarado\n", hr.desCampo4);
+	
+	if (dr.cargoServidor.size > 0) {
+		printf("%s: %s\n", hr.desCampo5, dr.cargoServidor.desc);
+	} else printf("%s: valor nao declarado\n", hr.desCampo5);
+
+	printf("\n");
 }

@@ -64,8 +64,10 @@ void bin_toStream() {
 		return;
 	}
 
-	char status = bin_checkHeader(bin);
-	if (status == '0') {
+	HeaderRegister hr;
+	bin_loadHeader(bin, &hr);
+
+	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
 		return;
 	}
@@ -89,7 +91,59 @@ void bin_toStream() {
 }
 
 void bin_searchReg() {
+	char fileName[256];
+	char fieldName[256], fieldValue[2048];
 
+	scanf(" %s", fileName);
+
+	FILE* bin = fopen(fileName, "rb");
+	FILE* stream = stdout;
+
+	if (bin == NULL || stream == NULL) {
+		printf("Falha no processamento do arquivo.\n");
+		return;
+	}
+
+	HeaderRegister hr;
+	bin_loadHeader(bin, &hr);
+
+	if (hr.status == '0') {
+		printf("Falha no processamento do arquivo.\n");
+		return;
+	}
+
+	scanf(" %s", fieldName);
+	char tag = '#';
+
+	if (!strcmp(fieldName, "idServidor")) tag = hr.tagCampo1;
+	else if (!strcmp(fieldName, "salarioServidor")) tag = hr.tagCampo2;
+	else if (!strcmp(fieldName, "telefoneServidor")) tag = hr.tagCampo3;
+	else if (!strcmp(fieldName, "nomeServidor")) tag = hr.tagCampo4;
+	else if (!strcmp(fieldName, "cargoServidor")) tag = hr.tagCampo5;
+	else return;
+
+	fseek(bin, MAXPAGE, SEEK_SET);
+
+	scanf(" %[^\n\r] ", fieldValue);
+
+	DataRegister dr;
+	int numRegister = 0, numPaginas = 2; // header and last register
+	while (bin_readRegister(bin, &dr, &numPaginas)) {
+		int check = register_check(tag, fieldValue, hr, dr);
+
+		if (check) {
+			register_printFormatted(dr, hr);
+			numRegister++;
+			if (tag == hr.tagCampo1) break;
+		}
+	}
+
+	if (numRegister == 0) {
+		printf("Registro inexistente.\n");
+	}
+	else {
+		printf("Número de páginas de disco acessadas: %d\n", numPaginas);
+	}
 }
 
 int main() {

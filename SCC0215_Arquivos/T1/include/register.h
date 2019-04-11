@@ -34,7 +34,7 @@ typedef struct _Data {
 	char telefoneServidor[14];
 
 	varSizeRegister nomeServidor;
-	varSizeRegister cargoServidor;	
+	varSizeRegister cargoServidor;
 } DataRegister;
 
 void csv_ignoreLine(FILE* fp);
@@ -47,6 +47,8 @@ void fillEmpty(char* src, size_t totalSize, int all);
 void printEmpty(size_t size, FILE* dest);
 int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas);
 void register_toStream(DataRegister dr);
-char bin_checkHeader(FILE* bin);
+void bin_loadHeader(FILE* bin, HeaderRegister* hr);
+int register_check(char tag, char value[], HeaderRegister hr, DataRegister dr);
+void register_printFormatted(DataRegister dr, HeaderRegister hr);
 
 #endif
