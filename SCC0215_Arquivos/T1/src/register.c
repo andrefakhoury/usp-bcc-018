@@ -244,10 +244,7 @@ void register_toStream(DataRegister dr) {
 	else
 		printf("         ");
 	
-	if (strlen(dr.telefoneServidor) > 0)
-		printf("%s ", dr.telefoneServidor);
-	else
-		printf("               ");
+	printf("%-14s ", dr.telefoneServidor);
 
 	if (dr.nomeServidor.size > 0)
 		printf("%lu %s ", dr.nomeServidor.size - 1, dr.nomeServidor.desc);
@@ -256,4 +253,10 @@ void register_toStream(DataRegister dr) {
 		printf("%lu %s", dr.cargoServidor.size - 1, dr.cargoServidor.desc);
 
 	printf("\n");
+}
+
+char bin_checkHeader(FILE* bin) {
+	char status;
+	fread(&status, 1, 1, bin);
+	return status;
 }

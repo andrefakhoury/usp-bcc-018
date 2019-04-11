@@ -47,5 +47,6 @@ void fillEmpty(char* src, size_t totalSize, int all);
 void printEmpty(size_t size, FILE* dest);
 int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas);
 void register_toStream(DataRegister dr);
+char bin_checkHeader(FILE* bin);
 
 #endif

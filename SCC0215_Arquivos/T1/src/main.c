@@ -45,7 +45,7 @@ void CSV_toBinary() {
 			printEmpty(dataRegVec[i].tamanhoRegistro - register_size(dataRegVec[i]), outBin);
 	}
 
-	printf("arquivoTrab1.bin\n");
+	printf("arquivoTrab1.bin");
 
 	free(dataRegVec);
 	fclose(fp);
@@ -60,6 +60,12 @@ void bin_toStream() {
 	FILE* stream = stdout;
 
 	if (bin == NULL || stream == NULL) {
+		printf("Falha no processamento do arquivo.\n");
+		return;
+	}
+
+	char status = bin_checkHeader(bin);
+	if (status == '0') {
 		printf("Falha no processamento do arquivo.\n");
 		return;
 	}
@@ -82,14 +88,20 @@ void bin_toStream() {
 	}	
 }
 
+void bin_searchReg() {
+
+}
+
 int main() {
 	int op;
 	scanf("%d", &op);
 
-	if (op == 1) CSV_toBinary();
-	if (op == 2) bin_toStream();
-	
-	
+	if (op == 1)
+		CSV_toBinary();
+	else if (op == 2)
+		bin_toStream();
+	else if (op == 3)
+		bin_searchReg();
 
 	return 0;
 }

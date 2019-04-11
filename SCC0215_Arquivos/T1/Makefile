@@ -3,3 +3,6 @@ all:
 
 run:
 	./main
+
+# ex2:
+# 	./main < casos_teste/3.in
