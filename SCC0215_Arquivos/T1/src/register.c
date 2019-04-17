@@ -2,89 +2,33 @@
 #include <stdio.h>
 #include <string.h>
 
-void csv_ignoreLine(FILE* fp) {
-	if (fp != NULL) {
-		fscanf(fp, "%*[^\n\r] ");
-	}
-}
-
-void fillEmpty(char* src, size_t totalSize, int all) {
-	int i = all ? 1 : strlen(src) + 1;
-	src[i-1] = '\0';
-
-	while (i < totalSize) {
-		src[i] = '@';
-		i++;
-	}
-}
-
-void printEmpty(size_t size, FILE* dest) {
-	char empty = '@';
-	for (size_t i = 0; i < size; i++)
-		fwrite(&empty, 1, 1, dest);
-}
-
-void csv_loadHeader(HeaderRegister* hr, FILE* source) {	
+/** Loads the header of source csv file to hr */
+void csv_loadHeader(FILE* source, HeaderRegister* hr) {	
 	hr->status = '1';
 	hr->topoLista = -1;
 
 	hr->tagCampo1 = 'i';
 	fscanf(source, "%[^,],", hr->desCampo1);
-	fillEmpty(hr->desCampo1, 40, 0);
+	str_fillEmpty(hr->desCampo1, 40, 0);
 
 	hr->tagCampo2 = 's';
 	fscanf(source, "%[^,],", hr->desCampo2);
-	fillEmpty(hr->desCampo2, 40, 0);
+	str_fillEmpty(hr->desCampo2, 40, 0);
 
 	hr->tagCampo3 = 't';
 	fscanf(source, "%[^,],", hr->desCampo3);
-	fillEmpty(hr->desCampo3, 40, 0);
+	str_fillEmpty(hr->desCampo3, 40, 0);
 
 	hr->tagCampo4 = 'n';
 	fscanf(source, "%[^,],", hr->desCampo4);
-	fillEmpty(hr->desCampo4, 40, 0);
+	str_fillEmpty(hr->desCampo4, 40, 0);
 
 	hr->tagCampo5 = 'c';
 	fscanf(source, "%[^\n\r] ", hr->desCampo5);
-	fillEmpty(hr->desCampo5, 40, 0);
+	str_fillEmpty(hr->desCampo5, 40, 0);
 }
 
-void csv_printHeader(HeaderRegister hr, FILE* dest) {
-	fwrite(&hr.status, 1, 1, dest);
-	fwrite(&hr.topoLista, 8, 1, dest);
-
-	fwrite(&hr.tagCampo1, 1, 1, dest);
-	fwrite(&hr.desCampo1, 40, 1, dest);
-
-	fwrite(&hr.tagCampo2, 1, 1, dest);
-	fwrite(&hr.desCampo2, 40, 1, dest);
-
-	fwrite(&hr.tagCampo3, 1, 1, dest);
-	fwrite(&hr.desCampo3, 40, 1, dest);
-
-	fwrite(&hr.tagCampo4, 1, 1, dest);
-	fwrite(&hr.desCampo4, 40, 1, dest);
-
-	fwrite(&hr.tagCampo5, 1, 1, dest);
-	fwrite(&hr.desCampo5, 40, 1, dest);
-
-	printEmpty(MAXPAGE - 214, dest);
-}
-
-size_t register_size(DataRegister dr) {
-	size_t ans = 39;
-
-	if (dr.nomeServidor.size > 0) {
-		ans += 5 + dr.nomeServidor.size;
-	}
-
-	if (dr.cargoServidor.size > 0) {
-		ans += 5 + dr.cargoServidor.size;
-	}
-
-	return ans;
-}
-
+/** Reads the data of source file to dr */
 int csv_readRegister(FILE* fp, DataRegister* dr) {
 	if (fp == NULL || feof(fp))
 		return 0;
@@ -108,7 +52,7 @@ int csv_readRegister(FILE* fp, DataRegister* dr) {
 	fscanf(fp, ",");
 
 	if (fscanf(fp, "%[^,]14s", dr->telefoneServidor) == 0)
-		fillEmpty(dr->telefoneServidor, 14, 1);
+		str_fillEmpty(dr->telefoneServidor, 14, 1);
 	fscanf(fp, ",");
 
 	if (fscanf(fp, "%[^,]s", dr->nomeServidor.desc) == 0)
@@ -130,12 +74,44 @@ int csv_readRegister(FILE* fp, DataRegister* dr) {
 	return 1;
 }
 
-/** Prints a register on destination file stream */
-void csv_printRegister(DataRegister dr, FILE* dest) {
+/** Test whether the next character from a binary file is empty */
+int bin_testEmpty(FILE* bin) {
+	char temp;
+	fread(&temp, 1, 1, bin);
+	fseek(bin, -1, SEEK_CUR);
+	return temp == EMPTY;
+}
+
+/** Writes data from header to destination file */
+void bin_printHeader(FILE* dest, HeaderRegister hr) {
+	fwrite(&hr.status, 1, 1, dest);
+	fwrite(&hr.topoLista, 8, 1, dest);
+
+	fwrite(&hr.tagCampo1, 1, 1, dest);
+	fwrite(&hr.desCampo1, 40, 1, dest);
+
+	fwrite(&hr.tagCampo2, 1, 1, dest);
+	fwrite(&hr.desCampo2, 40, 1, dest);
+
+	fwrite(&hr.tagCampo3, 1, 1, dest);
+	fwrite(&hr.desCampo3, 40, 1, dest);
+
+	fwrite(&hr.tagCampo4, 1, 1, dest);
+	fwrite(&hr.desCampo4, 40, 1, dest);
+
+	fwrite(&hr.tagCampo5, 1, 1, dest);
+	fwrite(&hr.desCampo5, 40, 1, dest);
+
+	bin_printEmpty(dest, MAXPAGE - 214);
+}
+
+/** Writes data from dr to destination file */
+void bin_printRegister(FILE* dest, DataRegister dr) {
 
 	fwrite(&dr.removido, 1, 1, dest);
 	
 	int tamanhoRegistro = dr.tamanhoRegistro - 5; // ignoring the fixed sized
+
 	fwrite(&tamanhoRegistro, 4, 1, dest);
 
 	fwrite(&dr.encadeamentoLista, 8, 1, dest);
@@ -145,25 +121,28 @@ void csv_printRegister(DataRegister dr, FILE* dest) {
 	fwrite(&dr.telefoneServidor, 14, 1, dest);
 
 	if (dr.nomeServidor.size > 0) {
-		fwrite(&dr.nomeServidor.size, 4, 1, dest);
+		int nomeSize = dr.nomeServidor.size + 1;
+		fwrite(&nomeSize, 4, 1, dest);
 		fwrite(&dr.nomeServidor.tag, 1, 1, dest);
-		fwrite(&dr.nomeServidor.desc, strlen(dr.nomeServidor.desc) + 1, 1, dest);		
+		fwrite(&dr.nomeServidor.desc, dr.nomeServidor.size, 1, dest);
 	}
 
 	if (dr.cargoServidor.size > 0) {
-		fwrite(&dr.cargoServidor.size, 4, 1, dest);
+		int cargoSize = dr.cargoServidor.size + 1;
+		fwrite(&cargoSize, 4, 1, dest);
 		fwrite(&dr.cargoServidor.tag, 1, 1, dest);
-		fwrite(&dr.cargoServidor.desc, strlen(dr.cargoServidor.desc) + 1, 1, dest);
+		fwrite(&dr.cargoServidor.desc, dr.cargoServidor.size, 1, dest);
 	}
 }
 
-int bin_testEmpty(FILE* bin) {
-	char temp;
-	fread(&temp, 1, 1, bin);
-	fseek(bin, -1, SEEK_CUR);
-	return temp == EMPTY;
+/** Prints to destination file a string with empty characters */
+void bin_printEmpty(FILE* dest, int size) {
+	char empty = '@';
+	for (int i = 0; i < size; i++)
+		fwrite(&empty, 1, 1, dest);
 }
 
+/** Reads a data register from binary source, and update the number of DiskPages accessed. */
 int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas) {
 	if (feof(bin))
 		return 0;
@@ -199,14 +178,14 @@ int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas) {
 		fread(&fieldTag, 1, 1, bin);
 
 		if (fieldTag == dr->nomeServidor.tag) {
-			fread(&dr->nomeServidor.desc, fieldSize, 1, bin);
-			dr->nomeServidor.size = fieldSize;
+			fread(&dr->nomeServidor.desc, fieldSize - 1, 1, bin);
+			dr->nomeServidor.size = fieldSize - 1;
 		} else {
-			fread(&dr->cargoServidor.desc, fieldSize, 1, bin);
-			dr->cargoServidor.size = fieldSize;
+			fread(&dr->cargoServidor.desc, fieldSize - 1, 1, bin);
+			dr->cargoServidor.size = fieldSize - 1;
 		}
 		
-		bytesReaden += 5 + fieldSize;
+		bytesReaden += 4 + fieldSize;
 
 		if (dr->tamanhoRegistro > 39 + fieldSize && !bin_testEmpty(bin)) {
 
@@ -214,14 +193,14 @@ int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas) {
 			fread(&fieldTag, 1, 1, bin);
 
 			if (fieldTag == dr->nomeServidor.tag) {
-				fread(&dr->nomeServidor.desc, fieldSize, 1, bin);
-				dr->nomeServidor.size = fieldSize;
+				fread(&dr->nomeServidor.desc, fieldSize - 1, 1, bin);
+				dr->nomeServidor.size = fieldSize - 1;
 			} else {
-				fread(&dr->cargoServidor.desc, fieldSize, 1, bin);
-				dr->cargoServidor.size = fieldSize;
+				fread(&dr->cargoServidor.desc, fieldSize - 1, 1, bin);
+				dr->cargoServidor.size = fieldSize - 1;
 			}
 		
-			bytesReaden += 5 + fieldSize;
+			bytesReaden += 4 + fieldSize;
 		}
 	}
 
@@ -233,28 +212,7 @@ int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas) {
 	return 1;
 }
 
-void register_toStream(DataRegister dr) {
-	if (dr.idServidor >= 0)
-		printf("%d ", dr.idServidor);
-	else
-		printf("     ");
-	
-	if (dr.salarioServidor >= 0)
-		printf("%.2lf ", dr.salarioServidor);
-	else
-		printf("         ");
-	
-	printf("%-14s ", dr.telefoneServidor);
-
-	if (dr.nomeServidor.size > 0)
-		printf("%lu %s ", dr.nomeServidor.size - 1, dr.nomeServidor.desc);
-
-	if (dr.cargoServidor.size > 0)
-		printf("%lu %s", dr.cargoServidor.size - 1, dr.cargoServidor.desc);
-
-	printf("\n");
-}
-
+/** Load header info from bin file */
 void bin_loadHeader(FILE* bin, HeaderRegister* hr) {
 	fread(&hr->status, 1, 1, bin);
 	fread(&hr->topoLista, 8, 1, bin);
@@ -275,14 +233,22 @@ void bin_loadHeader(FILE* bin, HeaderRegister* hr) {
 	fread(&hr->desCampo5, 40, 1, bin);
 }
 
-/**
- * int idServidor;
-	double salarioServidor;
-	char telefoneServidor[14];
+/** Returns the size of dr */
+int register_size(DataRegister dr) {
+	int ans = 39;
 
-	varSizeRegister nomeServidor;
-	varSizeRegister cargoServidor;*/
+	if (dr.nomeServidor.size > 0) {
+		ans += 5 + dr.nomeServidor.size;
+	}
 
+	if (dr.cargoServidor.size > 0) {
+		ans += 5 + dr.cargoServidor.size;
+	}
+
+	return ans;
+}
+
+/** Check if current register equals some desired value */
 int register_check(char tag, char value[], HeaderRegister hr, DataRegister dr) {
 	if (dr.removido == '*') return 0;
 
@@ -305,8 +271,34 @@ int register_check(char tag, char value[], HeaderRegister hr, DataRegister dr) {
 	return 0;
 }
 
+/** Prints data from dr to stdout */
+void register_toStream(DataRegister dr) {
+	if (dr.idServidor >= 0)
+		printf("%d ", dr.idServidor);
+	else
+		printf("     ");
+	
+	if (dr.salarioServidor >= 0)
+		printf("%.2lf ", dr.salarioServidor);
+	else
+		printf("         ");
+	
+	printf("%-14s ", dr.telefoneServidor);
+
+	if (dr.nomeServidor.size > 0)
+		printf("%d %s ", dr.nomeServidor.size - 1, dr.nomeServidor.desc);
+
+	if (dr.cargoServidor.size > 0)
+		printf("%d %s", dr.cargoServidor.size - 1, dr.cargoServidor.desc);
+
+	printf("\n");
+}
+
+/** Print data from dr and hr to stdout in a formatted way */
 void register_printFormatted(DataRegister dr, HeaderRegister hr) {
-	printf("%s: %d\n", hr.desCampo1, dr.idServidor);
+	if (dr.idServidor >= 0)
+		printf("%s: %d\n", hr.desCampo1, dr.idServidor);
+	else printf("%s: valor nao declarado\n", hr.desCampo1);
 
 	if (dr.salarioServidor >= 0)
 		printf("%s: %.2lf\n", hr.desCampo2, dr.salarioServidor);
@@ -316,13 +308,24 @@ void register_printFormatted(DataRegister dr, HeaderRegister hr) {
 		printf("%s: %s\n", hr.desCampo3, dr.telefoneServidor);
 	else printf("%s: valor nao declarado\n", hr.desCampo3);
 	
-	if (dr.nomeServidor.size > 0) {
+	if (dr.nomeServidor.size > 0)
 		printf("%s: %s\n", hr.desCampo4, dr.nomeServidor.desc);
-	} else printf("%s: valor nao declarado\n", hr.desCampo4);
+	else printf("%s: valor nao declarado\n", hr.desCampo4);
 	
-	if (dr.cargoServidor.size > 0) {
+	if (dr.cargoServidor.size > 0)
 		printf("%s: %s\n", hr.desCampo5, dr.cargoServidor.desc);
-	} else printf("%s: valor nao declarado\n", hr.desCampo5);
+	else printf("%s: valor nao declarado\n", hr.desCampo5);
 
 	printf("\n");
+}
+
+/** Fills empty chars of src string with @. If all is set, str is fully filled. */
+void str_fillEmpty(char* src, int totalSize, int all) {
+	int i = all ? 1 : strlen(src) + 1;
+	src[i-1] = '\0';
+
+	while (i < totalSize) {
+		src[i] = '@';
+		i++;
+	}
 }

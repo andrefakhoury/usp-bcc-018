@@ -16,18 +16,26 @@
 - Grafo vazio
 	. A=0, V=0
 
-- Vertices Adjacentes
+- Vertices Adjacentes/vizinhos
 	. extremos de uma mesma aresta
+
+- Arestas adjacentes/vizinhas
+	. possuem o mesmo vertice
 
 - Grafo completo
 	. todos os vertices sao adjacentes 2 a 2
 	. qts arestas: n*(n-1) / 2
+	. k2, k3, k4, k5...
 
-- Grafo direcionado
+- Grafo orientado/dirigido/digrafo
 	. com setinha
+	. (x, y) eh divergente de x e convergente a y
+
+Laco
+	. self loop
 
 - Grau
-	. qtd de arestas relacionadas ao vertice
+	. numero de arestas de um vertice
 
 - Grau de entrada
 	. qts arestas ENTRAM NO VERTICE

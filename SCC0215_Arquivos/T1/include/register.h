@@ -4,9 +4,13 @@
 #include <stdio.h>
 #include <stdint.h>
 
+/** Macro for an empty character */
 #define EMPTY '@'
+
+/** Number of registers in a DiskPage */
 #define MAXPAGE 32000
 
+/** Struct for the HeaderRegister */
 typedef struct _Header {
 	char status;
 	int64_t topoLista;
@@ -18,37 +22,57 @@ typedef struct _Header {
 	char tagCampo5, desCampo5[40]; //cargoServidor
 } HeaderRegister;
 
-typedef struct _varReg {
-	size_t size;
-	char tag;
-	char desc[1024];
-} varSizeRegister;
-
+/** Struct for the DataRegister */
 typedef struct _Data {
-	char removido;
-	int tamanhoRegistro;
+	char removido; //removed flag
+	int tamanhoRegistro; //size of current register
 	int64_t encadeamentoLista;
 
 	int idServidor;
 	double salarioServidor;
 	char telefoneServidor[14];
-
-	varSizeRegister nomeServidor;
-	varSizeRegister cargoServidor;
+	
+	struct varSizeRegister {
+		int size;
+		char tag;
+		char desc[1024];
+	} nomeServidor, cargoServidor;
 } DataRegister;
 
-void csv_ignoreLine(FILE* fp);
-void csv_loadHeader(HeaderRegister* hr, FILE* source);
-void csv_printHeader(HeaderRegister hr, FILE* dest);
+/** Loads the header of csv source file to hr */
+void csv_loadHeader(FILE* source, HeaderRegister* hr);
+
+/** Reads the data of source file to dr */
 int csv_readRegister(FILE* fp, DataRegister* dr);
-void csv_printRegister(DataRegister dr, FILE* dest);
-size_t register_size(DataRegister dr);
-void fillEmpty(char* src, size_t totalSize, int all);
-void printEmpty(size_t size, FILE* dest);
+
+/** Writes data from header to destination file */
+void bin_printHeader(FILE* dest, HeaderRegister hr);
+
+/** Writes data from dr to destination file */
+void bin_printRegister(FILE* dest, DataRegister dr);
+
+/** Prints to destination file a string with empty characters */
+void bin_printEmpty(FILE* dest, int size);
+
+/** Reads a data register from binary source, and update the number of DiskPages accessed. */
 int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas);
-void register_toStream(DataRegister dr);
+
+/** Load header info from bin file */
 void bin_loadHeader(FILE* bin, HeaderRegister* hr);
+
+/** Returns the size of dr */
+int register_size(DataRegister dr);
+
+/** Check if current register equals some desired value */
 int register_check(char tag, char value[], HeaderRegister hr, DataRegister dr);
+
+/** Prints data from dr to stdout */
+void register_toStream(DataRegister dr);
+
+/** Print data from dr and hr to stdout in a formatted way */
 void register_printFormatted(DataRegister dr, HeaderRegister hr);
+
+/** Fills empty chars of src string with @. If all is set, str is fully filled. */
+void str_fillEmpty(char* src, int totalSize, int all);
 
 #endif
