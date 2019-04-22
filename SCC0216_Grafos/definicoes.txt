@@ -7,9 +7,6 @@
 - Ordem
 	. Cardinalidade de vertices
 
-- Numero de Arestas
-	. Numero de arestas
-
 - Grafo Trivial
 	. ordem 1 e sem arestas
 
@@ -91,3 +88,26 @@ Laco
 	. parte do grafo
 	. subgrafo gerador - mantem todos os vertices, e tem algumas arestas
 		. desenhando arestas, eu chego no original
+
+- Arvore geradora
+	. subgrafo gerador que e uma arvore
+
+- Subgrafo induzido
+	. grafo tal que V' = V e A' contem todas as arestas A que tem duas extremidades em V'
+
+- Hipergrafo
+	. grafo nao direcionado que possui arestas que conectam mais de 2 vertices
+
+- Fleury - caminho euleriano
+	. checa se possivel: grau par em |v|-2 vertices
+	. escolhe u
+	. ve os adj de u, e escolhe o unico ou um q nao quebre a ponte
+	. remove a aresta (u, v)
+	. considera v como novo u
+	. continua
+
+- Welsh-Powell - coloracao
+	. ordena em ordem decrescente por grau
+	. vai percorrendo a lista com cor a partir de 1
+	. marca todos os que pode com aquela cor
+	. aumenta a cor em um e volta pro comeco
