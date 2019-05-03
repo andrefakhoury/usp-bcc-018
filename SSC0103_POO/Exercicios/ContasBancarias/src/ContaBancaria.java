@@ -3,7 +3,7 @@
  * @author delamaro
  *
  */
-public abstract class ContaBancaria {
+public abstract class ContaBancaria implements Comparable<ContaBancaria> {
 
     /* Armazena a ultima conta criada */
     private static int ultConta = 0;
@@ -62,5 +62,10 @@ public abstract class ContaBancaria {
     }
 
     public abstract void atualiza(double saldo);
+
+    @Override
+    public int compareTo(ContaBancaria cb) {
+        return Double.compare(this.saldo, cb.saldo);
+    }
 
 }

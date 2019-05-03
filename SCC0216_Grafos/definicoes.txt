@@ -111,3 +111,11 @@ Laco
 	. vai percorrendo a lista com cor a partir de 1
 	. marca todos os que pode com aquela cor
 	. aumenta a cor em um e volta pro comeco
+
+
+
+- busca em profundidade
+	. aresta de arvore: (u,v) eh aresta de arvore se v eh descoberto na dfs percorrendo-se a aresta (u,v)
+	. aresta de retorno: (u,v) eh aresta de retorno se conecta u com o antecessor v (v eh cinza)
+	. aresta de avanco: (u,v) nao pertence a arvore, mas conecta u a um descendente v na arvore
+	. aresta de cruzamento: demais arestas, podem conectar vertices na msm arvore ou em arvores diferentes

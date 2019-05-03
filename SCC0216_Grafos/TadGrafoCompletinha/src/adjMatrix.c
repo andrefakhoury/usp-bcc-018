@@ -418,3 +418,7 @@ bool graph_edgeIsSet(Graph* g, int u, int v, Error* error) {
 
 	return ret;
 }
+
+void buscaProfundidade() {
+	
+}

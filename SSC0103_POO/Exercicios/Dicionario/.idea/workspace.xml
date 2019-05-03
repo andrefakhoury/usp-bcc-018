@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bec94303-8ba4-4a53-be91-fa98972c2200" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/01/1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/01/2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/01/3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/01/4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/01/in" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/02/1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/02/1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/02/1.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/02/2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/02/3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/02/4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/03/1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/03/2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/03/2.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/03/3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/03/3.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/03/3.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/03/4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/03/4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/03/4.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/03/in" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/04/2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/04/2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/04/2.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/04/A" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/04/A.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/04/in" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/05/1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/05/in" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/05/in2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/06/1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/06/2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/06/3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/06/in" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/07/1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/07/2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/07/brute2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/07/brute2.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/07/in" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/07/in1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../SCC0210_AlgAvancado/07/out" beforeDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/out/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/Dicionario$DicionarioTest.ic" NAME="DicionarioTest Coverage Results" MODIFIED="1556028311675" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+  <component name="CoverageViewManager">
+    <option name="myElementSize" value="594" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret line="3" column="40" selection-start-line="3" selection-start-column="40" selection-end-line="3" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Dicionario.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="297">
+              <caret line="9" column="26" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/DicionarioTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-15">
+              <caret line="22" column="5" selection-end-line="57" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="JUnit5 Test Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/Dicionario.java" />
+        <option value="$PROJECT_DIR$/test/DicionarioTest.java" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="1920" />
+    <option name="width" value="1922" />
+    <option name="height" value="2106" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Dicionario" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Dicionario" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Dicionario" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Dicionario" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1556035487103" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.DicionarioTest">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="Dicionario" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DicionarioTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Dicionario" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="DicionarioTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Main" />
+      <item itemvalue="JUnit.DicionarioTest" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.DicionarioTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bec94303-8ba4-4a53-be91-fa98972c2200" name="Default Changelist" comment="" />
+      <created>1556026774029</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1556026774029</updated>
+      <workItem from="1556026777385" duration="2194000" />
+      <workItem from="1556190952852" duration="346000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="DicionarioTest - 2019.04.23 at 10h 57m 05s.xml">
+      <configuration name="DicionarioTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DicionarioTest - 2019.04.23 at 10h 58m 31s.xml">
+      <configuration name="DicionarioTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DicionarioTest - 2019.04.23 at 10h 59m 21s.xml">
+      <configuration name="DicionarioTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DicionarioTest - 2019.04.23 at 11h 00m 44s.xml">
+      <configuration name="DicionarioTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DicionarioTest - 2019.04.23 at 11h 00m 47s.xml">
+      <configuration name="DicionarioTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DicionarioTest - 2019.04.23 at 11h 01m 52s.xml">
+      <configuration name="DicionarioTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DicionarioTest - 2019.04.23 at 11h 03m 32s.xml">
+      <configuration name="DicionarioTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DicionarioTest - 2019.04.23 at 11h 04m 44s.xml">
+      <configuration name="DicionarioTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DicionarioTest - 2019.04.23 at 11h 05m 12s.xml">
+      <configuration name="DicionarioTest" configurationId="JUnit" />
+    </history-entry>
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="2540000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-3" y="26" width="2886" height="1543" extended-state="6" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25376344" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="Capture Tool" order="4" />
+      <window_info id="UI Designer" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32930514" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" order="10" />
+      <window_info anchor="bottom" id="Database Changes" order="11" />
+      <window_info anchor="bottom" id="Version Control" order="12" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Maven" order="3" />
+      <window_info anchor="right" id="Palette" order="4" />
+      <window_info anchor="right" id="Capture Analysis" order="5" />
+      <window_info anchor="right" id="Database" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Theme Preview" order="8" />
+      <window_info active="true" anchor="right" id="Coverage" order="9" side_tool="true" visible="true" weight="0.3297491" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="3" column="40" selection-start-line="3" selection-start-column="40" selection-end-line="3" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/DicionarioTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-15">
+          <caret line="22" column="5" selection-end-line="57" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Dicionario.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="9" column="26" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>10</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>Dicionario</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

@@ -19,4 +19,12 @@ public class ContaEspecial extends ContaBancaria {
 
     }
 
+    @Override
+    public int compareTo(ContaBancaria cb) {
+        if (cb instanceof ContaEspecial)
+            return super.compareTo(cb);
+
+        return -1;
+    }
+
 }

@@ -1,8 +1,10 @@
+import java.util.HashMap;
+import java.util.Vector;
 
 public class Contas {
 
-    private ContaBancaria contas[] = new ContaBancaria[100];
-    private int nContas = 0;
+//    private Vector<ContaBancaria> contas = new Vector<ContaBancaria>();
+    private HashMap<Integer, ContaBancaria> contas = new HashMap<Integer, ContaBancaria>();
 
     public static void main(String[] args) throws Exception {
         int op = 0;
@@ -10,8 +12,7 @@ public class Contas {
 
         while (op != 7) {
             op = ct.leOpcao();
-            switch (op)
-            {
+            switch (op) {
                 case 1:
                     System.out.println("Tipo de poupanca: 1-Simples, 2-Ouro: ");
                     int tipo = EntradaTeclado.leInt();
@@ -85,12 +86,9 @@ public class Contas {
                 case 5:
                     System.out.println("Qual o valor da taxa? ");
                     double tx = EntradaTeclado.leDouble();
-                    ct.atualizaPoupança(tx);
+                    ct.atualizaPoupanca(tx);
                     System.out.println("Saldos atualizados");
                     break;
-                case 7:
-                    System.out.println("Terminando o programa....");
-                    return;
             }
             System.out.println("Digite ENTER para continuar");
             EntradaTeclado.leString();
@@ -99,7 +97,7 @@ public class Contas {
 
     }
 
-    private static int leOpcao() {
+    private int leOpcao() {
         System.out.println("1) Criar poupança\n2) Criar conta especial\n3) Realizar saque\n4) Realizar deposito\n"
                 + "5) Atualizar poupanças\n6) Mostrar saldos\n7) Sair");
         int k = -1;
@@ -111,20 +109,17 @@ public class Contas {
                 if ( k > 0 && k < 8 )
                     return k;
             }
-            catch (Exception e) {
-                ;
-            }
+            catch (Exception e) { }
         }
     }
 
     private void add(ContaBancaria cb) {
-        contas[nContas++] = cb;
+//        contas.add(cb);
+        contas.put(cb.getNumConta(), cb);
     }
 
     private void printSaldos() {
-        for (ContaBancaria ctb : contas)
-        {
-            if ( ctb == null ) break;
+        for (ContaBancaria ctb : contas.values()) {
             System.out.println("Numero da conta:" + ctb.getNumConta());
             System.out.println("Titular: " + ctb.getNomeCliente());
             System.out.println("Saldo: " + ctb.getSaldo());
@@ -132,24 +127,20 @@ public class Contas {
         }
     }
 
-    private void atualizaPoupança(double tx) {
-        for (ContaBancaria ctb : contas)
-        {
-            if ( ctb == null ) break;
-
+    private void atualizaPoupanca(double tx) {
+        for (ContaBancaria ctb : contas.values()) {
             ctb.atualiza(tx);
         }
     }
 
     private ContaBancaria procura(int conta) {
-        for (ContaBancaria ctb: contas )
-        {
-            if ( ctb == null ) break;
+        return contas.get(conta);
 
-            if (conta == ctb.getNumConta())
-                return ctb;
-        }
-        return null;
+        // com Vector:
+//        for (ContaBancaria ctb : contas) {
+//            if (conta == ctb.getNumConta())
+//                return ctb;
+//        }
+//        return null;
     }
-
 }

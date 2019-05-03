@@ -8,27 +8,6 @@ const int MAXN = 200005;
 int a[MAXN];
 char pos[MAXN];
 
-// int main() {
-// 	int n; scanf("%d", &n);
-
-// 	for (int i = 1; i <= n; i++) scanf("%d ", a+i);
-// 	scanf("%s", pos+1);
-
-// 	LBL1:
-// 	for (int i = 1; i < n; i++) {
-// 		if (a[i] > a[i+1]) {
-// 			if (pos[i] == '1') {
-// 				swap(a[i], a[i+1]);
-// 				goto LBL1;
-// 			} else {
-// 				return !printf("NO\n");
-// 			}
-// 		}
-// 	}
-
-// 	printf("YES\n");
-// }
-
 int main() {
 	int n; scanf("%d", &n);
 

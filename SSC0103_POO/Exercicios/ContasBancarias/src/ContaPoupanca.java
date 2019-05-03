@@ -15,4 +15,12 @@ public abstract class ContaPoupanca extends ContaBancaria {
         this.vencimento = vencimento;
     }
 
+    @Override
+    public int compareTo(ContaBancaria cb) {
+        if (cb instanceof ContaEspecial)
+            return 1;
+
+        return super.compareTo(cb);
+    }
+
 }

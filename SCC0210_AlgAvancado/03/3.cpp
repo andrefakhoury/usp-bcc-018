@@ -6,8 +6,8 @@ int main() {
 		int a, b, c; scanf("%d%d%d", &a, &b, &c);
 
 		for (int x = 1; x <= a; x++) {
-			for (int y = 1; y <= a-x; y++) {
-				for (int z = 1; z <= a-x-y; z++) {
+			for (int y = 1; y <= c-(x*x); y++) {
+				for (int z = 1; z <= c-(x*x)-(y*y); z++) {
 					if (x + y + z == a &&
 						x*y*z == b &&
 						x*x + y*y + z*z == c) {

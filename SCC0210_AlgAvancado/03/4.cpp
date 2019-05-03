@@ -10,7 +10,6 @@ int a[MAXN], t, n, qtt;
 
 vector<int> cur;
 
-// vector<vector<int> > ans;
 set<string> used;
 
 void solve(int i, int curSum) {
