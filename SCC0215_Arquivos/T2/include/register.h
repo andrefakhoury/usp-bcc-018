@@ -39,6 +39,12 @@ typedef struct _Data {
 	} nomeServidor, cargoServidor;
 } DataRegister;
 
+/** Struct for the removed registers */
+typedef struct {
+	int regSize;
+	int64_t offset;
+} RegOffset;
+
 /** Loads the header of csv source file to hr */
 void csv_loadHeader(FILE* source, HeaderRegister* hr);
 
@@ -60,11 +66,22 @@ int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas);
 /** Load header info from bin file */
 void bin_loadHeader(FILE* bin, HeaderRegister* hr);
 
+void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved);
+
+/** Deletes register from binary stream */
+void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t offset, int64_t nextOffset);
+
+/** Insert a register in binary stream */
+void bin_addRegister(FILE* bin, DataRegister dr);
+
 /** Returns the size of dr */
 int register_size(DataRegister dr);
 
 /** Check if current register equals some desired value */
 int register_check(char tag, char value[], HeaderRegister hr, DataRegister dr);
+
+/** Check if new register fits into old register */
+int reg_canUpdate(DataRegister dr, HeaderRegister hr, char tag, char value[]);
 
 /** Prints data from dr to stdout */
 void register_toStream(DataRegister dr);

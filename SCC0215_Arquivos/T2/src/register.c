@@ -235,6 +235,140 @@ void bin_loadHeader(FILE* bin, HeaderRegister* hr) {
 	fread(&hr->desCampo5, 40, 1, bin);
 }
 
+void bin_overwriteOffset(FILE* bin, int64_t newOffset, int64_t where, int64_t backup) {
+	fseek(bin, where, SEEK_SET);
+	fwrite(&newOffset, 8, 1, bin);
+	fseek(bin, backup, SEEK_SET);
+}
+
+void bin_overwriteEmptyRegister(FILE* bin, size_t len) {
+	char empty = '@';
+	for (int i = 0; i < len; i++)
+		fwrite(&empty, 1, 1, bin);
+}
+
+void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved) {
+	fseek(bin, 1, SEEK_SET);
+
+	*qttRemoved = 1;
+	*vec = realloc(*vec, (*qttRemoved) * sizeof(RegOffset));;
+
+	(*vec)[0].offset = 1;
+	(*vec)[0].regSize = 0;
+
+	int64_t offset, nextOffset;
+	fread(&offset, 8, 1, bin);
+
+	while (offset != -1) {
+		(*qttRemoved)++;
+		*vec = realloc(*vec, (*qttRemoved) * sizeof(RegOffset));
+
+		fseek(bin, offset + 1, SEEK_SET);
+
+		int curSize;
+		fread(&curSize, 4, 1, bin);
+
+		(*vec)[(*qttRemoved) - 1].offset = offset;
+		(*vec)[(*qttRemoved) - 1].regSize = curSize;
+
+		fread(&nextOffset, 8, 1, bin);
+
+		offset = nextOffset;
+	}
+}
+
+/** Deletes register from binary stream */
+void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t offset, int64_t nextOffset) {
+	fseek(bin, offset, SEEK_SET);
+	bin_overwriteOffset(bin, offset, prevOffset == 1 ? prevOffset : prevOffset + 5, offset);
+
+	fwrite(&dr.removido, 1, 1, bin);
+	fseek(bin, 4, SEEK_CUR);
+	fwrite(&nextOffset, 8, 1, bin);
+
+	char empty = '@';
+	for (int i = 0; i < dr.tamanhoRegistro - 8; i++)
+		fwrite(&empty, 1, 1, bin);
+}
+
+/** Insert a register in binary stream */
+void bin_addRegister(FILE* bin, DataRegister dr) {
+	fseek(bin, 1, SEEK_SET);
+	
+	int64_t offset, lastOffset = ftell(bin), nextOffset;
+	fread(&offset, 8, 1, bin);
+
+	int64_t finalOffset = -1, finalLastOffset = -1, finalNextOffset = -1;
+	int finalSize = -1, count = 0;
+
+	while (offset != -1) {
+		count++;
+
+		fseek(bin, offset + 1, SEEK_SET);
+
+		int curSize;
+		fread(&curSize, 4, 1, bin);
+		
+		int64_t auxOffset = ftell(bin);
+
+		fread(&nextOffset, 8, 1, bin);
+
+		if (dr.tamanhoRegistro - 5 <= curSize) {
+			finalOffset = offset;
+			finalLastOffset = lastOffset;
+			finalNextOffset = nextOffset;
+			finalSize = curSize + 5;
+			break;
+		}
+
+		lastOffset = auxOffset;
+		offset = nextOffset;
+	}
+
+	if (finalOffset == -1) { // appends to the end of file
+		fseek(bin, 0, SEEK_END);
+		if (count > 0) {
+			bin_overwriteOffset(bin, ftell(bin), lastOffset, ftell(bin));
+		}
+
+		long curOffset = ftell(bin);
+		long pagePos = curOffset % MAXPAGE;
+
+		// long curPage = (curOffset + MAXPAGE - 1) / MAXPAGE - 1; // ceil(curOffset / diskPage)
+		long curPage = curOffset / MAXPAGE;
+
+		if (dr.tamanhoRegistro + pagePos > MAXPAGE) { // end of disk page
+			long qttEmpty = MAXPAGE - pagePos;
+
+			for (int i = 0; i < qttEmpty; i++) {
+				char empty = '@';
+				fwrite(&empty, 1, 1, bin);
+			}
+
+			fseek(bin, curPage * MAXPAGE, SEEK_SET);
+
+			int numPaginas;
+			DataRegister dr;
+
+			while (bin_readRegister(bin, &dr, &numPaginas));
+
+			fseek(bin, - dr.tamanhoRegistro - 4, SEEK_CUR);
+			dr.tamanhoRegistro += qttEmpty;
+			bin_printRegister(bin, dr);
+		}
+
+		fseek(bin, 0, SEEK_END);
+	} else { // overwrite some register
+		dr.tamanhoRegistro = finalSize;
+		fseek(bin, finalOffset, SEEK_SET);
+		bin_overwriteEmptyRegister(bin, finalSize);
+		fseek(bin, finalOffset, SEEK_SET);
+		bin_overwriteOffset(bin, finalNextOffset, finalLastOffset, finalOffset);
+	}
+
+	bin_printRegister(bin, dr);
+}
+
 /** Returns the size of dr */
 int register_size(DataRegister dr) {
 	int ans = 39;
@@ -251,22 +385,81 @@ int register_size(DataRegister dr) {
 }
 
 /** Check if current register equals some desired value */
-int register_check(char tag, char value[], HeaderRegister hr, DataRegister dr) {
+int register_check(char tag, char* value, HeaderRegister hr, DataRegister dr) {
 	if (dr.removido == '*') return 0;
 
 	if (tag == hr.tagCampo1) {
+		if (!strcmp(value, "NULO"))
+			return dr.idServidor == -1;
+
 		int reg;
 		sscanf(value, "%d", &reg);
 		return reg == dr.idServidor;
 	} else if (tag == hr.tagCampo2) {
+		if (!strcmp(value, "NULO"))
+			return dr.salarioServidor == -1;
+
 		double salario;
 		sscanf(value, "%lf", &salario);
 		return salario == dr.salarioServidor;
 	} else if (tag == hr.tagCampo3) {
-		return !strcmp(dr.telefoneServidor, value);
+		if (!strcmp(value, "NULO"))
+			return !strcmp(dr.telefoneServidor, "@@@@@@@@@@@@@");
+		
+		char aux[15];
+		for (int i = 0; i < 14; i++)
+			aux[i] = dr.telefoneServidor[i];
+		aux[14] = '\0';
+
+		return !strcmp(aux, value);
+
 	} else if (tag == hr.tagCampo4) {
+		if (!strcmp(value, "NULO"))
+			return dr.nomeServidor.size == 0;
+
 		return dr.nomeServidor.size > 0 && !strcmp(dr.nomeServidor.desc, value);
 	} else if (tag == hr.tagCampo5) {
+		if (!strcmp(value, "NULO"))
+			return dr.cargoServidor.size == 0;
+
+		return dr.cargoServidor.size > 0 && !strcmp(dr.cargoServidor.desc, value);
+	}
+
+	return 0;
+}
+
+/** Check if new register fits into old register */
+int reg_canUpdate(DataRegister dr, HeaderRegister hr, char tag, char value[]) {
+	if (dr.removido == '*') return 0;
+
+	if (tag == hr.tagCampo1) {
+		if (!strcmp(value, "NULO"))
+			return dr.idServidor == -1;
+
+		int reg;
+		sscanf(value, "%d", &reg);
+		return reg == dr.idServidor;
+	} else if (tag == hr.tagCampo2) {
+		if (!strcmp(value, "NULO"))
+			return dr.salarioServidor == -1;
+
+		double salario;
+		sscanf(value, "%lf", &salario);
+		return salario == dr.salarioServidor;
+	} else if (tag == hr.tagCampo3) {
+		if (!strcmp(value, "NULO"))
+			return !strcmp(dr.telefoneServidor, "@@@@@@@@@@@@@@");
+
+		return !strcmp(dr.telefoneServidor, value);
+	} else if (tag == hr.tagCampo4) {
+		if (!strcmp(value, "NULO"))
+			return dr.nomeServidor.size == 0;
+
+		return dr.nomeServidor.size > 0 && !strcmp(dr.nomeServidor.desc, value);
+	} else if (tag == hr.tagCampo5) {
+		if (!strcmp(value, "NULO"))
+			return dr.cargoServidor.size == 0;
+
 		return dr.cargoServidor.size > 0 && !strcmp(dr.cargoServidor.desc, value);
 	}
 
