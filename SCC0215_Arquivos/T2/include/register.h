@@ -39,6 +39,12 @@ typedef struct _Data {
 	} nomeServidor, cargoServidor;
 } DataRegister;
 
+/** Struct for the removed registers */
+typedef struct {
+	int regSize;
+	int64_t offset;
+} RegOffset;
+
 /** Loads the header of csv source file to hr */
 void csv_loadHeader(FILE* source, HeaderRegister* hr);
 
@@ -55,16 +61,32 @@ void bin_printRegister(FILE* dest, DataRegister dr);
 void bin_printEmpty(FILE* dest, int size);
 
 /** Reads a data register from binary source, and update the number of DiskPages accessed. */
-int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas);
+int bin_readRegister(FILE* bin, DataRegister* dr);
 
 /** Load header info from bin file */
 void bin_loadHeader(FILE* bin, HeaderRegister* hr);
+
+void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved);
+
+/** Deletes register from binary stream */
+void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t offset, int64_t nextOffset);
+
+/** Insert a register in binary stream */
+void bin_addRegister(FILE* bin, DataRegister dr);
+
+void bin_overwriteRegister(FILE* bin, DataRegister dr, int64_t offset, int delta);
 
 /** Returns the size of dr */
 int register_size(DataRegister dr);
 
 /** Check if current register equals some desired value */
 int register_check(char tag, char value[], HeaderRegister hr, DataRegister dr);
+
+/** Check if new register fits into old register */
+int reg_canUpdate(DataRegister dr, HeaderRegister hr, char tag, char value[]);
+
+/** Update a DataRegister according to the update tag */
+void reg_updateByTag(DataRegister* dr, HeaderRegister hr, char tag, char value[], int* delta);
 
 /** Prints data from dr to stdout */
 void register_toStream(DataRegister dr);
@@ -80,5 +102,6 @@ void bin_printScreenOpen(FILE *fp);
 
 /** Prints a binary file to stdout. @author Matheus Carvalho */
 void bin_printScreenClosed(char *fileName);
+
 
 #endif
