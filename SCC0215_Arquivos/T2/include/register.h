@@ -83,7 +83,7 @@ int register_size(DataRegister dr);
 int register_check(char tag, char value[], HeaderRegister hr, DataRegister dr);
 
 /** Check if new register fits into old register */
-int reg_canUpdate(DataRegister dr, HeaderRegister hr, char tag, char value[], int* left);
+// int reg_canUpdate(DataRegister dr, HeaderRegister hr, char tag, char value[], int* left);
 
 /** Update a DataRegister according to the update tag */
 void reg_updateByTag(DataRegister* dr, HeaderRegister hr, char tag, char value[], int* delta, int* same);

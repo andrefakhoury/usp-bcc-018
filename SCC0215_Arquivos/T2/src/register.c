@@ -153,15 +153,8 @@ int bin_readRegister(FILE* bin, DataRegister* dr) {
 	if (feof(bin))
 		return 0;
 
-	if (dr->removido != '*' && dr->removido != '-') {
-
-		printf("%c\n", dr->removido);
-		for (int i = 0; !feof(bin); i++) {
-			fread(&dr->removido, 1, 1, bin);
-			printf("%c\n", dr->removido);
-		}
-
-		printf("aAaAAa %ld errooooo\n", ftell(bin));
+	if (dr->removido != '*' && dr->removido != '-') {		
+		fprintf(stderr, "Invalid char at 'removido': %c\n", dr->removido);
 		exit(1);
 	}
 
@@ -230,6 +223,8 @@ int bin_readRegister(FILE* bin, DataRegister* dr) {
 		dr->cargoServidor.size = 0;
 	}
 
+	dr->tamanhoRegistro += 5; //AQUI
+	
 	return 1;
 }
 
@@ -288,7 +283,7 @@ void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved) {
 		fread(&curSize, 4, 1, bin);
 
 		(*vec)[(*qttRemoved) - 1].offset = offset;
-		(*vec)[(*qttRemoved) - 1].regSize = curSize;
+		(*vec)[(*qttRemoved) - 1].regSize = curSize + 5;
 
 		fread(&nextOffset, 8, 1, bin);
 
@@ -307,7 +302,7 @@ void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t 
 	fseek(bin, 4, SEEK_CUR);
 	fwrite(&nextOffset, 8, 1, bin);
 
-	bin_printEmpty(bin, dr.tamanhoRegistro - 8);
+	bin_printEmpty(bin, dr.tamanhoRegistro - 13); //AQUI era -8
 }
 
 /** Insert a register in binary stream */
@@ -327,7 +322,6 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 		fseek(bin, offset, SEEK_SET);
 		char status;
 		fread(&status, 1, 1, bin);
-		printf("Status: %c\n", status);
 
 		int curSize;
 		fread(&curSize, 4, 1, bin);
@@ -336,7 +330,7 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 
 		fread(&nextOffset, 8, 1, bin);
 
-		if (dr.tamanhoRegistro <= curSize) {
+		if (dr.tamanhoRegistro <= curSize + 5) {
 			finalOffset = offset;
 			finalLastOffset = lastOffset;
 			finalNextOffset = nextOffset;
@@ -396,6 +390,8 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 		bin_overwriteOffset(bin, finalNextOffset, finalLastOffset, finalOffset);
 	}
 
+	// printf("Chosen: %ld\n", ftell(bin));
+
 	// printf("Added!\n");
 	bin_printRegister(bin, dr);
 }
@@ -410,17 +406,17 @@ void bin_overwriteRegister(FILE* bin, DataRegister dr, int64_t offset, int delta
 
 /** Returns the size of dr */
 int register_size(DataRegister dr) {
-	int ans = 39;
+	int size = 39;
 
-	if (dr.nomeServidor.size > 0) {
-		ans += 5 + dr.nomeServidor.size;
+	if (dr.nomeServidor.size > 1) {
+		size += 5 + dr.nomeServidor.size;
 	}
 
-	if (dr.cargoServidor.size > 0) {
-		ans += 5 + dr.cargoServidor.size;
+	if (dr.cargoServidor.size > 1) {
+		size += 5 + dr.cargoServidor.size;
 	}
 
-	return ans;
+	return size;
 }
 
 /** Check if current register equals some desired value */
@@ -466,34 +462,34 @@ int register_check(char tag, char* value, HeaderRegister hr, DataRegister dr) {
 	return 0;
 }
 
-/** Check if new register fits into old register */
-int reg_canUpdate(DataRegister dr, HeaderRegister hr, char tag, char value[], int* left) {
-	*left = 0;
+// /** Check if new register fits into old register */
+// int reg_canUpdate(DataRegister dr, HeaderRegister hr, char tag, char value[], int* left) {
+// 	*left = 0;
 	
-	if (tag == hr.tagCampo1 || tag == hr.tagCampo2 || tag == hr.tagCampo3) {
-		return 1;
-	} else {
-		int curSize = strlen(value) + 1;
-		if (!strcmp(value, "NULO"))
-			curSize = 0;
+// 	if (tag == hr.tagCampo1 || tag == hr.tagCampo2 || tag == hr.tagCampo3) {
+// 		return 1;
+// 	} else {
+// 		int curSize = strlen(value) + 1;
+// 		if (!strcmp(value, "NULO"))
+// 			curSize = 0;
 
-		if (tag == hr.tagCampo4) {
-			// printf("Was: %d Want: %d\n", dr.nomeServidor.size, curSize);
-			// printf("%s -> %s\n", dr.nomeServidor.desc, value);
+// 		if (tag == hr.tagCampo4) {
+// 			// printf("Was: %d Want: %d\n", dr.nomeServidor.size, curSize);
+// 			// printf("%s -> %s\n", dr.nomeServidor.desc, value);
 
-			*left = curSize - dr.nomeServidor.size;
-			return curSize <= dr.nomeServidor.size;
-		} else {
-			// printf("Was: %d Want: %d\n", dr.cargoServidor.size, curSize);
-			// printf("%s -> %s\n", dr.cargoServidor.desc, value);
+// 			*left = curSize - dr.nomeServidor.size;
+// 			return curSize <= dr.nomeServidor.size;
+// 		} else {
+// 			// printf("Was: %d Want: %d\n", dr.cargoServidor.size, curSize);
+// 			// printf("%s -> %s\n", dr.cargoServidor.desc, value);
 
-			*left = curSize - dr.cargoServidor.size;
-			return curSize <= dr.cargoServidor.size;
-		}
-	}
+// 			*left = curSize - dr.cargoServidor.size;
+// 			return curSize <= dr.cargoServidor.size;
+// 		}
+// 	}
 
-	return 0;
-}
+// 	return 0;
+// }
 
 void reg_updateByTag(DataRegister* dr, HeaderRegister hr, char tag, char value[], int* delta, int* same) {
 	*delta = 0;
@@ -531,35 +527,26 @@ void reg_updateByTag(DataRegister* dr, HeaderRegister hr, char tag, char value[]
 		*same = !strcmp(old.telefoneServidor, dr->telefoneServidor);
 	} else if (tag == hr.tagCampo4) {
 		if (!strcmp(value, "NULO")) {
-			*delta = dr->nomeServidor.size;
 			dr->nomeServidor.size = 0;
 		} else {
-			*delta = dr->nomeServidor.size;
-
 			strcpy(dr->nomeServidor.desc, value);
 			dr->nomeServidor.size = strlen(dr->nomeServidor.desc) + 1;
-
-			*delta -= dr->nomeServidor.size;
-			// if (*delta < 0) *delta = 0;
 		}
 
 		*same = !strcmp(old.nomeServidor.desc, dr->nomeServidor.desc);
 	} else if (tag == hr.tagCampo5) {
 		if (!strcmp(value, "NULO")) {
-			*delta = dr->cargoServidor.size;
 			dr->cargoServidor.size = 0;
 		} else {
-			*delta = dr->cargoServidor.size;
-
 			strcpy(dr->cargoServidor.desc, value);
 			dr->cargoServidor.size = strlen(dr->cargoServidor.desc) + 1;
-
-			*delta -= dr->cargoServidor.size;
-			// if (*delta < 0) *delta = 0;
 		}
 
 		*same = !strcmp(old.cargoServidor.desc, dr->cargoServidor.desc);
 	}
+
+	dr->tamanhoRegistro = register_size(*dr);
+	*delta = register_size(*dr) - register_size(old);
 }
 
 /** Prints data from dr to stdout */
@@ -568,13 +555,20 @@ void register_toStream(DataRegister dr) {
 		printf("%d ", dr.idServidor);
 	else
 		printf("     ");
+
 	
 	if (dr.salarioServidor >= 0)
 		printf("%.2lf ", dr.salarioServidor);
 	else
 		printf("         ");
+
+
+	char aux[15];
+	for (int i = 0; i < 14; i++)
+		aux[i] = dr.telefoneServidor[i];
+	aux[14] = '\0';
 	
-	printf("%-14s ", dr.telefoneServidor);
+	printf("%-14s ", aux);
 
 	if (dr.nomeServidor.size > 0)
 		printf("%d %s ", dr.nomeServidor.size - 1, dr.nomeServidor.desc);

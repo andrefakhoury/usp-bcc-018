@@ -229,6 +229,7 @@ void str_removeQuotes(char str[], size_t len) {
 }
 
 int insertSorted(RegOffset** vec, int* n, RegOffset cur) {
+
 	(*n)++;
 	*vec = realloc(*vec, (*n) * sizeof(RegOffset));
 
@@ -236,6 +237,7 @@ int insertSorted(RegOffset** vec, int* n, RegOffset cur) {
 	for (i = (*n) - 1; (*vec)[i-1].regSize >= cur.regSize; i--) {
 		(*vec)[i] = (*vec)[i-1];
 	}
+
 	(*vec)[i] = cur;
 	return i;
 }
@@ -247,8 +249,8 @@ void aux_remove(FILE* fp, DataRegister* dr, RegOffset** vecOffset, int* qttRemov
 	dr->removido = '*';
 
 	RegOffset cur;
-	cur.offset = ftell(fp) - dr->tamanhoRegistro - 5;
-	cur.regSize = dr->tamanhoRegistro;
+	cur.offset = ftell(fp) - dr->tamanhoRegistro;// - 5; AQUI
+	cur.regSize = dr->tamanhoRegistro; // AQUI NAO TINHA -5
 
 	int ind = insertSorted(vecOffset, qttRemoved, cur);
 
@@ -326,6 +328,14 @@ void bin_removeReg() {
 
 	/** Print the file content to standard output stream */
 	bin_printScreenClosed(fileName);
+}
+
+void print_regOffset(RegOffset* vec, int qtt) {
+	printf("[%d]\n", qtt);
+	for (int i = 0; i < qtt; i++) {
+		printf("%ld %d\n", vec[i].offset, vec[i].regSize);
+	}
+	printf("----\n");
 }
 
 /** Reads a string, preventing the NULO case */
@@ -474,7 +484,8 @@ void bin_updateReg() {
 
 	/** Executes the remotion N times */
 	for (int i = 0; i < n; i++) {
-		// printf("------------------------------\n");
+
+		// Read info for the update
 		char old_fieldName[MAXSTR], old_fieldValue[MAXSTR], new_fieldName[MAXSTR], new_fieldValue[MAXSTR];
 
 		scanf(" %s", old_fieldName);
@@ -493,7 +504,7 @@ void bin_updateReg() {
 			return;
 		}
 
-		// jump the first disk page
+		// jump the first disk page (header)
 		fseek(fp, MAXPAGE, SEEK_SET);
 
 		DataRegister dr;
@@ -504,63 +515,43 @@ void bin_updateReg() {
 			long backupOffset = ftell(fp);
 
 			if (register_check(old_tag, old_fieldValue, hr, dr)) {
-				int delta, same = 0, left;
+				int delta, same = 0;
 				DataRegister updated = dr;
 
 				reg_updateByTag(&updated, hr, new_tag, new_fieldValue, &delta, &same);
-
 				if (same) continue; // same register, no need to update
 
-				if (reg_canUpdate(dr, hr, new_tag, new_fieldValue, &left)) { // overwrite
-					// printf("Can overwrite :)\n");
+				printf("(%d) ", dr.tamanhoRegistro);
+				register_toStream(dr);
+
+				printf("(%d) ", updated.tamanhoRegistro);
+				register_toStream(updated);
+
+				if (delta == 0) {
 					bin_overwriteRegister(fp, updated, offset, delta);
 				} else { // remove and insert
-					// printf("Cannot overwrite :(\n");
-					// printf("Left: %d\n", left);
-					
-					// updated.tamanhoRegistro += left;
-					updated.tamanhoRegistro -= delta - 5;
 
-					// updated.tamanhoRegistro = register_size(updated);
-					// if (updated.tamanhoRegistro < dr.tamanhoRegistro + left) updated.tamanhoRegistro = dr.tamanhoRegistro + left;
-					// printf("%d -> %d [%d] [%d]\n", dr.tamanhoRegistro, updated.tamanhoRegistro, left, delta);
-
-					// printf("Tamanho registro: %d + %d = %d\n", dr.tamanhoRegistro, left, dr.tamanhoRegistro + left);
-					// printf("(%d)\n---------\n", register_size(updated));
-
+					// Remove old register
 					int qttRemoved = 0;
 					RegOffset* vecOffset = NULL;
 					bin_loadOffsetVector(fp, &vecOffset, &qttRemoved);
 
-
-					// printf("Removed: %d\n", qttRemoved);
-					// for (int i = 0; i < qttRemoved; i++) {
-					// 	printf("%05ld\t%d\n", vecOffset[i].offset, vecOffset[i].regSize);
-					// }
-					// printf("----\n");
-
-					// printf("%d\n", dr.tamanhoRegistro);
-
 					fseek(fp, backupOffset, SEEK_SET);
 					aux_remove(fp, &dr, &vecOffset, &qttRemoved);
 
-					// printf("Removed: %d\n", qttRemoved);
-					// for (int i = 0; i < qttRemoved; i++) {
-					// 	printf("%05ld\t%d\n", vecOffset[i].offset, vecOffset[i].regSize);
-					// }
-					// printf("----\n");
-
-					bin_addRegister(fp, updated);
-
+					print_regOffset(vecOffset, qttRemoved);
+					printf("Needed: %d\n", updated.tamanhoRegistro);
 					free(vecOffset);
+
+					// Inserts new register
+					bin_addRegister(fp, updated);
 				}
 			}
 			
 			fseek(fp, backupOffset, SEEK_SET);
 		}
 	}
-
-	// printf("Recovering header status\n");
+	
 	/** Recover header status */
 	fseek(fp, 0, SEEK_SET);
 	invalid = '1';
@@ -569,7 +560,7 @@ void bin_updateReg() {
 	fclose(fp);
 
 	/** Print the file content to standard output stream */
-	bin_printScreenClosed(fileName);
+	// bin_printScreenClosed(fileName);
 }
 
 void test() {
