@@ -4,7 +4,7 @@ CFLAGS = -I include/ -std=c99 -Wall -g
 all:
 	gcc -o main src/*.c $(CFLAGS)
 ifdef f
-	cp binarios/binario-$(f).bin binario-$(f).bin
+	cp binarios/*.bin ./
 endif
 
 # `make run f=1` vai rodar o codigo pra entrada do 1

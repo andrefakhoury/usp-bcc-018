@@ -153,7 +153,7 @@ int bin_readRegister(FILE* bin, DataRegister* dr) {
 	if (feof(bin))
 		return 0;
 
-	if (dr->removido != '*' && dr->removido != '-') {		
+	if (dr->removido != '*' && dr->removido != '-') { // file pointer at invalid position
 		fprintf(stderr, "Invalid char at 'removido': %c\n", dr->removido);
 		exit(1);
 	}
@@ -223,7 +223,7 @@ int bin_readRegister(FILE* bin, DataRegister* dr) {
 		dr->cargoServidor.size = 0;
 	}
 
-	dr->tamanhoRegistro += 5; //AQUI
+	dr->tamanhoRegistro += 5;
 	
 	return 1;
 }
@@ -249,30 +249,28 @@ void bin_loadHeader(FILE* bin, HeaderRegister* hr) {
 	fread(&hr->desCampo5, 40, 1, bin);
 }
 
+/** Update offset - 'where' now points to 'newOffset'. Then, seeks back to 'backup' */
 void bin_overwriteOffset(FILE* bin, int64_t newOffset, int64_t where, int64_t backup) {
 	fseek(bin, where, SEEK_SET);
 	fwrite(&newOffset, 8, 1, bin);
 	fseek(bin, backup, SEEK_SET);
 }
 
-void bin_overwriteEmptyRegister(FILE* bin, size_t len) {
-	char empty = '@';
-	for (int i = 0; i < len; i++)
-		fwrite(&empty, 1, 1, bin);
-}
-
+/** Load RegOffset vector with removed registers at binary file */
 void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved) {
 	fseek(bin, 1, SEEK_SET);
 
+	// first position of vector points to header offset
 	*qttRemoved = 1;
 	*vec = realloc(*vec, (*qttRemoved) * sizeof(RegOffset));
 
 	(*vec)[0].offset = 1;
 	(*vec)[0].regSize = 0;
 
-	int64_t offset, nextOffset;
+	int64_t offset;
 	fread(&offset, 8, 1, bin);
 
+	// update the vector until some register points to -1
 	while (offset != -1) {
 		(*qttRemoved)++;
 		*vec = realloc(*vec, (*qttRemoved) * sizeof(RegOffset));
@@ -282,12 +280,11 @@ void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved) {
 		int curSize;
 		fread(&curSize, 4, 1, bin);
 
+		// fill vector position
 		(*vec)[(*qttRemoved) - 1].offset = offset;
 		(*vec)[(*qttRemoved) - 1].regSize = curSize + 5;
 
-		fread(&nextOffset, 8, 1, bin);
-
-		offset = nextOffset;
+		fread(&offset, 8, 1, bin);
 	}
 }
 
@@ -295,19 +292,21 @@ void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved) {
 void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t offset, int64_t nextOffset) {
 	fseek(bin, offset, SEEK_SET);
 
+	// update offset chain
 	int64_t previous = prevOffset == 1 ? prevOffset : prevOffset + 5;
 	bin_overwriteOffset(bin, offset, previous, offset);
 
+	// set register to removed and update its nextOffset
 	fwrite(&dr.removido, 1, 1, bin);
 	fseek(bin, 4, SEEK_CUR);
 	fwrite(&nextOffset, 8, 1, bin);
 
-	bin_printEmpty(bin, dr.tamanhoRegistro - 13); //AQUI era -8
+	// overwrite register content with '@'
+	bin_printEmpty(bin, dr.tamanhoRegistro - 13);
 }
 
 /** Insert a register in binary stream */
 void bin_addRegister(FILE* bin, DataRegister dr) {
-	// printf("adding...\n");
 	fseek(bin, 1, SEEK_SET);
 	
 	int64_t offset, lastOffset = ftell(bin), nextOffset;
@@ -343,62 +342,47 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 	}
 
 	if (finalOffset == -1) { // appends to the end of file
-		// printf("Oie\n");
-
 		fseek(bin, 0, SEEK_END);
-		if (count > 0) {
-			bin_overwriteOffset(bin, ftell(bin), lastOffset, ftell(bin));
-		}
 
 		long curOffset = ftell(bin);
 		long pagePos = curOffset % MAXPAGE;
-
 		long curPage = (curOffset + MAXPAGE - 1) / MAXPAGE;
 
 		if (dr.tamanhoRegistro + pagePos > MAXPAGE) { // end of disk page
-			// printf("fim da pagina\n\n");
-
 			long qttEmpty = MAXPAGE - pagePos;
 
+			fseek(bin, (curPage - 1) * MAXPAGE, SEEK_SET);
+			DataRegister aux;
+
+			// find the last register of disk page
+			long lastOffset, auxOffset = -1;
+			while (bin_readRegister(bin, &aux)) {
+				auxOffset = lastOffset;
+				lastOffset = ftell(bin);
+			}
+
+			// update the last register of disk page
+			fseek(bin, auxOffset, SEEK_SET);
+			aux.tamanhoRegistro += qttEmpty;
+			bin_printRegister(bin, aux);
 			bin_printEmpty(bin, qttEmpty);
-
-			fseek(bin, curPage * MAXPAGE, SEEK_SET);
-
-			DataRegister dr;
-
-			while (bin_readRegister(bin, &dr));
-
-			fseek(bin, - dr.tamanhoRegistro - 4, SEEK_CUR);
-			dr.tamanhoRegistro += qttEmpty;
-			bin_printRegister(bin, dr);
 		}
 
 		fseek(bin, 0, SEEK_END);
 	} else { // overwrite some register
-		// printf("%d\n", count);
-		// printf("Final offset: %ld\n", finalOffset);
-		// printf("Final last off: %ld\n", finalLastOffset);
-		// printf("Final next off: %ld\n", finalNextOffset);
-		// printf("------------\n\n");
-
-		// printf("AAAAA\n");
-
 		dr.tamanhoRegistro = finalSize;
 		fseek(bin, finalOffset, SEEK_SET);
-		bin_overwriteEmptyRegister(bin, finalSize);
+		bin_printEmpty(bin, finalSize);
 		fseek(bin, finalOffset, SEEK_SET);
 		bin_overwriteOffset(bin, finalNextOffset, finalLastOffset, finalOffset);
 	}
 
-	// printf("Chosen: %ld\n", ftell(bin));
-
-	// printf("Added!\n");
+	// with the file pointer at the right place, just print the register
 	bin_printRegister(bin, dr);
 }
 
+/** Overwrite some register, filling empty the size difference */
 void bin_overwriteRegister(FILE* bin, DataRegister dr, int64_t offset, int delta) {
-	// printf("oie\n");
-
 	fseek(bin, offset, SEEK_SET);
 	bin_printRegister(bin, dr);
 	bin_printEmpty(bin, delta);
@@ -443,10 +427,11 @@ int register_check(char tag, char* value, HeaderRegister hr, DataRegister dr) {
 			aux[i] = dr.telefoneServidor[i];
 		aux[14] = '\0';
 
-		if (!strcmp(value, "NULO"))
-			return !strcmp(aux, "@@@@@@@@@@@@@@");
+		if (!strcmp(value, "NULO")) {
+			return aux[0] == '@' || aux[0] == '\0';
+		}
+			
 		return !strcmp(aux, value);
-
 	} else if (tag == hr.tagCampo4) {
 		if (!strcmp(value, "NULO"))
 			return dr.nomeServidor.size == 0;
@@ -462,35 +447,9 @@ int register_check(char tag, char* value, HeaderRegister hr, DataRegister dr) {
 	return 0;
 }
 
-// /** Check if new register fits into old register */
-// int reg_canUpdate(DataRegister dr, HeaderRegister hr, char tag, char value[], int* left) {
-// 	*left = 0;
-	
-// 	if (tag == hr.tagCampo1 || tag == hr.tagCampo2 || tag == hr.tagCampo3) {
-// 		return 1;
-// 	} else {
-// 		int curSize = strlen(value) + 1;
-// 		if (!strcmp(value, "NULO"))
-// 			curSize = 0;
-
-// 		if (tag == hr.tagCampo4) {
-// 			// printf("Was: %d Want: %d\n", dr.nomeServidor.size, curSize);
-// 			// printf("%s -> %s\n", dr.nomeServidor.desc, value);
-
-// 			*left = curSize - dr.nomeServidor.size;
-// 			return curSize <= dr.nomeServidor.size;
-// 		} else {
-// 			// printf("Was: %d Want: %d\n", dr.cargoServidor.size, curSize);
-// 			// printf("%s -> %s\n", dr.cargoServidor.desc, value);
-
-// 			*left = curSize - dr.cargoServidor.size;
-// 			return curSize <= dr.cargoServidor.size;
-// 		}
-// 	}
-
-// 	return 0;
-// }
-
+/** Update some field of a register with a new value.
+ *  Also stores the delta of old and new registers, and informs if they are the same.
+ */
 void reg_updateByTag(DataRegister* dr, HeaderRegister hr, char tag, char value[], int* delta, int* same) {
 	*delta = 0;
 	*same  = 0;
@@ -562,7 +521,7 @@ void register_toStream(DataRegister dr) {
 	else
 		printf("         ");
 
-
+	// auxiliar string to work with telefone
 	char aux[15];
 	for (int i = 0; i < 14; i++)
 		aux[i] = dr.telefoneServidor[i];
@@ -604,7 +563,7 @@ void register_printFormatted(DataRegister dr, HeaderRegister hr) {
 	printf("\n");
 }
 
-/** Fills empty chars of src string with @. If all is set, str is fully filled. */
+/** Fills empty chars of src string with @. If all is set, str is fullfilled. */
 void str_fillEmpty(char* src, int totalSize, int all) {
 	int i = all ? 1 : strlen(src) + 1;
 	src[i-1] = '\0';

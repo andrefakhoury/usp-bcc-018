@@ -66,6 +66,7 @@ int bin_readRegister(FILE* bin, DataRegister* dr);
 /** Load header info from bin file */
 void bin_loadHeader(FILE* bin, HeaderRegister* hr);
 
+/** Load RegOffset vector with removed registers at binary file */
 void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved);
 
 /** Deletes register from binary stream */
@@ -74,6 +75,7 @@ void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t 
 /** Insert a register in binary stream */
 void bin_addRegister(FILE* bin, DataRegister dr);
 
+/** Overwrite some register, filling empty the size difference */
 void bin_overwriteRegister(FILE* bin, DataRegister dr, int64_t offset, int delta);
 
 /** Returns the size of dr */
@@ -81,9 +83,6 @@ int register_size(DataRegister dr);
 
 /** Check if current register equals some desired value */
 int register_check(char tag, char value[], HeaderRegister hr, DataRegister dr);
-
-/** Check if new register fits into old register */
-// int reg_canUpdate(DataRegister dr, HeaderRegister hr, char tag, char value[], int* left);
 
 /** Update a DataRegister according to the update tag */
 void reg_updateByTag(DataRegister* dr, HeaderRegister hr, char tag, char value[], int* delta, int* same);

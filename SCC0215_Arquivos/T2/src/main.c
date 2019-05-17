@@ -133,6 +133,7 @@ void bin_toStream() {
 	fclose(bin);
 }
 
+/** Returns the tag of a field */
 char reg_getTag(HeaderRegister hr, char fieldName[]) {
 	char tag = '#';
 
@@ -180,7 +181,7 @@ void bin_searchReg() {
 	scanf(" %s", fieldName);
 
 	char tag = reg_getTag(hr, fieldName);
-	if (tag == '#') {
+	if (tag == '#') { // invalid tag
 		printf("Falha no processamento do arquivo.\n");
 		return;
 	}
@@ -228,16 +229,18 @@ void str_removeQuotes(char str[], size_t len) {
 	}
 }
 
+/** Inserts a new RegOffset on the vector, keeping it sorted. Returns the position index of new RegOffset added */
 int insertSorted(RegOffset** vec, int* n, RegOffset cur) {
-
 	(*n)++;
 	*vec = realloc(*vec, (*n) * sizeof(RegOffset));
-
 	int i;
+
+	// shift until find the correct position
 	for (i = (*n) - 1; (*vec)[i-1].regSize >= cur.regSize; i--) {
 		(*vec)[i] = (*vec)[i-1];
 	}
 
+	// update
 	(*vec)[i] = cur;
 	return i;
 }
@@ -249,13 +252,15 @@ void aux_remove(FILE* fp, DataRegister* dr, RegOffset** vecOffset, int* qttRemov
 	dr->removido = '*';
 
 	RegOffset cur;
-	cur.offset = ftell(fp) - dr->tamanhoRegistro;// - 5; AQUI
-	cur.regSize = dr->tamanhoRegistro; // AQUI NAO TINHA -5
+	cur.offset = ftell(fp) - dr->tamanhoRegistro; // gets the first byte offset of register
+	cur.regSize = dr->tamanhoRegistro;
 
 	int ind = insertSorted(vecOffset, qttRemoved, cur);
 
+	// offset that it has to point - if current register is the largest, points to -1
 	int64_t nextOffset = ind == (*qttRemoved) - 1 ? -1 : (*vecOffset)[ind+1].offset;
 
+	// remove this register, updating the chaining offset
 	bin_removeRegister(fp, *dr, (*vecOffset)[ind-1].offset, cur.offset, nextOffset);
 
 	fseek(fp, backupOffset, SEEK_SET);
@@ -288,7 +293,9 @@ void bin_removeReg() {
 	fwrite(&invalid, 1, 1, fp);
 
 	int qttRemoved = 0;
-	RegOffset* vecOffset = NULL;
+	RegOffset* vecOffset = NULL; // (sorted) vector that stores the offset of removed registers
+
+	// initial charge to the offset vector
 	bin_loadOffsetVector(fp, &vecOffset, &qttRemoved);
 
 	/** Executes the remotion N times */
@@ -302,7 +309,7 @@ void bin_removeReg() {
 			return;
 		}
 
-		str_removeQuotes(fieldValue, strlen(fieldValue));
+		str_removeQuotes(fieldValue, strlen(fieldValue)); // input can contain quotes
 
 		DataRegister dr;
 
@@ -316,6 +323,8 @@ void bin_removeReg() {
 			}
 		}
 	}
+	
+	free(vecOffset);
 
 	/** Recover header status */
 	fseek(fp, 0, SEEK_SET);
@@ -324,70 +333,65 @@ void bin_removeReg() {
 
 	fclose(fp);
 
-	free(vecOffset);
-
 	/** Print the file content to standard output stream */
 	bin_printScreenClosed(fileName);
 }
 
-void print_regOffset(RegOffset* vec, int qtt) {
-	printf("[%d]\n", qtt);
-	for (int i = 0; i < qtt; i++) {
-		printf("%ld %d\n", vec[i].offset, vec[i].regSize);
-	}
-	printf("----\n");
-}
-
-/** Reads a string, preventing the NULO case */
+/** Reads a string from stream on format "string to read" or NULO */
 void std_scanString(char dest[]) {
 
 	scanf(" %s", dest);
-	if (!strcmp(dest, "NULO")) {
+	if (!strcmp(dest, "NULO") || dest[0] != '\"') {
 		return;
 	}
 
+	int cnt = 0; // qtt of quotes
+	for (int i = 0; i < strlen(dest); i++) {
+		cnt += dest[i] == '\"';
+	}
+
+	if (cnt == 2) {
+		return; // open and close quotes are on string
+	}
+	
 	char str[MAXSTR];
+	scanf("%[^\"]\"", str);
 
-	if (dest[0] != '\"') {
-		return;
-	} else {
-		int cnt = 0;
-		for (int i = 0; i < strlen(dest); i++)
-			cnt += dest[i] == '\"';
-		if (cnt == 2) return;
-		
-		scanf("%[^\"]\"", str);
-	}
-
-	strcat(dest, str);
+	strcat(dest, str); // concatenate dest+str
 }
 
 /** Read register data from stdio */
 DataRegister std_scanRegister() {
 	DataRegister dr;
+
+	// default info
 	dr.removido = '-';
 	dr.encadeamentoLista = -1;
 
 	int ret;
 
+	// scan id
 	ret = scanf(" %d", &dr.idServidor);
 	if (ret == 0) {
 		scanf("%*s");
 		dr.idServidor = -1;
 	}
 
+	// scan salario
 	ret = scanf(" %lf", &dr.salarioServidor);
 	if (ret == 0) {
 		scanf(" %*s");
 		dr.salarioServidor = -1;
 	}
 
+	// scan telefone
 	scanf(" %16s ", dr.telefoneServidor);
 	str_removeQuotes(dr.telefoneServidor, strlen(dr.telefoneServidor));
 	if (!strcmp(dr.telefoneServidor, "NULO")) {
 		str_fillEmpty(dr.telefoneServidor, 14, 1);
 	}
 
+	// scan nome
 	std_scanString(dr.nomeServidor.desc);
 	str_removeQuotes(dr.nomeServidor.desc, strlen(dr.nomeServidor.desc));
 	if (!strcmp(dr.nomeServidor.desc, "NULO")) {
@@ -398,6 +402,7 @@ DataRegister std_scanRegister() {
 	}
 	dr.nomeServidor.tag = 'n';
 
+	// scan cargo
 	std_scanString(dr.cargoServidor.desc);
 	if (!strcmp(dr.cargoServidor.desc, "NULO")) {
 		dr.cargoServidor.size = 0;
@@ -408,6 +413,7 @@ DataRegister std_scanRegister() {
 	}
 	dr.cargoServidor.tag = 'c';
 
+	// update the register size, according to info
 	dr.tamanhoRegistro = register_size(dr);
 
 	return dr;
@@ -482,7 +488,7 @@ void bin_updateReg() {
 	char invalid = '0';
 	fwrite(&invalid, 1, 1, fp);
 
-	/** Executes the remotion N times */
+	/** Executes the update N times */
 	for (int i = 0; i < n; i++) {
 
 		// Read info for the update
@@ -499,6 +505,7 @@ void bin_updateReg() {
 		char old_tag = reg_getTag(hr, old_fieldName);
 		char new_tag = reg_getTag(hr, new_fieldName);
 
+		// invalid field info
 		if (old_tag == '#' || new_tag == '#') {
 			printf("Falha no processamento do arquivo.\n");
 			return;
@@ -508,26 +515,21 @@ void bin_updateReg() {
 		fseek(fp, MAXPAGE, SEEK_SET);
 
 		DataRegister dr;
-		long offset;
-
-		/** Check each register, and removes if needed */
-		while (offset = ftell(fp), bin_readRegister(fp, &dr)) {
+		long offset = ftell(fp); // offset to begin of register
+		
+		// reads all registers, and updated if needed
+		while (bin_readRegister(fp, &dr)) {
 			long backupOffset = ftell(fp);
 
-			if (register_check(old_tag, old_fieldValue, hr, dr)) {
-				int delta, same = 0;
+			if (register_check(old_tag, old_fieldValue, hr, dr)) { // register has to be updated
+				int delta, same = 0; // auxiliar variables
 				DataRegister updated = dr;
 
+				// update register according to desired tag
 				reg_updateByTag(&updated, hr, new_tag, new_fieldValue, &delta, &same);
 				if (same) continue; // same register, no need to update
 
-				printf("(%d) ", dr.tamanhoRegistro);
-				register_toStream(dr);
-
-				printf("(%d) ", updated.tamanhoRegistro);
-				register_toStream(updated);
-
-				if (delta == 0) {
+				if (delta == 0) { // can be overwritten
 					bin_overwriteRegister(fp, updated, offset, delta);
 				} else { // remove and insert
 
@@ -538,9 +540,6 @@ void bin_updateReg() {
 
 					fseek(fp, backupOffset, SEEK_SET);
 					aux_remove(fp, &dr, &vecOffset, &qttRemoved);
-
-					print_regOffset(vecOffset, qttRemoved);
-					printf("Needed: %d\n", updated.tamanhoRegistro);
 					free(vecOffset);
 
 					// Inserts new register
@@ -548,7 +547,9 @@ void bin_updateReg() {
 				}
 			}
 			
+			// seeks to next register to read
 			fseek(fp, backupOffset, SEEK_SET);
+			offset = backupOffset;
 		}
 	}
 	
@@ -560,22 +561,7 @@ void bin_updateReg() {
 	fclose(fp);
 
 	/** Print the file content to standard output stream */
-	// bin_printScreenClosed(fileName);
-}
-
-void test() {
-	printf("aaaaa\n");
-	char fileName[] = "binarios/binario-7-depois.bin";
-	FILE* bin = fopen(fileName, "r+b");
-	int qttRemoved = 0;
-	RegOffset* vecOffset = NULL;
-	bin_loadOffsetVector(bin, &vecOffset, &qttRemoved);
-
-	for (int i = 0; i < qttRemoved; i++) {
-		printf("[%d] %ld %d\n", i, vecOffset[i].offset, vecOffset[i].regSize);
-	} 
-
-	free(vecOffset);
+	bin_printScreenClosed(fileName);
 }
 
 /** Main function to manage function calls according to input option */
@@ -595,8 +581,6 @@ int main() {
 		bin_insertReg();
 	} else if (op == 6) { // search and update specified registers on binary stream
 		bin_updateReg();
-	} else {
-		test();
 	}
 
 	return 0;
