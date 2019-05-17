@@ -299,7 +299,9 @@ void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved) {
 /** Deletes register from binary stream */
 void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t offset, int64_t nextOffset) {
 	fseek(bin, offset, SEEK_SET);
-	bin_overwriteOffset(bin, offset, prevOffset == 1 ? prevOffset : prevOffset + 5, offset);
+
+	int64_t previous = prevOffset == 1 ? prevOffset : prevOffset + 5;
+	bin_overwriteOffset(bin, offset, previous, offset);
 
 	fwrite(&dr.removido, 1, 1, bin);
 	fseek(bin, 4, SEEK_CUR);
@@ -310,6 +312,7 @@ void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t 
 
 /** Insert a register in binary stream */
 void bin_addRegister(FILE* bin, DataRegister dr) {
+	// printf("adding...\n");
 	fseek(bin, 1, SEEK_SET);
 	
 	int64_t offset, lastOffset = ftell(bin), nextOffset;
@@ -319,14 +322,15 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 	int finalSize = -1, count = 0;
 
 	while (offset != -1) {
-
 		count++;
 
-		fseek(bin, offset + 1, SEEK_SET);
+		fseek(bin, offset, SEEK_SET);
+		char status;
+		fread(&status, 1, 1, bin);
+		printf("Status: %c\n", status);
 
 		int curSize;
 		fread(&curSize, 4, 1, bin);
-		printf("CurSize: %d\n", curSize);
 		
 		int64_t auxOffset = ftell(bin);
 
@@ -345,6 +349,7 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 	}
 
 	if (finalOffset == -1) { // appends to the end of file
+		// printf("Oie\n");
 
 		fseek(bin, 0, SEEK_END);
 		if (count > 0) {
@@ -357,6 +362,8 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 		long curPage = (curOffset + MAXPAGE - 1) / MAXPAGE;
 
 		if (dr.tamanhoRegistro + pagePos > MAXPAGE) { // end of disk page
+			// printf("fim da pagina\n\n");
+
 			long qttEmpty = MAXPAGE - pagePos;
 
 			bin_printEmpty(bin, qttEmpty);
@@ -380,7 +387,7 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 		// printf("Final next off: %ld\n", finalNextOffset);
 		// printf("------------\n\n");
 
-		printf("%d\n", finalSize);
+		// printf("AAAAA\n");
 
 		dr.tamanhoRegistro = finalSize;
 		fseek(bin, finalOffset, SEEK_SET);
@@ -389,6 +396,7 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 		bin_overwriteOffset(bin, finalNextOffset, finalLastOffset, finalOffset);
 	}
 
+	// printf("Added!\n");
 	bin_printRegister(bin, dr);
 }
 
@@ -470,14 +478,14 @@ int reg_canUpdate(DataRegister dr, HeaderRegister hr, char tag, char value[], in
 			curSize = 0;
 
 		if (tag == hr.tagCampo4) {
-			printf("Was: %d Want: %d\n", dr.nomeServidor.size, curSize);
-			printf("%s -> %s\n", dr.nomeServidor.desc, value);
+			// printf("Was: %d Want: %d\n", dr.nomeServidor.size, curSize);
+			// printf("%s -> %s\n", dr.nomeServidor.desc, value);
 
 			*left = curSize - dr.nomeServidor.size;
 			return curSize <= dr.nomeServidor.size;
 		} else {
-			printf("Was: %d Want: %d\n", dr.cargoServidor.size, curSize);
-			printf("%s -> %s\n", dr.cargoServidor.desc, value);
+			// printf("Was: %d Want: %d\n", dr.cargoServidor.size, curSize);
+			// printf("%s -> %s\n", dr.cargoServidor.desc, value);
 
 			*left = curSize - dr.cargoServidor.size;
 			return curSize <= dr.cargoServidor.size;
@@ -532,7 +540,7 @@ void reg_updateByTag(DataRegister* dr, HeaderRegister hr, char tag, char value[]
 			dr->nomeServidor.size = strlen(dr->nomeServidor.desc) + 1;
 
 			*delta -= dr->nomeServidor.size;
-			if (*delta < 0) *delta = 0;
+			// if (*delta < 0) *delta = 0;
 		}
 
 		*same = !strcmp(old.nomeServidor.desc, dr->nomeServidor.desc);
@@ -547,7 +555,7 @@ void reg_updateByTag(DataRegister* dr, HeaderRegister hr, char tag, char value[]
 			dr->cargoServidor.size = strlen(dr->cargoServidor.desc) + 1;
 
 			*delta -= dr->cargoServidor.size;
-			if (*delta < 0) *delta = 0;
+			// if (*delta < 0) *delta = 0;
 		}
 
 		*same = !strcmp(old.cargoServidor.desc, dr->cargoServidor.desc);

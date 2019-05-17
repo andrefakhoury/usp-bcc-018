@@ -474,7 +474,7 @@ void bin_updateReg() {
 
 	/** Executes the remotion N times */
 	for (int i = 0; i < n; i++) {
-		printf("------------------------------\n");
+		// printf("------------------------------\n");
 		char old_fieldName[MAXSTR], old_fieldValue[MAXSTR], new_fieldName[MAXSTR], new_fieldValue[MAXSTR];
 
 		scanf(" %s", old_fieldName);
@@ -504,30 +504,26 @@ void bin_updateReg() {
 			long backupOffset = ftell(fp);
 
 			if (register_check(old_tag, old_fieldValue, hr, dr)) {
-				int delta;
-
+				int delta, same = 0, left;
 				DataRegister updated = dr;
 
-				int same = 0;
 				reg_updateByTag(&updated, hr, new_tag, new_fieldValue, &delta, &same);
 
-				if (same) continue;
+				if (same) continue; // same register, no need to update
 
-				printf("Tamanho:: %d\n", dr.tamanhoRegistro);
-				register_toStream(dr);
-				// register_toStream(updated);
-
-				int left;
 				if (reg_canUpdate(dr, hr, new_tag, new_fieldValue, &left)) { // overwrite
-					printf("Can overwrite :)\n");
+					// printf("Can overwrite :)\n");
 					bin_overwriteRegister(fp, updated, offset, delta);
 				} else { // remove and insert
-					printf("Cannot overwrite :(\n");
-
-					printf("Left: %d\n", left);
+					// printf("Cannot overwrite :(\n");
+					// printf("Left: %d\n", left);
 					
-					updated.tamanhoRegistro += left;
-					printf("%d -> %d [%d]\n", dr.tamanhoRegistro, updated.tamanhoRegistro, left);
+					// updated.tamanhoRegistro += left;
+					updated.tamanhoRegistro -= delta - 5;
+
+					// updated.tamanhoRegistro = register_size(updated);
+					// if (updated.tamanhoRegistro < dr.tamanhoRegistro + left) updated.tamanhoRegistro = dr.tamanhoRegistro + left;
+					// printf("%d -> %d [%d] [%d]\n", dr.tamanhoRegistro, updated.tamanhoRegistro, left, delta);
 
 					// printf("Tamanho registro: %d + %d = %d\n", dr.tamanhoRegistro, left, dr.tamanhoRegistro + left);
 					// printf("(%d)\n---------\n", register_size(updated));
@@ -537,22 +533,22 @@ void bin_updateReg() {
 					bin_loadOffsetVector(fp, &vecOffset, &qttRemoved);
 
 
-					printf("Removed: %d\n", qttRemoved);
-					for (int i = 0; i < qttRemoved; i++) {
-						printf("%05ld\t%d\n", vecOffset[i].offset, vecOffset[i].regSize);
-					}
-					printf("----\n");
+					// printf("Removed: %d\n", qttRemoved);
+					// for (int i = 0; i < qttRemoved; i++) {
+					// 	printf("%05ld\t%d\n", vecOffset[i].offset, vecOffset[i].regSize);
+					// }
+					// printf("----\n");
 
-					printf("%d\n", dr.tamanhoRegistro);
+					// printf("%d\n", dr.tamanhoRegistro);
 
 					fseek(fp, backupOffset, SEEK_SET);
 					aux_remove(fp, &dr, &vecOffset, &qttRemoved);
 
-					printf("Removed: %d\n", qttRemoved);
-					for (int i = 0; i < qttRemoved; i++) {
-						printf("%05ld\t%d\n", vecOffset[i].offset, vecOffset[i].regSize);
-					}
-					printf("----\n");
+					// printf("Removed: %d\n", qttRemoved);
+					// for (int i = 0; i < qttRemoved; i++) {
+					// 	printf("%05ld\t%d\n", vecOffset[i].offset, vecOffset[i].regSize);
+					// }
+					// printf("----\n");
 
 					bin_addRegister(fp, updated);
 
@@ -564,6 +560,7 @@ void bin_updateReg() {
 		}
 	}
 
+	// printf("Recovering header status\n");
 	/** Recover header status */
 	fseek(fp, 0, SEEK_SET);
 	invalid = '1';
@@ -572,7 +569,22 @@ void bin_updateReg() {
 	fclose(fp);
 
 	/** Print the file content to standard output stream */
-	// bin_printScreenClosed(fileName);
+	bin_printScreenClosed(fileName);
+}
+
+void test() {
+	printf("aaaaa\n");
+	char fileName[] = "binarios/binario-7-depois.bin";
+	FILE* bin = fopen(fileName, "r+b");
+	int qttRemoved = 0;
+	RegOffset* vecOffset = NULL;
+	bin_loadOffsetVector(bin, &vecOffset, &qttRemoved);
+
+	for (int i = 0; i < qttRemoved; i++) {
+		printf("[%d] %ld %d\n", i, vecOffset[i].offset, vecOffset[i].regSize);
+	} 
+
+	free(vecOffset);
 }
 
 /** Main function to manage function calls according to input option */
@@ -592,6 +604,8 @@ int main() {
 		bin_insertReg();
 	} else if (op == 6) { // search and update specified registers on binary stream
 		bin_updateReg();
+	} else {
+		test();
 	}
 
 	return 0;
