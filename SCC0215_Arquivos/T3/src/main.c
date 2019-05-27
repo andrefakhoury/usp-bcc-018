@@ -26,6 +26,12 @@ void CSV_toBinary() {
 	// error on opening the files
 	if (fp == NULL || outBin == NULL) {
 		printf("Falha no carregamento do arquivo.\n");
+
+		if (fp != NULL)
+			fclose(fp);
+		if (outBin != NULL)
+			fclose(outBin);
+
 		return;
 	}
 
@@ -104,6 +110,7 @@ void bin_toStream() {
 
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
+		fclose(bin);
 		return;
 	}
 
@@ -174,6 +181,7 @@ void bin_searchReg() {
 
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
+		fclose(bin);
 		return;
 	}
 
@@ -284,6 +292,7 @@ void bin_removeReg() {
 
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
+		fclose(fp);
 		return;
 	}
 
@@ -438,6 +447,7 @@ void bin_insertReg() {
 	/** Invalid status */
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
+		fclose(fp);
 		return;
 	}
 
@@ -480,6 +490,7 @@ void bin_updateReg() {
 
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
+		fclose(fp);
 		return;
 	}
 
@@ -564,10 +575,12 @@ void bin_updateReg() {
 	bin_printScreenClosed(fileName);
 }
 
+/** Comparator of 2 registers - cmp by idServidor */
 int reg_cmp(const void* reg_1, const void* reg_2) {
 	return ((DataRegister*)reg_1)->idServidor - ((DataRegister*)reg_2)->idServidor;
 }
 
+/** Store all registers from binary stream into a sorted register */
 void reg_readAndSort(FILE* bin, DataRegister** dataRegVec, int* numRegister) {
 	fseek(bin, MAXPAGE, SEEK_SET);
 
@@ -578,6 +591,8 @@ void reg_readAndSort(FILE* bin, DataRegister** dataRegVec, int* numRegister) {
 		if (dr.removido == '*')
 			continue;
 
+		dr.tamanhoRegistro = register_size(dr);
+
 		(*numRegister)++;
 		*dataRegVec = realloc(*dataRegVec, (*numRegister) * sizeof(DataRegister));
 		(*dataRegVec)[(*numRegister)-1] = dr;
@@ -586,6 +601,28 @@ void reg_readAndSort(FILE* bin, DataRegister** dataRegVec, int* numRegister) {
 	qsort(*dataRegVec, *numRegister, sizeof(DataRegister), reg_cmp);
 }
 
+/** Print the content of a DataRegister vector to a binary stream */
+void printRegVec(FILE* bin, DataRegister* dataRegVec, int numRegister) {
+	for (int i = 0; i < numRegister; i++) {
+		int qttEmpty = 0;
+
+		if (i != numRegister - 1) { // if there is element[i+1]
+			long curPosition = ftell(bin) % MAXPAGE + dataRegVec[i].tamanhoRegistro;
+			if (dataRegVec[i+1].tamanhoRegistro + curPosition > MAXPAGE) { // disk page will be full
+				dataRegVec[i].tamanhoRegistro += MAXPAGE - curPosition;
+				qttEmpty = MAXPAGE - curPosition;
+			}
+		}
+
+		bin_printRegister(bin, dataRegVec[i]);
+
+		if (qttEmpty != 0) { // fill empty spaces with '@'
+			bin_printEmpty(bin, qttEmpty);
+		}
+	}
+}
+
+/** Store all non-removed registers from binary stream into a output binary stream */
 void bin_sortRegisters() {
 	char fileNameIn[MAXSTR], fileNameOut[MAXSTR];
 	scanf(" %s %s", fileNameIn, fileNameOut);
@@ -595,17 +632,27 @@ void bin_sortRegisters() {
 
 	if (fpIn == NULL || fpOut == NULL) {
 		printf("Falha no processamento do arquivo.\n");
+
+		if (fpIn != NULL)
+			fclose(fpIn);
+		if (fpOut != NULL)
+			fclose(fpOut);
+
 		return;
 	}
 
 	HeaderRegister hr;
 	bin_loadHeader(fpIn, &hr);
 
+	// invalid status
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
+		fclose(fpIn);
+		fclose(fpOut);
 		return;
 	}
 
+	// read registers to vector
 	DataRegister *dataRegVec = NULL;
 	int numRegister = 0;
 	reg_readAndSort(fpIn, &dataRegVec, &numRegister);
@@ -616,52 +663,68 @@ void bin_sortRegisters() {
 	hr.topoLista = -1;
 	bin_printHeader(fpOut, hr);
 
-	// print all registers
-	for (int i = 0; i < numRegister; i++) {
-		bin_addRegister(fpOut, dataRegVec[i]);
-	}
-
+	// print the sorted register
+	printRegVec(fpOut, dataRegVec, numRegister);
 	free(dataRegVec);
 	
 	/** Recover header status */
 	fseek(fpOut, 0, SEEK_SET);
 	char invalid = '1';
 	fwrite(&invalid, 1, 1, fpOut);
-	
 
-	bin_printScreenOpen(fpOut);
+	// prevent memory leaks
 	fclose(fpOut);
+	bin_printScreenClosed(fileNameOut);
 }
 
+/** Merge two different binary streams into a sorted binary output file */
 void bin_mergeRegisters() {
 	char fileNameIn1[MAXSTR], fileNameIn2[MAXSTR], fileNameOut[MAXSTR];
 
 	scanf(" %s %s %s", fileNameIn1, fileNameIn2, fileNameOut);
 
-	FILE* fpIn1 = fopen(fileNameIn1, "rb");
-	FILE* fpIn2 = fopen(fileNameIn2, "rb");
-	FILE* fpOut = fopen(fileNameOut, "wb");
+	FILE* fpIn1 = fopen(fileNameIn1, "rb"); // first input file
+	FILE* fpIn2 = fopen(fileNameIn2, "rb"); // second input file
+	FILE* fpOut = fopen(fileNameOut, "wb"); // output file
 
+	// invalid files
 	if (fpIn1 == NULL || fpIn2 == NULL || fpOut == NULL) {
 		printf("Falha no processamento do arquivo.\n");
-		return;		
+
+		if (fpIn1 != NULL)
+			fclose(fpIn1);
+		if (fpIn2 != NULL)
+			fclose(fpIn2);
+		if (fpOut != NULL)
+			fclose(fpOut);
+
+		return;	
 	}
 
 	HeaderRegister hr;
 	bin_loadHeader(fpIn2, &hr);
 
+	// invalid status (on second file)
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
+		fclose(fpIn1);
+		fclose(fpIn2);
+		fclose(fpOut);
 		return;
 	}
 
 	bin_loadHeader(fpIn1, &hr);
 
+	// invalid status (on first file)
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
+		fclose(fpIn1);
+		fclose(fpIn2);
+		fclose(fpOut);
 		return;
 	}
 
+	// read all the registers
 	DataRegister *vec1 = NULL, *vec2 = NULL;
 	int numReg1 = 0, numReg2 = 0;
 	reg_readAndSort(fpIn1, &vec1, &numReg1);
@@ -670,69 +733,111 @@ void bin_mergeRegisters() {
 	fclose(fpIn1);
 	fclose(fpIn2);
 
+	// output vector
+	DataRegister *vecOut = NULL;
+	int numRegisters = 0;
+
 	hr.status = '0';
 	hr.topoLista = -1;
 	bin_printHeader(fpOut, hr);
 
+	// merge elements to new vector
 	for (int i = 0, j = 0; i < numReg1 || j < numReg2;) {
 		if (j >= numReg2) {
-			bin_addRegister(fpOut, vec1[i]);
+			numRegisters++;
+			vecOut = realloc(vecOut, numRegisters * sizeof(DataRegister));
+			vecOut[numRegisters-1] = vec1[i];
 			i++;
 		} else if (i >= numReg1) {
-			bin_addRegister(fpOut, vec2[j]);
+			numRegisters++;
+			vecOut = realloc(vecOut, numRegisters * sizeof(DataRegister));
+			vecOut[numRegisters-1] = vec2[j];
 			j++;
 		} else {
 			if (vec1[i].idServidor < vec2[j].idServidor) {
-				bin_addRegister(fpOut, vec1[i]);
+				numRegisters++;
+				vecOut = realloc(vecOut, numRegisters * sizeof(DataRegister));
+				vecOut[numRegisters-1] = vec1[i];
 				i++;
 			} else if (vec1[i].idServidor > vec2[j].idServidor) {
-				bin_addRegister(fpOut, vec2[j]);
+				numRegisters++;
+				vecOut = realloc(vecOut, numRegisters * sizeof(DataRegister));
+				vecOut[numRegisters-1] = vec2[j];
 				j++;
 			} else {
-				bin_addRegister(fpOut, vec1[i]);
+				numRegisters++;
+				vecOut = realloc(vecOut, numRegisters * sizeof(DataRegister));
+				vecOut[numRegisters-1] = vec1[i];
 				i++, j++;
 			}
 		}
 	}
+
+	// print output registers
+	printRegVec(fpOut, vecOut, numRegisters);
 
 	/** Recover header status */
 	fseek(fpOut, 0, SEEK_SET);
 	char invalid = '1';
 	fwrite(&invalid, 1, 1, fpOut);
 
-	bin_printScreenOpen(fpOut);
+	// prevent memory leaks
 	fclose(fpOut);
+	free(vecOut);
+	free(vec1);
+	free(vec2);
+
+	bin_printScreenClosed(fileNameOut);
 }
 
+/** Merge two different binary streams into a sorted binary output file */
 void bin_matchRegisters() {
 	char fileNameIn1[MAXSTR], fileNameIn2[MAXSTR], fileNameOut[MAXSTR];
 
 	scanf(" %s %s %s", fileNameIn1, fileNameIn2, fileNameOut);
 
-	FILE* fpIn1 = fopen(fileNameIn1, "rb");
-	FILE* fpIn2 = fopen(fileNameIn2, "rb");
-	FILE* fpOut = fopen(fileNameOut, "wb");
+	FILE* fpIn1 = fopen(fileNameIn1, "rb"); // first input file
+	FILE* fpIn2 = fopen(fileNameIn2, "rb"); // second input file
+	FILE* fpOut = fopen(fileNameOut, "wb"); // output file
 
+	// invalid files
 	if (fpIn1 == NULL || fpIn2 == NULL || fpOut == NULL) {
 		printf("Falha no processamento do arquivo.\n");
-		return;		
+
+		if (fpIn1 != NULL)
+			fclose(fpIn1);
+		if (fpIn2 != NULL)
+			fclose(fpIn2);
+		if (fpOut != NULL)
+			fclose(fpOut);
+
+		return;	
 	}
 
 	HeaderRegister hr;
 	bin_loadHeader(fpIn2, &hr);
 
+	// invalid status on second file
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
+		fclose(fpIn1);
+		fclose(fpIn2);
+		fclose(fpOut);
 		return;
 	}
 
 	bin_loadHeader(fpIn1, &hr);
 
+	// invalid status on first file
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
+		fclose(fpIn1);
+		fclose(fpIn2);
+		fclose(fpOut);
 		return;
 	}
 
+	// read input registers to vectors
 	DataRegister *vec1 = NULL, *vec2 = NULL;
 	int numReg1 = 0, numReg2 = 0;
 	reg_readAndSort(fpIn1, &vec1, &numReg1);
@@ -741,10 +846,16 @@ void bin_matchRegisters() {
 	fclose(fpIn1);
 	fclose(fpIn2);
 
+	// print (invalid) output header register
 	hr.status = '0';
 	hr.topoLista = -1;
 	bin_printHeader(fpOut, hr);
 
+	// output register
+	DataRegister *vecOut = NULL;
+	int numRegisters = 0;
+
+	// fill output vector with matching of two input vectors
 	for (int i = 0, j = 0; i < numReg1 && j < numReg2;) {
 		while (i < numReg1 && j < numReg2 && vec1[i].idServidor < vec2[j].idServidor) {
 			i++;
@@ -755,18 +866,28 @@ void bin_matchRegisters() {
 		}
 
 		if (vec1[i].idServidor == vec2[j].idServidor) {
-			bin_addRegister(fpOut, vec1[i]);
+			numRegisters++;
+			vecOut = realloc(vecOut, numRegisters * sizeof(DataRegister));
+			vecOut[numRegisters-1] = vec1[i];
 			i++, j++;
 		}
 	}
+
+	// print output vector
+	printRegVec(fpOut, vecOut, numRegisters);
 
 	/** Recover header status */
 	fseek(fpOut, 0, SEEK_SET);
 	char invalid = '1';
 	fwrite(&invalid, 1, 1, fpOut);
 
-	bin_printScreenOpen(fpOut);
+	// prevent memory leaks
 	fclose(fpOut);
+	free(vec1);
+	free(vec2);
+	free(vecOut);
+
+	bin_printScreenClosed(fileNameOut);
 }
 
 /** Main function to manage function calls according to input option */

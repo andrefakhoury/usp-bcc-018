@@ -307,7 +307,7 @@ void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t 
 /** Insert a register in binary stream */
 void bin_addRegister(FILE* bin, DataRegister dr) {
 	fseek(bin, 1, SEEK_SET);
-	
+
 	int64_t offset, lastOffset = ftell(bin), nextOffset;
 	fread(&offset, 8, 1, bin);
 
@@ -356,7 +356,7 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 			DataRegister aux;
 
 			// find the last register of disk page
-			long lastOffset, auxOffset = -1;
+			long lastOffset = -1, auxOffset = -1;
 			while (bin_readRegister(bin, &aux)) {
 				auxOffset = lastOffset;
 				lastOffset = ftell(bin);
@@ -377,7 +377,7 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 		fseek(bin, finalOffset, SEEK_SET);
 		bin_overwriteOffset(bin, finalNextOffset, finalLastOffset, finalOffset);
 	}
-
+	
 	// with the file pointer at the right place, just print the register
 	bin_printRegister(bin, dr);
 }
