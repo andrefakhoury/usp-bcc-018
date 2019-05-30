@@ -4,7 +4,7 @@ CFLAGS = -I include/ -std=c99 -Wall -g
 all:
 	gcc -o main src/*.c $(CFLAGS)
 ifdef f
-	cp binarios/*.bin ./
+	cp binarios/*.bin* ./
 endif
 
 # `make run f=1` vai rodar o codigo pra entrada do 1
@@ -31,19 +31,24 @@ zip:
 valgrind:
 ifdef f
 	make all f=$(f)
-	valgrind -v ./main < casos/$(f).in > out
+	valgrind ./main < casos/$(f).in > out
 endif
 
 # `make bin f=1` vai mostrar a diferenca binaria do esperado do 1
 bin:
 ifdef f
-	vbindiff binarios/binario-$(f)-depois.bin binario-$(f).bin
+	vbindiff binarios/binario-$(f)-saida.bin binario-$(f)-saida.bin
 endif
 
 # `make clean` vai limpar tudo que eh inutil
 clean:
 	touch 1.bin out main T3.zip;
-	rm *.bin ; rm out ; rm main ; rm T3.zip
+	rm *.bin* ; rm out ; rm main ; rm T3.zip
+
+gambs:
+	make
+	./main < casos/1.in
+	./main < casos/2.in
 
 .PHONY:
 	all clean
