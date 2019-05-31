@@ -144,7 +144,9 @@ void bin_printEmpty(FILE* dest, int size) {
 }
 
 /** Reads a data register from binary source, and update the number of DiskPages accessed. */
-int bin_readRegister(FILE* bin, DataRegister* dr) {
+int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas) {
+	int lastPage = (ftell(bin) + MAXPAGE - 1) / MAXPAGE; // ceil(bo / maxpage)
+
 	if (feof(bin))
 		return 0;
 
@@ -223,7 +225,13 @@ int bin_readRegister(FILE* bin, DataRegister* dr) {
 	}
 
 	dr->tamanhoRegistro += 5;
+
+	int thisPage = (ftell(bin) + MAXPAGE - 1) / MAXPAGE; // ceil(bo / maxpage)
 	
+	if (numPaginas != NULL) {
+		(*numPaginas) += lastPage != thisPage;
+	}
+		
 	return 1;
 }
 
@@ -357,7 +365,7 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 
 			// find the last register of disk page
 			long lastOffset = -1, auxOffset = -1;
-			while (bin_readRegister(bin, &aux)) {
+			while (bin_readRegister(bin, &aux, NULL)) {
 				auxOffset = lastOffset;
 				lastOffset = ftell(bin);
 			}
@@ -393,6 +401,17 @@ void bin_overwriteRegister(FILE* bin, DataRegister dr, int64_t offset, int delta
 void bin_setHeaderStatus(FILE* bin, char status) {
 	fseek(bin, 0, SEEK_SET);
 	fwrite(&status, 1, 1, bin);
+}
+
+/** ---- not used ---- Updates the chaining of a data register */
+void bin_updateChaining(FILE* bin, RegOffset* vec, int qtt) {
+	for (int i = 0; i < qtt; i++) {
+		int64_t off = vec[i].offset == 1 ? vec[i].offset : vec[i].offset + 5;
+		int64_t nxt = i == qtt - 1 ? -1 : vec[i+1].offset;
+
+		fseek(bin, off, SEEK_SET);
+		fwrite(&nxt, 8, 1, bin);
+	}
 }
 
 /** Returns the size of dr */
@@ -554,8 +573,14 @@ void register_printFormatted(DataRegister dr, HeaderRegister hr) {
 		printf("%s: %.2lf\n", hr.desCampo2, dr.salarioServidor);
 	else printf("%s: valor nao declarado\n", hr.desCampo2);
 
-	if (strlen(dr.telefoneServidor) > 0)
-		printf("%s: %s\n", hr.desCampo3, dr.telefoneServidor);
+	if (strlen(dr.telefoneServidor) > 0) {
+		char aux[15];
+		for (int i = 0; i < 15; i++) {
+			aux[i] = dr.telefoneServidor[i];
+		}
+		aux[14] = '\0';
+		printf("%s: %14s\n", hr.desCampo3, aux);
+	}
 	else printf("%s: valor nao declarado\n", hr.desCampo3);
 	
 	if (dr.nomeServidor.size > 0)

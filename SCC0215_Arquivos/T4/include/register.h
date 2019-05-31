@@ -61,7 +61,7 @@ void bin_printRegister(FILE* dest, DataRegister dr);
 void bin_printEmpty(FILE* dest, int size);
 
 /** Reads a data register from binary source, and update the number of DiskPages accessed. */
-int bin_readRegister(FILE* bin, DataRegister* dr);
+int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas);
 
 /** Load header info from bin file */
 void bin_loadHeader(FILE* bin, HeaderRegister* hr);
@@ -80,6 +80,9 @@ void bin_overwriteRegister(FILE* bin, DataRegister dr, int64_t offset, int delta
 
 /** Set the HeaderRegister status to `status` */
 void bin_setHeaderStatus(FILE* bin, char status);
+
+/** ---- not used ---- Updates the chaining of a data register */
+void bin_updateChaining(FILE* bin, RegOffset* vec, int qtt);
 
 /** Returns the size of dr */
 int register_size(DataRegister dr);

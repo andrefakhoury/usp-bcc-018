@@ -4,7 +4,7 @@ CFLAGS = -I include/ -std=c99 -Wall -g
 all:
 	gcc -o main src/*.c $(CFLAGS)
 ifdef f
-	cp binarios/*.bin ./
+	cp binarios/* ./
 endif
 
 # `make run f=1` vai rodar o codigo pra entrada do 1
@@ -37,15 +37,15 @@ endif
 # `make bin f=1` vai mostrar a diferenca binaria do esperado do 1
 bin:
 ifdef f
-	vbindiff binarios/binario-$(f)-depois.bin binario-$(f).bin
+	vbindiff binarios/binario-$(f)-depois.index binario-$(f).index
 else
 	echo "Especifique o caso de teste com f=N"
 endif
 
 # `make clean` vai limpar tudo que eh inutil
 clean:
-	touch 1.bin out main T4.zip;
-	rm *.bin ; rm out ; rm main ; rm T4.zip
+	touch 1.bin 1.index out main T4.zip;
+	rm *.bin* ; rm out ; rm main ; rm T4.zip ; rm *.index
 
 .PHONY:
 	all clean
