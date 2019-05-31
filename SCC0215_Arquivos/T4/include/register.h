@@ -72,8 +72,8 @@ void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved);
 /** Deletes register from binary stream */
 void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t offset, int64_t nextOffset);
 
-/** Insert a register in binary stream */
-void bin_addRegister(FILE* bin, DataRegister dr);
+/** Insert a register in binary stream. Returns new byteOffset of register */
+int64_t bin_addRegister(FILE* bin, DataRegister dr);
 
 /** Overwrite some register, filling empty the size difference */
 void bin_overwriteRegister(FILE* bin, DataRegister dr, int64_t offset, int delta);

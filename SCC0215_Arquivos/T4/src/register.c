@@ -313,7 +313,7 @@ void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t 
 }
 
 /** Insert a register in binary stream */
-void bin_addRegister(FILE* bin, DataRegister dr) {
+int64_t bin_addRegister(FILE* bin, DataRegister dr) {
 	fseek(bin, 1, SEEK_SET);
 
 	int64_t offset, lastOffset = ftell(bin), nextOffset;
@@ -385,9 +385,13 @@ void bin_addRegister(FILE* bin, DataRegister dr) {
 		fseek(bin, finalOffset, SEEK_SET);
 		bin_overwriteOffset(bin, finalNextOffset, finalLastOffset, finalOffset);
 	}
+
+	int64_t newOffset = ftell(bin);
 	
 	// with the file pointer at the right place, just print the register
 	bin_printRegister(bin, dr);
+
+	return newOffset;
 }
 
 /** Overwrite some register, filling empty the size difference */
