@@ -30,11 +30,11 @@ void index_loadHeader(FILE* fp, HeaderIndex* hi) {
     fseek(fp, MAXPAGE, SEEK_SET);
 }
 
-/** Reads a index register */
-int index_readRegister(FILE* fp, DataIndex* di, int* qttDiskPage) {
+/** Reads a index register. Returns wheter EOF is reached */
+int index_readRegister(FILE* fp, DataIndex* di, int* numPaginas) {
     int lastPage = (ftell(fp) + MAXPAGE - 1) / MAXPAGE;
 
-    if (feof(fp)) {
+    if (feof(fp)) { // end of file
         return 0;
     }
 
@@ -45,9 +45,10 @@ int index_readRegister(FILE* fp, DataIndex* di, int* qttDiskPage) {
         return 0;
     }
 
+    // update qtt of disk pages
     int thisPage = (ftell(fp) + MAXPAGE - 1) / MAXPAGE;
-    if (qttDiskPage != NULL) {
-        (*qttDiskPage) += thisPage != lastPage;
+    if (numPaginas != NULL) {
+        (*numPaginas) += thisPage != lastPage;
     }
     
     return 1;
@@ -58,12 +59,14 @@ void index_readIndexToVector(FILE* fp, DataIndex** indexVector, int* qttIndex) {
     DataIndex *indexVectorAux = NULL, di;
 	int qttIndexAux = 0;
 
+    // read every index
 	while(index_readRegister(fp, &di, NULL)) {
 		qttIndexAux++;
 		indexVectorAux = realloc(indexVectorAux, qttIndexAux * sizeof(DataIndex));
 		indexVectorAux[qttIndexAux-1] = di;
 	}
 
+    // update parameters asked
     *indexVector = indexVectorAux;
     *qttIndex = qttIndexAux;
 }

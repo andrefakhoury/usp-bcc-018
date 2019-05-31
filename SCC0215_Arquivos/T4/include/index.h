@@ -32,7 +32,7 @@ void index_printRegister(FILE* fp, DataIndex di);
 void index_loadHeader(FILE* fp, HeaderIndex* hi);
 
 /** Reads a index register */
-int index_readRegister(FILE* fp, DataIndex* di, int* qttDiskPage);
+int index_readRegister(FILE* fp, DataIndex* di, int* numPaginas);
 
 /** Reads index file and push elements to vector */
 void index_readIndexToVector(FILE* fp, DataIndex** indexVector, int* qttIndex);

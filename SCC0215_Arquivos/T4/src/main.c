@@ -921,7 +921,7 @@ int reg_cmpName(const void* reg_1, const void* reg_2) {
 	DataIndex dr2 = *(DataIndex*)reg_2;
 
 	int cmp = strcmp(dr1.chaveBusca, dr2.chaveBusca);
-	if (cmp == 0) {
+	if (cmp == 0) { // strings are equal, sort by byteoffset
 		return dr1.byteOffset - dr2.byteOffset;
 	} else {
 		return cmp;
@@ -935,14 +935,15 @@ void reg_readAndSortIndex(FILE* bin, DataIndex** dataIndexVec, int* numRegister,
 	DataRegister dr;
 	*numRegister = 0;
 
-	int64_t offset = ftell(bin);
+	int64_t offset = ftell(bin); // stores offset of next register
 
 	while (bin_readRegister(bin, &dr, NULL)) {
-		if (!checkRegister(dr)) {
+		if (!checkRegister(dr)) { // invalid register
 			offset = ftell(bin);
 			continue;
 		}
 
+		// add register to vector
 		(*numRegister)++;
 		*dataIndexVec = realloc(*dataIndexVec, (*numRegister) * sizeof(DataIndex));
 		
@@ -950,14 +951,16 @@ void reg_readAndSortIndex(FILE* bin, DataIndex** dataIndexVec, int* numRegister,
 		strcpy((*dataIndexVec)[(*numRegister)-1].chaveBusca, dr.nomeServidor.desc);
 		str_fillEmpty((*dataIndexVec)[(*numRegister)-1].chaveBusca, MAXINDEXSTR, 0);
 
+		// update offset
 		offset = ftell(bin);
 	}
 
+	// sort values
 	qsort(*dataIndexVec, *numRegister, sizeof(DataIndex), compareRegister);
 }
 
 /** Print data from a index vector to desired binary stream */
-void reg_printRegVecIndex(FILE* bin, DataIndex* dataIndexVec, int numRegister) {
+void index_printRegVecIndex(FILE* bin, DataIndex* dataIndexVec, int numRegister) {
 	for (int i = 0; i < numRegister; i++) {
 		index_printRegister(bin, dataIndexVec[i]);
 	}
@@ -969,18 +972,19 @@ void bin_createIndexReg() {
 	scanf(" %s %s", fileNameIn, fileNameIndex);
 
 	FILE* fpIn = fopen(fileNameIn, "rb");
-	if (fpIn == NULL) {
+	if (fpIn == NULL) { // invalid file
 		printf("Falha no processamento do arquivo.\n");
 		return;
 	}
 
 	FILE* fpIndex = fopen(fileNameIndex, "wb");
-	if (fpIndex == NULL) {
+	if (fpIndex == NULL) { // invalid index file
 		printf("Falha no processamento do arquivo.\n");
 		fclose(fpIn);
 		return;
 	}
 
+	// set index status to invalid
 	HeaderIndex hi;
 	hi.status = '0';
 	hi.nroRegistros = 0;
@@ -989,7 +993,7 @@ void bin_createIndexReg() {
 	HeaderRegister hr;
 	bin_loadHeader(fpIn, &hr);
 
-	// invalid status on second file
+	// invalid status on file
 	if (hr.status == '0') {
 		printf("Falha no processamento do arquivo.\n");
 		fclose(fpIn);
@@ -997,15 +1001,17 @@ void bin_createIndexReg() {
 		return;
 	}
 
-	// read input registers to vectors
+	// read input registers to vector
 	DataIndex *vecIn = NULL;
 	int numRegister = 0;
 	reg_readAndSortIndex(fpIn, &vecIn, &numRegister, checkNameRegister, reg_cmpName);
 	fclose(fpIn);
 
-	reg_printRegVecIndex(fpIndex, vecIn, numRegister);
+	// print everything to binary stream
+	index_printRegVecIndex(fpIndex, vecIn, numRegister);
 	free(vecIn);
 
+	// recover status
 	hi.status = '1';
 	hi.nroRegistros = numRegister;
 	index_updateHeader(fpIndex, hi);
@@ -1019,24 +1025,28 @@ void bin_createIndexReg() {
 int bin_searchBasedOnIndex(char* fileNameAux, char* fileNameIndexAux, char* fieldNameAux, char* fieldValueAux, int forcePrint) {
 	char fileName[MAXSTR], fileNameIndex[MAXSTR], fieldName[MAXSTR], fieldValue[MAXSTR];
 
+	// string already given
 	if (fileNameAux != NULL) {
 		strcpy(fileName, fileNameAux);
 	} else {
 		scanf(" %s", fileName);
 	}
 
+	// string already given
 	if (fileNameIndexAux != NULL) {
 		strcpy(fileNameIndex, fileNameIndexAux);
 	} else {
 		scanf(" %s", fileNameIndex);
 	}
 
+	// string already given
 	if (fieldNameAux != NULL) {
 		strcpy(fieldName, fieldNameAux);
 	} else {
 		scanf(" %s", fieldName);
 	}
 
+	// string already given
 	if (fieldValueAux != NULL) {
 		strcpy(fieldValue, fieldValueAux);
 	} else {
@@ -1044,13 +1054,13 @@ int bin_searchBasedOnIndex(char* fileNameAux, char* fileNameIndexAux, char* fiel
 	}
 
 	FILE* fp = fopen(fileName, "rb");
-	if (fp == NULL) {
+	if (fp == NULL) { // invalid file
 		printf("Falha no processamento do arquivo.\n");
 		return 0;
 	}
 
 	FILE* fpIndex = fopen(fileNameIndex, "rb");
-	if (fpIndex == NULL) {
+	if (fpIndex == NULL) { // invalid index file
 		printf("Falha no processamento do arquivo.\n");
 		fclose(fp);
 		return 0;
@@ -1059,7 +1069,7 @@ int bin_searchBasedOnIndex(char* fileNameAux, char* fileNameIndexAux, char* fiel
 	HeaderIndex hi;
 	index_loadHeader(fpIndex, &hi);
 
-	if (hi.status == '0') {
+	if (hi.status == '0') { // invalid index status
 		printf("Falha no processamento do arquivo.\n");
 		fclose(fp);
 		fclose(fpIndex);
@@ -1069,7 +1079,7 @@ int bin_searchBasedOnIndex(char* fileNameAux, char* fileNameIndexAux, char* fiel
 	HeaderRegister hr;
 	bin_loadHeader(fp, &hr);
 
-	if (hr.status == '0') {
+	if (hr.status == '0') { // invalid status
 		printf("Falha no processamento do arquivo.\n");
 		fclose(fp);
 		fclose(fpIndex);
@@ -1078,7 +1088,7 @@ int bin_searchBasedOnIndex(char* fileNameAux, char* fileNameIndexAux, char* fiel
 
 	char tag = reg_getTag(hr, fieldName);
 
-	if (tag == '#') {
+	if (tag == '#') { // invalid tag given
 		printf("Falha no processamento do arquivo.\n");
 		fclose(fp);
 		fclose(fpIndex);
@@ -1087,9 +1097,10 @@ int bin_searchBasedOnIndex(char* fileNameAux, char* fileNameIndexAux, char* fiel
 
 	int numPaginas = 1, numPaginasIndex = 1; // number of acessed diskpages
 	int numRegister = 0; // number of different registers found
-	int64_t *registerPositions = NULL;
-
+	int64_t *registerPositions = NULL; // vector of all offsets
 	DataIndex di;
+	
+	// read from index file and compares to desired value
 	while(index_readRegister(fpIndex, &di, &numPaginasIndex)) {
 		if (!strcmp(di.chaveBusca, fieldValue)) {
 			numRegister++;
@@ -1119,11 +1130,12 @@ int bin_searchBasedOnIndex(char* fileNameAux, char* fileNameIndexAux, char* fiel
 
 	int ret = 0; // auxiliar variable to set return value
 
-	if (numRegister == 0) {
+	if (numRegister == 0) { // no registers found
 		printf("Registro inexistente.\n");
 		ret = -1;
 	}
-	if (forcePrint || ret == 0) {
+
+	if (forcePrint || ret == 0) { // print number of disk accesses
 		printf("Número de páginas de disco para carregar o arquivo de índice: %d\n", numPaginasIndex);
 		printf("Número de páginas de disco para acessar o arquivo de dados: %d\n", numPaginas);
 
@@ -1134,6 +1146,7 @@ int bin_searchBasedOnIndex(char* fileNameAux, char* fileNameIndexAux, char* fiel
 	return ret;
 }
 
+/** Remove register by its byte offset */
 void reg_removeByOffset(FILE* fp, int64_t offset, RegOffset** vecOffset, int* qttRemoved) {
 	DataRegister dr;
 
@@ -1149,8 +1162,7 @@ void reg_removeByOffset(FILE* fp, int64_t offset, RegOffset** vecOffset, int* qt
 
 /** Gets interval [i, j) where value given is equal to vector range. */
 void index_binarySearch(DataIndex* vecIndex, int n, char* value, int* i, int* j) {
-	*i = *j = -1;
-
+	// basic binary search algorithm
 	int lo = 0, hi = n-1;
 	while (lo < hi) {
 		int mi = (lo + hi) / 2;
@@ -1161,19 +1173,24 @@ void index_binarySearch(DataIndex* vecIndex, int n, char* value, int* i, int* j)
 		}
 	}
 
+	// register not found
 	if (strcmp(value, vecIndex[hi].chaveBusca) != 0) {
+		*i = *j = -1;
 		return;
 	}
 
+	// go through all the registers less than j, but equal to value
 	*i = *j = hi;
 	while (*i > -1 && !strcmp(value, vecIndex[*i].chaveBusca)) {
 		*i -= 1;
 	}
 
+	// adjust the interval [i, j)
 	*i += 1;
 	*j += 1;
 }
 
+/** Erase positions [l, l+qtt] from vector */
 void index_eraseVector(DataIndex** vec, int* n, int l, int qtt) {
 	for (int i = 0; i < qtt; i++) {
 		for (int j = l; j < (*n) - 1; j++) {
@@ -1186,6 +1203,7 @@ void index_eraseVector(DataIndex** vec, int* n, int l, int qtt) {
 	*vec = realloc(*vec, (*n) * sizeof(DataIndex));
 }
 
+/** Push element to vector */
 void index_pushVector(DataIndex** vec, int* n, DataIndex di) {
 	(*n)++;
 	*vec = realloc(*vec, sizeof(DataIndex) * (*n));
@@ -1273,13 +1291,13 @@ void bin_removeRegUpdateIndex() {
 		str_removeQuotes(fieldValue, strlen(fieldValue)); // input can contain quotes
 
 		int l, r;
-		index_binarySearch(indexVector, qttIndex, fieldValue, &l, &r);
+		index_binarySearch(indexVector, qttIndex, fieldValue, &l, &r); // get interval of valid values
 
-		for (int i = l; i < r; i++) {
+		for (int i = l; i < r; i++) { // remove everything
 			reg_removeByOffset(fp, indexVector[i].byteOffset, &vecOffset, &qttRemoved);
 		}
 
-		if (l != -1 && r != -1) {
+		if (l != -1 && r != -1) { // updates vector
 			index_eraseVector(&indexVector, &qttIndex, l, r - l);
 		}
 	}
@@ -1296,9 +1314,10 @@ void bin_removeRegUpdateIndex() {
 	index_printHeader(fpIndex, hi);
 
 	// refill index file
-	reg_printRegVecIndex(fpIndex, indexVector, qttIndex);
+	index_printRegVecIndex(fpIndex, indexVector, qttIndex);
 	free(indexVector);
 
+	// update index header
 	hi.nroRegistros = qttIndex;
 	hi.status = '1';
 	index_updateHeader(fpIndex, hi);
@@ -1365,12 +1384,12 @@ void bin_addRegUpdateIndex() {
 
 	/** Add N times */
 	for (int i = 0; i < n; i++) {
-		DataRegister dr = std_scanRegister();
+		DataRegister dr = std_scanRegister(); // reads register
 		DataIndex di;
-		di.byteOffset = bin_addRegister(fp, dr);
+		di.byteOffset = bin_addRegister(fp, dr); // add and gets the offset
 		strcpy(di.chaveBusca, dr.nomeServidor.desc);
 
-		if (dr.nomeServidor.size > 0) {
+		if (dr.nomeServidor.size > 0) { // valid input to keep on index
 			str_fillEmpty(di.chaveBusca, MAXINDEXSTR, 0);
 			index_pushVector(&indexVector, &qttIndex, di);
 		}
@@ -1386,9 +1405,10 @@ void bin_addRegUpdateIndex() {
 	index_printHeader(fpIndex, hi);
 
 	// refill index file
-	reg_printRegVecIndex(fpIndex, indexVector, qttIndex);
+	index_printRegVecIndex(fpIndex, indexVector, qttIndex);
 	free(indexVector);
 
+	// updates index header
 	hi.nroRegistros = qttIndex;
 	hi.status = '1';
 	index_updateHeader(fpIndex, hi);
@@ -1399,22 +1419,26 @@ void bin_addRegUpdateIndex() {
 	bin_printScreenClosed(fileNameIndex);
 }
 
+/** Compare access to disk on two different ways */
 void bin_compareDiskAcces() {
 	char fileName[MAXSTR], fileNameIndex[MAXSTR], fieldName[MAXSTR], fieldValue[MAXSTR];
 	scanf(" %s %s %s %[^\n\r]", fileName, fileNameIndex, fieldName, fieldValue);
 
+	// test without index help
 	printf("*** Realizando a busca sem o auxílio de índice\n");
 	int numberWithout = bin_searchReg(fileName, fieldName, fieldValue, 1);
 	if (numberWithout == 0) {
 		return;
 	}
 
+	// test using strongly connected index
 	printf("*** Realizando a busca com o auxílio de um índice secundário fortemente ligado\n");
 	int numberWith = bin_searchBasedOnIndex(fileName, fileNameIndex, fieldName, fieldValue, 1);
 	if (numberWith == 0) {
 		return;
 	}
 
+	// prints difference
 	printf("\nA diferença no número de páginas de disco acessadas: %d\n", numberWithout - numberWith);
 }
 
