@@ -7,3 +7,6 @@ run:
 test:
 	./main < casos/$(f).in > out
 	diff -w casos/$(f).out	
+
+valgrind:
+	valgrind ./main < casos/$(f).in
