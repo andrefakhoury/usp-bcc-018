@@ -6,7 +6,10 @@ run:
 
 test:
 	./main < casos/$(f).in > out
-	diff -w casos/$(f).out	
+	diff -w casos/$(f).out out
 
 valgrind:
 	valgrind ./main < casos/$(f).in
+
+copy:
+	mv ../../../../../Downloads/*.c ./
