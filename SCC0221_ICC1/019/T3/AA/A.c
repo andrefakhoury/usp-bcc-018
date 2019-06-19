@@ -1,258 +1,114 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
+#include <stdlib.h>
 
-typedef struct _ponto{
-    int linha;
-    int coluna;
-}ponto;
+float absolute(float n){ // fiz uma função para obter valores absolutos (sem nenhum motivo por que eu poderia ter usado abs())
 
-typedef struct __medpontos{
-    double media;
-    double soma;
-    double n_seg;
-}Smedia;
+	if(n<0) n= n*-1;
 
-char* leitura_inicial(int *n);
-int**  abrir_arquivo(char *nome_arquivo,int *linhas,int *colunas);
-int** aloca_int(int linhas,int colunas,int n);
-void repeticao(int n,int **imagem,int **imagem_segmentada,int linhas,int colunas);
-Smedia segmentacao(int **imagem,int **imagem_segmentada,ponto inicio,int criterio,int regiao,int linhas,int colunas,Smedia inicial);
-void borda(int **imagem_segmentada,int linhas,int colunas);
-void limpar(int **matriz,int linhas,int colunas);
-
-char* leitura_inicial(int *n)
-{
-    char* nome_arquivo;
-    scanf(" %ms",&nome_arquivo); //FREE
-    scanf("%d",n);
-    return nome_arquivo;
+	return n;
 }
 
-int**  abrir_arquivo(char *nome_arquivo,int *linhas,int *colunas)
-{
-    FILE *arquivo;
-    int **imagem,i,j;
-    if((arquivo = fopen(nome_arquivo,"r"))==NULL)
-    {
-        printf("Erro na abertura!\n");
-        exit(1);
-    }
-
-    fscanf(arquivo,"%*s %d %d %*d",colunas,linhas);
-
-    imagem = aloca_int(*linhas,*colunas,0);
-
-    //imagem = (int**) malloc(sizeof(int*)*(*linhas)); /
-
-    //for(i=0;i<*linhas;i++)
-    //{
-    //    imagem[i]= (int*) malloc(sizeof(int)*(*colunas)); 
-    //}
-
-    for(i=0;i<*linhas;i++)
-    {
-        for(j=0;j<*colunas;j++)
-        {
-            fscanf(arquivo,"%d",&imagem[i][j]);
-            //printf("%d ",imagem[i][j]);
-        }
-        //printf("\n");
-    }
-
-    fclose(arquivo);
-    return imagem;
+void postergar(FILE* arquivo){ //nessa função eu ignoro as informações irrelevantes do inicio de cada imagem
+	char trash;
+	do{
+		trash= (char) fgetc(arquivo);
+	}while(trash != '\n' && trash != '\r');
 }
 
-int** aloca_int(int linhas,int colunas,int n)
-{
-    int **matriz;
-    int i,j;
-    matriz = (int**) malloc(sizeof(int*)*linhas);
+void segmentar(int linhas, int colunas, int y, int x, int* parametro, int* m, int criterio, int* pixel[colunas]){ // nessa função eu faço o tratamento dos pixels da imagem
+	
 
-    for(i=0;i<linhas;i++)
-    {
-        matriz[i]= (int*) malloc(sizeof(int)*colunas);
-    }
+	*m+=*(*(pixel+y)+x);                  //o m e o parametro são variaveis auxiliares para que eu possa calcular a media acumulativa de cada segmentação
+	*parametro= *parametro+1;
+	float media = *m / (float) *parametro;
 
-    if(n==1)
-    {
-        for(i=0;i<linhas;i++)
-        {
-            for(j=0;j<colunas;j++)
-            {
-                matriz[i][j]=0;
-            }
-        }
-    }
+	*(*(pixel+y)+x)=-1;	
 
-    return matriz;
+	if (y-1>=0 && *(*(pixel+y-1)+x)>=0){                                        
+		if(absolute( *(*(pixel+y-1)+x)-media ) <= criterio){
+			segmentar(linhas, colunas, y-1, x, parametro, m, criterio, pixel);
+		}
+	}
+
+	if (x+1<colunas && *(*(pixel+y)+x+1)>=0){
+		if(absolute( *(*(pixel+y)+x+1)-media ) <= criterio){
+			segmentar(linhas, colunas, y, x+1, parametro, m, criterio, pixel);
+		}
+	}
+
+	if (y+1<linhas && *(*(pixel+y+1)+x)>=0){
+		if(absolute( *(*(pixel+y+1)+x)-media ) <= criterio){
+			segmentar(linhas, colunas, y+1, x, parametro, m, criterio, pixel);
+		}
+	}
+
+	if (x-1>=0 && *(*(pixel+y)+x-1)>=0){
+		if(absolute( *(*(pixel+y)+x-1)-media ) <= criterio){
+			segmentar(linhas, colunas, y, x-1, parametro, m, criterio, pixel);
+		}
+	}
 }
 
-void repeticao(int n,int **imagem,int **imagem_segmentada,int linhas,int colunas)
-{
-    int i;
-    ponto inicio;
-    int criterio;
-    Smedia dados;
 
 
-    for(i=1;i<=n;i++)
-    {
-        scanf("%d %d %d",&inicio.linha,&inicio.coluna,&criterio);
-        dados.soma=0;
-        dados.n_seg = 0;
-        segmentacao(imagem,imagem_segmentada,inicio,criterio,i,linhas,colunas,dados);
-    }
-    return;
-}
+int main(){
+	
+	char nome_do_arquivo[11];
+	fgets(nome_do_arquivo, 11, stdin);
 
-Smedia segmentacao(int **imagem,int **imagem_segmentada,ponto inicio,int criterio,int regiao,int linhas,int colunas,Smedia dados)
-{
-    ponto prox;
-   // printf("%d %d %d\n",inicio.linha,inicio.coluna,criterio);
-    if(imagem_segmentada[inicio.linha][inicio.coluna]==0)
-    {
-        imagem_segmentada[inicio.linha][inicio.coluna]=regiao;
-      //  printf("a media eh %.4lf no ponto %d %d\n",dados.media,inicio.linha,inicio.coluna);
-        dados.n_seg++;
-        dados.soma+=imagem[inicio.linha][inicio.coluna];
-        dados.media = dados.soma/dados.n_seg;
-      //  printf("%lf\n",dados.media);
-        if(inicio.linha!=0)
-        {
-          //  printf("o ponto %d %d analisou o de cima\n",inicio.linha,inicio.coluna);
-            if(fabs(imagem[inicio.linha-1][inicio.coluna] - dados.media) <= criterio && imagem_segmentada[inicio.linha-1][inicio.coluna]==0)
-            {
-                prox.linha=inicio.linha-1;
-                prox.coluna=inicio.coluna;
-                dados = segmentacao(imagem,imagem_segmentada,prox,criterio,regiao,linhas,colunas,dados);
-            }   
-        }
-        dados.media = dados.soma/dados.n_seg;
-       // printf("a media eh %.4lf no ponto %d %d depos de ver cima\n",dados.media,inicio.linha,inicio.coluna);
-        if(inicio.coluna!=colunas-1)
-        {
-           // printf("o ponto %d %d analisou o da direita\n",inicio.linha,inicio.coluna);
-            if (fabs(imagem[inicio.linha][inicio.coluna+1] - dados.media) <= criterio && imagem_segmentada[inicio.linha][inicio.coluna+1]==0)
-            {
-                prox.linha=inicio.linha;
-                prox.coluna=inicio.coluna+1;
-                dados = segmentacao(imagem,imagem_segmentada,prox,criterio,regiao,linhas,colunas,dados);
-            }
-            
-        }
-        dados.media = dados.soma/dados.n_seg;
-       // printf("a media eh %.4lf no ponto %d %d depos de ver direita\n",dados.media,inicio.linha,inicio.coluna);
-        if(inicio.linha!=linhas-1)
-        {
-           // printf("o ponto %d %d analisou o de baixo\n",inicio.linha,inicio.coluna);
-            if (fabs(imagem[inicio.linha+1][inicio.coluna] - dados.media) <= criterio && imagem_segmentada[inicio.linha+1][inicio.coluna]==0)
-            {
-                prox.linha=inicio.linha+1;
-                prox.coluna=inicio.coluna;
-                dados = segmentacao(imagem,imagem_segmentada,prox,criterio,regiao,linhas,colunas,dados);
-            }
-        }
-        dados.media = dados.soma/dados.n_seg;
-     //   printf("a media eh %.4lf no ponto %d %d depos de ver baixo\n",dados.media,inicio.linha,inicio.coluna);
-        if(inicio.coluna!=0)
-        {
-         //   printf("o ponto %d %d analisou o da esquerda\n",inicio.linha,inicio.coluna);
-            if (fabs(imagem[inicio.linha][inicio.coluna-1] - dados.media) <= criterio && imagem_segmentada[inicio.linha][inicio.coluna-1]==0)
-            {
-                prox.linha=inicio.linha;
-                prox.coluna=inicio.coluna-1;
-                dados = segmentacao(imagem,imagem_segmentada,prox,criterio,regiao,linhas,colunas,dados);
-            }
-        }
-        dados.media = dados.soma/dados.n_seg;
-      //  printf("a media eh %.4lf no ponto %d %d depos de ver esquerda\n",dados.media,inicio.linha,inicio.coluna);
-    }
-  //  printf("o ponto %d %d retornou %lf de media\n",inicio.linha,inicio.coluna,dados.media);
-    return dados;
-}
+	FILE* arquivo = fopen(nome_do_arquivo, "r");     // aqui eu abro o arquivo e garanto que não há erros
+	if(arquivo==NULL){
+		printf("ERROR!\n");
+		return 1;
+	}
 
-void borda(int **imagem_segmentada,int linhas,int colunas)
-{
-    int i,j;
-    bool foi = false;
+	postergar(arquivo);				                      			// eu excluo as informações dispensáveis com 'postergar' 
+													               // além disso, eu aloco as informações necessárias nas variáveis devidas
+	int linhas, colunas;
+	
+	fscanf(arquivo, "%d", &colunas);
+	fscanf(arquivo, "%d", &linhas);
 
-    for(i=0;i<linhas;i++)
-    {
-        for(j=0;j<colunas;j++)
-        {
-            foi=false;
-            if(i!=0)
-            {
-                if(imagem_segmentada[i-1][j]!=imagem_segmentada[i][j])
-                {
-                    foi=true;            
-                    printf("(%d, %d)\n",i,j);            
-                }
-            }
-            if(j!=colunas-1 && foi==false)
-            {
-                if(imagem_segmentada[i][j+1]!=imagem_segmentada[i][j])
-                {
-                    foi=true;
-                    printf("(%d, %d)\n",i,j);              
-                }
-            } 
-            if(i!=linhas-1 && foi==false)
-            {
-                if(imagem_segmentada[i+1][j]!=imagem_segmentada[i][j])
-                {
-                    foi=true;
-                    printf("(%d, %d)\n",i,j);               
-                }
-            } 
-            if(j!=0 && foi==false)
-            {
-                if(imagem_segmentada[i][j-1]!=imagem_segmentada[i][j])
-                {
-                    foi=true;
-                    printf("(%d, %d)\n",i,j);             
-                }
-            }  
-        }
-    }
-    return;
-}
 
-void limpar(int **matriz,int linhas,int colunas)
-{
-    int i;
+	fgetc(arquivo);
+	postergar(arquivo);
 
-    for(i=0;i<linhas;i++)
-    {
-        free(matriz[i]);
-    }
-    free(matriz);
-    return;
-}
 
-int main(void)
-{
-    char *nome_arquivo;
-    int n,**imagem,**imagem_segmentada,linhas,colunas;
+	int** pixel = malloc(linhas*sizeof(int*));
+	for(int a=0; a<linhas; a++){                  // nesses 2 for's, eu aloco o espaço na heap e armazeno neles as informações dos pixels da imagem
+		*(pixel+a) = malloc(sizeof(int)*colunas);
+	}
 
-    nome_arquivo=leitura_inicial(&n);
-    imagem=abrir_arquivo(nome_arquivo,&linhas,&colunas);
-    imagem_segmentada = aloca_int(linhas,colunas,1);
-    repeticao(n,imagem,imagem_segmentada,linhas,colunas);
-    /*for(i=0;i<linhas;i++)
-    {
-        for(j=0;j<colunas;j++)
-       {
-            printf("%d",imagem_segmentada[i][j]);
-        }
-        printf("\n");
-    }*/
-    borda(imagem_segmentada,linhas,colunas);
-    free(nome_arquivo);
-    limpar(imagem,linhas,colunas);
-    limpar(imagem_segmentada,linhas,colunas);
-    return 0;
+	
+	for(int b=0; b<linhas; b++){		
+		for(int c=0; c<colunas; c++){
+			fscanf(arquivo, "%d", (*(pixel+b)+c) );
+		}	 
+	}
+		
+	
+	int k;													// a partir daqui, eu começo o processo de segmentação da imagem
+	scanf("%d", &k);										// o usuário entra com a quantidade de entradas
+	int x[k], y[k], criterio[k];
+	for(int d=0; d<k; d++){
+		int parametro[1]={0}, m[1]={0};						
+		scanf("%d %d %d", (y+d),(x+d),(criterio+d) );      // e o programa recebe a posição do pixel inicial e o critério
+		segmentar( linhas ,colunas, y[d], x[d], parametro, m, criterio[d], pixel); //e manda as informações para a função de segmentação
+	}
+
+	for(int w=0; w<linhas; w++){
+		for(int q =0; q<colunas; q++){
+			printf("%d ", *(*(pixel+w) +q));
+		}
+		printf("\n");
+	}
+		
+
+	for(int z=0; z<linhas; z++){
+		free(*(	pixel+z));
+	}
+	free(pixel);
+	fclose(arquivo);
+
+
 }

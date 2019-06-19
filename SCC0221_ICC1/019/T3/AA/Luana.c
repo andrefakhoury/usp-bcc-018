@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <malloc.h>
 
 int pertence(int x,int y,int c,double* media,int** matriz){//função responsável por verificar se o pixel pertence à região
-	printf("%d %d %d %lf\n", x, y, c, *media);
 
 	double sub = matriz[x][y] - (*media);
-	if(fabs(sub) <= c){//se o pixel pertencer à região, a função retorna 0
+	if((sub<=c)&&(sub>=-c)){//se o pixel pertencer à região, a função retorna 0
 		return 0;
 	} else {
 		return 1;
@@ -14,24 +13,24 @@ int pertence(int x,int y,int c,double* media,int** matriz){//função responsáv
 }
 
 void busca(int x,int y,int c,double* media,int** matriz,int m,int n,int i,double* soma,double* q){//função reponsável pela busca de novos pixeis
-	if (matriz[x][y] == -1) return;
+
 
 	*soma = (*soma) + matriz[x][y];//soma dos pixeis já avaliados
 	*q = (*q) + 1;//número de pixeis já avaliados
-	*media = (*soma) / (*q);//cálculo da nova média
+	*media = (*soma)/ (*q);//cálculo da nova média
 	matriz[x][y] = -1;//os pixeis pertencentes à região têm seus valores alterados para -1
 
 	if(((x-1)>=0) && (matriz[x-1][y]!=-1)){//teste do pixel de cima
 		if(pertence(x-1,y,c,media,matriz)==0){//se a função retornar 0, o pixel pertence à região e uma nova busca é iniciada a partir dele
-			busca(x-1, y, c, media, matriz, m, n, i, soma, q);
+			busca(x-1,y,c,media,matriz,m,n,i,soma,q);
 		}
 	}
-	if(((y+1)<n) && (matriz[x][y+1]!=-1)){//teste do pixel da direita
+	if(((y+1)<m) && (matriz[x][y+1]!=-1)){//teste do pixel da direita
 		if(pertence(x,y+1,c,media,matriz)==0){
 			busca(x,y+1,c,media,matriz,m,n,i,soma,q);
 		} 
 	}
-	if(((x+1)<m) && (matriz[x+1][y]!=-1)){//teste do pixel de baixo
+	if(((x+1)<n) && (matriz[x+1][y]!=-1)){//teste do pixel de baixo
 		if(pertence(x+1,y,c,media,matriz)==0){
 			busca(x+1,y,c,media,matriz,m,n,i,soma,q);
 		}
@@ -70,9 +69,9 @@ int main(void) {
 
 	fscanf(arquivo," %*d");//inteiro ignorado
 
-	int** matriz = malloc(2*m*(sizeof(int*)));//é alocado o espaço necessário para o armazenamento da imagem
+	int** matriz = malloc(m*(sizeof(int*)));//é alocado o espaço necessário para o armazenamento da imagem
 	for(i=0;i<m;i++){
-		matriz[i] = malloc(2*(n*(sizeof(int))));
+		matriz[i] = malloc((n*(sizeof(int))));
 	}
 
 	for(i=0;i<m;i++){
