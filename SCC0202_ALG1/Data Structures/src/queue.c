@@ -36,6 +36,17 @@ int queue_insert(queue* q, var x) {
 	return 0;
 }
 
+int queue_remove(queue* q, var* v) {
+	if (queue_isEmpty(q)) return ERROR;
+
+	*v = q->begin->value;
+
+	node* next = q->begin->next;
+	free(q->begin);
+	q->begin = next;
+	return 0;
+}
+
 void queue_destroy(queue* q) {
 	if (q) {
 		node* n;
@@ -86,14 +97,3 @@ int queue_isFull(queue* q) {
 	return 1;
 }
 
-int queue_remove(queue* q, var* v) {
-	if (queue_isEmpty(q))
-		return ERROR;
-
-	*v = q->begin->value;
-
-	node* next = q->begin->next;
-	free(q->begin);
-	q->begin = next;
-	return 0;
-}

@@ -1,121 +1,172 @@
 # DEFINICOES
 
 - Arestas multiplas - mais de uma aresta pros dois vertices
-	. qd tem, o grafo eh um multigrafo
-	. senao, eh um grafo simples
+	
+	- qd tem, o grafo eh um multigrafo
+	
+	- senao, eh um grafo simples
 
 - Ordem
-	. Cardinalidade de vertices
+	
+	- Cardinalidade de vertices
 
 - Grafo Trivial
-	. ordem 1 e sem arestas
+	
+	- ordem 1 e sem arestas
 
 - Grafo vazio
-	. A=0, V=0
+	
+	- A=0, V=0
 
 - Vertices Adjacentes/vizinhos
-	. extremos de uma mesma aresta
+	
+	- extremos de uma mesma aresta
 
 - Arestas adjacentes/vizinhas
-	. possuem o mesmo vertice
+	
+	- possuem o mesmo vertice
 
 - Grafo completo
-	. todos os vertices sao adjacentes 2 a 2
-	. qts arestas: n*(n-1) / 2
-	. k2, k3, k4, k5...
+	
+	- todos os vertices sao adjacentes 2 a 2
+	
+	- qts arestas: n*(n-1) / 2
+	
+	- k2, k3, k4, k5...
 
 - Grafo orientado/dirigido/digrafo
-	. com setinha
-	. (x, y) eh divergente de x e convergente a y
+	
+	- com setinha
+	
+	- (x, y) eh divergente de x e convergente a y
 
 Laco
-	. self loop
+	
+	- self loop
 
 - Grau
-	. numero de arestas de um vertice
+	
+	- numero de arestas de um vertice
 
 - Grau de entrada
-	. qts arestas ENTRAM NO VERTICE
+	
+	- qts arestas ENTRAM NO VERTICE
 
 - Grau de saida
-	. qts arestas SAEM DO VERTICE
+	
+	- qts arestas SAEM DO VERTICE
 
 - Grafo regular
-	. se todos os vertices tem mesmo grau
+	
+	- se todos os vertices tem mesmo grau
 
 - Grafo ponderado/valorado
-	. com pesos nas arestas
+	
+	- com pesos nas arestas
 
 - Caminho entre x e y
-	. sequencia de vertices e arestas que unem x e y
-	. caminho de k vertices eh k-1 arestas e comprimento k-1
+	
+	- sequencia de vertices e arestas que unem x e y
+	
+	- caminho de k vertices eh k-1 arestas e comprimento k-1
 
 - Caminho simples
-	. todos os vertices forem distintos
+	
+	- todos os vertices forem distintos
 
 - Ciclo
-	. ciclo
+	
+	- ciclo
 
 - DAG
-	. directed acyclic graph
+	
+	- directed acyclic graph
 
 - Caminho Euleriano
-	. caminho que contem cada e toda aresta do grafo exatamente uma vez
-	. grafo eh euleriano se tiver um ciclo euleriano - chega e sai do msm vertice
-	. grafo euleriano eh conexo e todos os seus vertices tem grau par
+	
+	- caminho que contem cada e toda aresta do grafo exatamente uma vez
+	
+	- grafo eh euleriano se tiver um ciclo euleriano - chega e sai do msm vertice
+	
+	- grafo euleriano eh conexo e todos os seus vertices tem grau par
 
 - Caminho Hamiltoniano
-	. caminho que contem cada e todo vertice do grafo exatamente uma vez
-	. grafo eh hamiltoniano se tiver um ciclo hamiltoniano - chega e sai do msm vertice
+	
+	- caminho que contem cada e todo vertice do grafo exatamente uma vez
+	
+	- grafo eh hamiltoniano se tiver um ciclo hamiltoniano - chega e sai do msm vertice
 
 - Conexo e Desconexo
-	. Totalmente desconexo se for sem arestas
-	. Fortemente conexo quando existe um caminho para cada par de vertices (u, v) e (v, u)
+	
+	- Totalmente desconexo se for sem arestas
+	
+	- Fortemente conexo quando existe um caminho para cada par de vertices (u, v) e (v, u)
 
 - Grafo Bipartido
 
 - Isomorfismo
+	
 	- grafos que possuem a mesma coisa de jeito diferente
 
 - Arvore
-	. grafo conexo e aciclico
-	. arvore enraizada: arvore orientada a partir de uma raiz
+	
+	- grafo conexo e aciclico
+	
+	- arvore enraizada: arvore orientada a partir de uma raiz
 
 - Floresta
-	. Conjunto de arvoress
+	
+	- Conjunto de arvoress
 
 - Subgrafo
-	. parte do grafo
-	. subgrafo gerador - mantem todos os vertices, e tem algumas arestas
-		. desenhando arestas, eu chego no original
+	
+	- parte do grafo
+	
+	- subgrafo gerador - mantem todos os vertices, e tem algumas arestas
+		- desenhando arestas, eu chego no original
 
 - Arvore geradora
-	. subgrafo gerador que e uma arvore
+	
+	- subgrafo gerador que e uma arvore
 
 - Subgrafo induzido
-	. grafo tal que V' = V e A' contem todas as arestas A que tem duas extremidades em V'
+	
+	- grafo tal que V' = V e A' contem todas as arestas A que tem duas extremidades em V'
 
 - Hipergrafo
-	. grafo nao direcionado que possui arestas que conectam mais de 2 vertices
+	
+	- grafo nao direcionado que possui arestas que conectam mais de 2 vertices
 
 - Fleury - caminho euleriano
-	. checa se possivel: grau par em |v|-2 vertices
-	. escolhe u
-	. ve os adj de u, e escolhe o unico ou um q nao quebre a ponte
-	. remove a aresta (u, v)
-	. considera v como novo u
-	. continua
+	
+	- checa se possivel: grau par em |v|-2 vertices
+	
+	- escolhe u
+	
+	- ve os adj de u, e escolhe o unico ou um q nao quebre a ponte
+	
+	- remove a aresta (u, v)
+	
+	- considera v como novo u
+	
+	- continua
 
 - Welsh-Powell - coloracao
-	. ordena em ordem decrescente por grau
-	. vai percorrendo a lista com cor a partir de 1
-	. marca todos os que pode com aquela cor
-	. aumenta a cor em um e volta pro comeco
-
-
+	
+	- ordena em ordem decrescente por grau
+	
+	- vai percorrendo a lista com cor a partir de 1
+	
+	- marca todos os que pode com aquela cor
+	
+	- aumenta a cor em um e volta pro comeco
 
 - busca em profundidade
-	. aresta de arvore: (u,v) eh aresta de arvore se v eh descoberto na dfs percorrendo-se a aresta (u,v)
-	. aresta de retorno: (u,v) eh aresta de retorno se conecta u com o antecessor v (v eh cinza)
-	. aresta de avanco: (u,v) nao pertence a arvore, mas conecta u a um descendente v na arvore
-	. aresta de cruzamento: demais arestas, podem conectar vertices na msm arvore ou em arvores diferentes
+	
+	- aresta de arvore: (u,v) eh aresta de arvore se v eh descoberto na dfs percorrendo-se a aresta (u,v)
+	
+	- aresta de retorno: (u,v) eh aresta de retorno se conecta u com o antecessor v (v eh cinza)
+	
+	- aresta de avanco: (u,v) nao pertence a arvore, mas conecta u a um descendente v na arvore
+	
+	- aresta de cruzamento: demais arestas, podem conectar vertices na msm arvore ou em arvores diferentes

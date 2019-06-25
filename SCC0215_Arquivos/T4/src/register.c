@@ -11,23 +11,23 @@ void csv_loadHeader(FILE* source, HeaderRegister* hr) {
 
 	hr->tagCampo1 = 'i';
 	fscanf(source, "%[^,],", hr->desCampo1);
-	str_fillEmpty(hr->desCampo1, 40, 0);
+	str_fillEmpty(hr->desCampo1, MAXHEADERSTRING, 0); // clear unused spaces
 
 	hr->tagCampo2 = 's';
 	fscanf(source, "%[^,],", hr->desCampo2);
-	str_fillEmpty(hr->desCampo2, 40, 0);
+	str_fillEmpty(hr->desCampo2, MAXHEADERSTRING, 0);
 
 	hr->tagCampo3 = 't';
 	fscanf(source, "%[^,],", hr->desCampo3);
-	str_fillEmpty(hr->desCampo3, 40, 0);
+	str_fillEmpty(hr->desCampo3, MAXHEADERSTRING, 0);
 
 	hr->tagCampo4 = 'n';
 	fscanf(source, "%[^,],", hr->desCampo4);
-	str_fillEmpty(hr->desCampo4, 40, 0);
+	str_fillEmpty(hr->desCampo4, MAXHEADERSTRING, 0);
 
 	hr->tagCampo5 = 'c';
 	fscanf(source, "%[^\n\r] ", hr->desCampo5);
-	str_fillEmpty(hr->desCampo5, 40, 0);
+	str_fillEmpty(hr->desCampo5, MAXHEADERSTRING, 0);
 }
 
 /** Reads the data of source file to dr */
@@ -54,7 +54,7 @@ int csv_readRegister(FILE* fp, DataRegister* dr) {
 	fscanf(fp, ",");
 
 	if (fscanf(fp, "%[^,]14s", dr->telefoneServidor) == 0)
-		str_fillEmpty(dr->telefoneServidor, 14, 1);
+		str_fillEmpty(dr->telefoneServidor, MAXPHONE, 1);
 	fscanf(fp, ",");
 
 	if (fscanf(fp, "%[^,]s", dr->nomeServidor.desc) == 0)
@@ -89,19 +89,19 @@ void bin_printHeader(FILE* dest, HeaderRegister hr) {
 	fwrite(&hr.topoLista, 8, 1, dest);
 
 	fwrite(&hr.tagCampo1, 1, 1, dest);
-	fwrite(&hr.desCampo1, 40, 1, dest);
+	fwrite(&hr.desCampo1, MAXHEADERSTRING, 1, dest);
 
 	fwrite(&hr.tagCampo2, 1, 1, dest);
-	fwrite(&hr.desCampo2, 40, 1, dest);
+	fwrite(&hr.desCampo2, MAXHEADERSTRING, 1, dest);
 
 	fwrite(&hr.tagCampo3, 1, 1, dest);
-	fwrite(&hr.desCampo3, 40, 1, dest);
+	fwrite(&hr.desCampo3, MAXHEADERSTRING, 1, dest);
 
 	fwrite(&hr.tagCampo4, 1, 1, dest);
-	fwrite(&hr.desCampo4, 40, 1, dest);
+	fwrite(&hr.desCampo4, MAXHEADERSTRING, 1, dest);
 
 	fwrite(&hr.tagCampo5, 1, 1, dest);
-	fwrite(&hr.desCampo5, 40, 1, dest);
+	fwrite(&hr.desCampo5, MAXHEADERSTRING, 1, dest);
 
 	bin_printEmpty(dest, MAXPAGE - 214);
 }
@@ -109,29 +109,29 @@ void bin_printHeader(FILE* dest, HeaderRegister hr) {
 /** Writes data from dr to destination file */
 void bin_printRegister(FILE* dest, DataRegister dr) {
 
-	fwrite(&dr.removido, 1, 1, dest);
+	fwrite(&dr.removido, sizeof(char), 1, dest);
 	
 	int tamanhoRegistro = dr.tamanhoRegistro - 5; // ignoring the fixed sized
 
-	fwrite(&tamanhoRegistro, 4, 1, dest);
+	fwrite(&tamanhoRegistro, sizeof(int), 1, dest);
 
 	fwrite(&dr.encadeamentoLista, 8, 1, dest);
 
-	fwrite(&dr.idServidor, 4, 1, dest);
-	fwrite(&dr.salarioServidor, 8, 1, dest);
-	fwrite(&dr.telefoneServidor, 14, 1, dest);
+	fwrite(&dr.idServidor, sizeof(int), 1, dest);
+	fwrite(&dr.salarioServidor, sizeof(int64_t), 1, dest);
+	fwrite(&dr.telefoneServidor, MAXPHONE, 1, dest);
 
 	if (dr.nomeServidor.size > 0) {
 		int nomeSize = dr.nomeServidor.size + 1;
-		fwrite(&nomeSize, 4, 1, dest);
-		fwrite(&dr.nomeServidor.tag, 1, 1, dest);
+		fwrite(&nomeSize, sizeof(int), 1, dest);
+		fwrite(&dr.nomeServidor.tag, sizeof(char), 1, dest);
 		fwrite(&dr.nomeServidor.desc, dr.nomeServidor.size, 1, dest);
 	}
 
 	if (dr.cargoServidor.size > 0) {
 		int cargoSize = dr.cargoServidor.size + 1;
-		fwrite(&cargoSize, 4, 1, dest);
-		fwrite(&dr.cargoServidor.tag, 1, 1, dest);
+		fwrite(&cargoSize, sizeof(int), 1, dest);
+		fwrite(&dr.cargoServidor.tag, sizeof(char), 1, dest);
 		fwrite(&dr.cargoServidor.desc, dr.cargoServidor.size, 1, dest);
 	}
 }
@@ -165,7 +165,7 @@ int bin_readRegister(FILE* bin, DataRegister* dr, int* numPaginas) {
 
 	fread(&dr->idServidor, 4, 1, bin);
 	fread(&dr->salarioServidor, 8, 1, bin);
-	fread(&dr->telefoneServidor, 14, 1, bin);
+	fread(&dr->telefoneServidor, MAXPHONE, 1, bin);
 
 	int bytesReaden = 34;
 
@@ -241,19 +241,19 @@ void bin_loadHeader(FILE* bin, HeaderRegister* hr) {
 	fread(&hr->topoLista, 8, 1, bin);
 
 	fread(&hr->tagCampo1, 1, 1, bin);
-	fread(&hr->desCampo1, 40, 1, bin);
+	fread(&hr->desCampo1, MAXHEADERSTRING, 1, bin);
 
 	fread(&hr->tagCampo2, 1, 1, bin);
-	fread(&hr->desCampo2, 40, 1, bin);
+	fread(&hr->desCampo2, MAXHEADERSTRING, 1, bin);
 
 	fread(&hr->tagCampo3, 1, 1, bin);
-	fread(&hr->desCampo3, 40, 1, bin);
+	fread(&hr->desCampo3, MAXHEADERSTRING, 1, bin);
 
 	fread(&hr->tagCampo4, 1, 1, bin);
-	fread(&hr->desCampo4, 40, 1, bin);
+	fread(&hr->desCampo4, MAXHEADERSTRING, 1, bin);
 
 	fread(&hr->tagCampo5, 1, 1, bin);
-	fread(&hr->desCampo5, 40, 1, bin);
+	fread(&hr->desCampo5, MAXHEADERSTRING, 1, bin);
 }
 
 /** Update offset - 'where' now points to 'newOffset'. Then, seeks back to 'backup' */
@@ -275,7 +275,7 @@ void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved) {
 	(*vec)[0].regSize = 0;
 
 	int64_t offset;
-	fread(&offset, 8, 1, bin);
+	fread(&offset, sizeof(int64_t), 1, bin);
 
 	// update the vector until some register points to -1
 	while (offset != -1) {
@@ -285,13 +285,13 @@ void bin_loadOffsetVector(FILE* bin, RegOffset** vec, int* qttRemoved) {
 		fseek(bin, offset + 1, SEEK_SET);
 
 		int curSize;
-		fread(&curSize, 4, 1, bin);
+		fread(&curSize, sizeof(int), 1, bin);
 
 		// fill vector position
 		(*vec)[(*qttRemoved) - 1].offset = offset;
-		(*vec)[(*qttRemoved) - 1].regSize = curSize + 5;
+		(*vec)[(*qttRemoved) - 1].regSize = curSize + 5; // position + fixed size
 
-		fread(&offset, 8, 1, bin);
+		fread(&offset, sizeof(int64_t), 1, bin);
 	}
 }
 
@@ -300,13 +300,13 @@ void bin_removeRegister(FILE* bin, DataRegister dr, int64_t prevOffset, int64_t 
 	fseek(bin, offset, SEEK_SET);
 
 	// update offset chain
-	int64_t previous = prevOffset == 1 ? prevOffset : prevOffset + 5;
+	int64_t previous = prevOffset == 1 ? prevOffset : prevOffset + 5; // if its header offset, keep it; else, add the fixed reg size 
 	bin_overwriteOffset(bin, offset, previous, offset);
 
 	// set register to removed and update its nextOffset
-	fwrite(&dr.removido, 1, 1, bin);
-	fseek(bin, 4, SEEK_CUR);
-	fwrite(&nextOffset, 8, 1, bin);
+	fwrite(&dr.removido, sizeof(char), 1, bin);
+	fseek(bin, sizeof(int), SEEK_CUR);
+	fwrite(&nextOffset, sizeof(int64_t), 1, bin);
 
 	// overwrite register content with '@'
 	bin_printEmpty(bin, dr.tamanhoRegistro - 13);
@@ -317,7 +317,7 @@ int64_t bin_addRegister(FILE* bin, DataRegister dr) {
 	fseek(bin, 1, SEEK_SET);
 
 	int64_t offset, lastOffset = ftell(bin), nextOffset;
-	fread(&offset, 8, 1, bin);
+	fread(&offset, sizeof(int64_t), 1, bin);
 
 	int64_t finalOffset = -1, finalLastOffset = -1, finalNextOffset = -1;
 	int finalSize = -1, count = 0;
@@ -328,14 +328,14 @@ int64_t bin_addRegister(FILE* bin, DataRegister dr) {
 
 		fseek(bin, offset, SEEK_SET);
 		char status;
-		fread(&status, 1, 1, bin);
+		fread(&status, sizeof(char), 1, bin);
 
 		int curSize;
-		fread(&curSize, 4, 1, bin);
+		fread(&curSize, sizeof(int), 1, bin);
 		
 		int64_t auxOffset = ftell(bin);
 
-		fread(&nextOffset, 8, 1, bin);
+		fread(&nextOffset, sizeof(int64_t), 1, bin);
 
 		// register fits into removed
 		if (dr.tamanhoRegistro <= curSize + 5) {
@@ -404,18 +404,7 @@ void bin_overwriteRegister(FILE* bin, DataRegister dr, int64_t offset, int delta
 /** Set the HeaderRegister status to `status` */
 void bin_setHeaderStatus(FILE* bin, char status) {
 	fseek(bin, 0, SEEK_SET);
-	fwrite(&status, 1, 1, bin);
-}
-
-/** ---- not used ---- Updates the chaining of a data register */
-void bin_updateChaining(FILE* bin, RegOffset* vec, int qtt) {
-	for (int i = 0; i < qtt; i++) {
-		int64_t off = vec[i].offset == 1 ? vec[i].offset : vec[i].offset + 5;
-		int64_t nxt = i == qtt - 1 ? -1 : vec[i+1].offset;
-
-		fseek(bin, off, SEEK_SET);
-		fwrite(&nxt, 8, 1, bin);
-	}
+	fwrite(&status, sizeof(char), 1, bin);
 }
 
 /** Returns the size of dr */
@@ -423,11 +412,11 @@ int register_size(DataRegister dr) {
 	int size = 39; // fixed size
 
 	if (dr.nomeServidor.size > 1) {
-		size += 5 + dr.nomeServidor.size;
+		size += 5 + dr.nomeServidor.size; // size of lenght + tag + string
 	}
 
 	if (dr.cargoServidor.size > 1) {
-		size += 5 + dr.cargoServidor.size;
+		size += 5 + dr.cargoServidor.size; // size of lenght + tag + string
 	}
 
 	return size;
@@ -452,10 +441,10 @@ int register_check(char tag, char* value, HeaderRegister hr, DataRegister dr) {
 		sscanf(value, "%lf", &salario);
 		return salario == dr.salarioServidor;
 	} else if (tag == hr.tagCampo3) { // telefone
-		char aux[15];
-		for (int i = 0; i < 14; i++)
+		char aux[MAXPHONE + 1]; // auxiliar loop to avoid memory errors
+		for (int i = 0; i < MAXPHONE; i++)
 			aux[i] = dr.telefoneServidor[i];
-		aux[14] = '\0';
+		aux[MAXPHONE] = '\0';
 
 		if (!strcmp(value, "NULO")) {
 			return aux[0] == '@' || aux[0] == '\0';
@@ -507,7 +496,7 @@ void reg_updateByTag(DataRegister* dr, HeaderRegister hr, char tag, char value[]
 		*same = old.salarioServidor == dr->salarioServidor;
 	} else if (tag == hr.tagCampo3) { // telefone
 		if (!strcmp(value, "NULO")) {
-			str_fillEmpty(dr->telefoneServidor, 14, 1);
+			str_fillEmpty(dr->telefoneServidor, MAXPHONE, 1);
 		} else {
 			strcpy(dr->telefoneServidor, value);
 		}
@@ -551,10 +540,10 @@ void register_toStream(DataRegister dr) {
 		printf("         ");
 
 	// auxiliar string to work with telefone
-	char aux[15];
-	for (int i = 0; i < 14; i++)
+	char aux[MAXPHONE + 1];
+	for (int i = 0; i < MAXPHONE; i++)
 		aux[i] = dr.telefoneServidor[i];
-	aux[14] = '\0';
+	aux[MAXPHONE] = '\0';
 	
 	printf("%-14s ", aux);
 
@@ -578,11 +567,11 @@ void register_printFormatted(DataRegister dr, HeaderRegister hr) {
 	else printf("%s: valor nao declarado\n", hr.desCampo2);
 
 	if (strlen(dr.telefoneServidor) > 0) {
-		char aux[15];
-		for (int i = 0; i < 15; i++) {
+		char aux[MAXPHONE + 1];
+		for (int i = 0; i < MAXPHONE; i++) {
 			aux[i] = dr.telefoneServidor[i];
 		}
-		aux[14] = '\0';
+		aux[MAXPHONE] = '\0';
 		printf("%s: %14s\n", hr.desCampo3, aux);
 	}
 	else printf("%s: valor nao declarado\n", hr.desCampo3);
@@ -600,7 +589,7 @@ void register_printFormatted(DataRegister dr, HeaderRegister hr) {
 
 /** Fills empty chars of src string with @. If all is set, str is fullfilled. */
 void str_fillEmpty(char* src, int totalSize, int all) {
-	int i = all ? 1 : strlen(src) + 1;
+	int i = all ? 1 : strlen(src) + 1; // starting point
 	src[i-1] = '\0';
 
 	while (i < totalSize) {

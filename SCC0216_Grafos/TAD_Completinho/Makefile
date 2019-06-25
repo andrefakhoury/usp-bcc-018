@@ -1,5 +1,5 @@
 all:
-	gcc src/adjMatrix.c src/main.c -I include/ -o main -Wall -std=c99 -g
+	gcc src/adjList.c src/main.c -I include/ -o main -Wall -std=c99 -g
 
 fleury:
 	gcc src/adjMatrix.c src/fleury.c -I include/ -o main -Wall -std=c99 -g	

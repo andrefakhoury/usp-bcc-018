@@ -3,29 +3,29 @@
 
 /** Writes data from header to destination index stream */
 void index_printHeader(FILE* dest, HeaderIndex hi) {
-	fwrite(&hi.status, 1, 1, dest);
-	fwrite(&hi.nroRegistros, 4, 1, dest);
+	fwrite(&hi.status, sizeof(char), 1, dest);
+	fwrite(&hi.nroRegistros, sizeof(int), 1, dest);
 
-	bin_printEmpty(dest, MAXPAGE - 5);
+	bin_printEmpty(dest, MAXPAGE - 5); // MAXPAGE - bytes used on header
 }
 
 /** Update the HeaderIndex info */
 void index_updateHeader(FILE* fp, HeaderIndex hi) {
 	fseek(fp, 0, SEEK_SET);
-	fwrite(&hi.status, 1, 1, fp);
-	fwrite(&hi.nroRegistros, 4, 1, fp);
+	fwrite(&hi.status, sizeof(char), 1, fp);
+	fwrite(&hi.nroRegistros, sizeof(int), 1, fp);
 }
 
 /** Print a register to index stream */
 void index_printRegister(FILE* fp, DataIndex di) {
     fwrite(&di.chaveBusca, MAXINDEXSTR, 1, fp);
-    fwrite(&di.byteOffset, 8, 1, fp);
+    fwrite(&di.byteOffset, sizeof(int64_t), 1, fp);
 }
 
 /** Reads the index header */
 void index_loadHeader(FILE* fp, HeaderIndex* hi) {
-    fread(&hi->status, 1, 1, fp);
-    fread(&hi->nroRegistros, 4, 1, fp);
+    fread(&hi->status, sizeof(char), 1, fp);
+    fread(&hi->nroRegistros, sizeof(int), 1, fp);
 
     fseek(fp, MAXPAGE, SEEK_SET);
 }
@@ -39,7 +39,7 @@ int index_readRegister(FILE* fp, DataIndex* di, int* numPaginas) {
     }
 
     fread(&di->chaveBusca, MAXINDEXSTR, 1, fp);
-    fread(&di->byteOffset, 8, 1, fp);
+    fread(&di->byteOffset, sizeof(int64_t), 1, fp);
 
     if (feof(fp)) {
         return 0;

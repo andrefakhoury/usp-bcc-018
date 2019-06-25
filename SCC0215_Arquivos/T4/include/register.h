@@ -10,16 +10,22 @@
 /** Number of registers in a DiskPage */
 #define MAXPAGE 32000
 
+/** Number of char on header descriptions */
+#define MAXHEADERSTRING 40
+
+/** Number of char to the phone */
+#define MAXPHONE 14
+
 /** Struct for the HeaderRegister */
 typedef struct _Header {
 	char status;
 	int64_t topoLista;
 
-	char tagCampo1, desCampo1[40]; //idServidor
-	char tagCampo2, desCampo2[40]; //salarioServidor
-	char tagCampo3, desCampo3[40]; //telefoneServidor
-	char tagCampo4, desCampo4[40]; //nomeServidor
-	char tagCampo5, desCampo5[40]; //cargoServidor
+	char tagCampo1, desCampo1[MAXHEADERSTRING]; //idServidor
+	char tagCampo2, desCampo2[MAXHEADERSTRING]; //salarioServidor
+	char tagCampo3, desCampo3[MAXHEADERSTRING]; //telefoneServidor
+	char tagCampo4, desCampo4[MAXHEADERSTRING]; //nomeServidor
+	char tagCampo5, desCampo5[MAXHEADERSTRING]; //cargoServidor
 } HeaderRegister;
 
 /** Struct for the DataRegister */
@@ -30,7 +36,7 @@ typedef struct _Data {
 
 	int idServidor;
 	double salarioServidor;
-	char telefoneServidor[14];
+	char telefoneServidor[MAXPHONE];
 	
 	struct varSizeRegister {
 		int size;
@@ -80,9 +86,6 @@ void bin_overwriteRegister(FILE* bin, DataRegister dr, int64_t offset, int delta
 
 /** Set the HeaderRegister status to `status` */
 void bin_setHeaderStatus(FILE* bin, char status);
-
-/** ---- not used ---- Updates the chaining of a data register */
-void bin_updateChaining(FILE* bin, RegOffset* vec, int qtt);
 
 /** Returns the size of dr */
 int register_size(DataRegister dr);
