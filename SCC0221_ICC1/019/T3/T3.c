@@ -116,13 +116,6 @@ int main() {
 		dfs(x, y, &curSum, &curQtt, im, c, op, vis);
 	}
 
-	for (int i = 0; i < im.m; i++) {
-		for (int j = 0; j < im.n; j++) {
-			printf("%d ", vis[i][j]);
-		}
-		printf("\n");
-	}
-
 	// checa todos os pontos, verificando se sao bordas
 	for (int i = 0; i < im.m; i++) {
 		for (int j = 0; j < im.n; j++) {
