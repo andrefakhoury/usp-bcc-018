@@ -9,7 +9,7 @@ test:
 	diff -w out casos/$(f).out
 
 valgrind:
-	valgrind -v --leak-check=full ./main < casos/$(f).in > out
+	valgrind -v --leak-check=full --show-leak-kinds=all ./main < casos/$(f).in > out
 
 copy:
-	mv ../../../../../../Downloads/*.c ./
+	mv ../../../../../../Downloads/* ./
