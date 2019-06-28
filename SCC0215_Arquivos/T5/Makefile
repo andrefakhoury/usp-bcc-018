@@ -44,8 +44,8 @@ endif
 
 # `make clean` vai limpar tudo que eh inutil
 clean:
-	touch 1.bin 1.index out main T5.zip;
-	rm *.bin* ; rm out ; rm main ; rm T5.zip ; rm *.index
+	touch 1.bin 1.index out main T5.zip a.btree;
+	rm *.bin* ; rm out ; rm main ; rm T5.zip ; rm *.index; rm *.btree
 
 .PHONY:
 	all clean

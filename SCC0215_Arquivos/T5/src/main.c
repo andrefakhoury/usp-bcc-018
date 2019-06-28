@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include "register.h"
 #include "index.h"
+#include "btree.h"
 
 #define MAXSTR 256
 
@@ -1444,6 +1445,120 @@ void bin_compareDiskAcces() {
 	printf("\nA diferença no número de páginas de disco acessadas: %d\n", numberWithout - numberWith);
 }
 
+/** Create b-tree based on data file */
+void btree_create() {
+	char filenameIn[MAXSTR], filenameOut[MAXSTR];
+
+	scanf(" %s %s", filenameIn, filenameOut);
+
+	FILE *fpIn, *fpOut;
+	fpIn = fopen(filenameIn, "rb");
+
+	if (fpIn == NULL) {
+		printf("Falha no processamento do arquivo.\n");
+		return;
+	}
+
+	fpOut = fopen(filenameOut, "wb");
+	if (fpOut == NULL) {
+		fclose(fpIn);
+		printf("Falha no processamento do arquivo.\n");
+		return;
+	}
+
+	HeaderRegister hr;
+	bin_loadHeader(fpIn, &hr);
+	if (hr.status == '0') {
+		printf("Falha no processamento do arquivo.\n");
+		fclose(fpIn);
+		fclose(fpOut);
+		return;
+	}
+
+	HeaderBTree hbt;
+	hbt.status = '0';
+	hbt.rootNode = 0;
+	btree_printHeader(fpOut, hbt);
+
+	DataRegister dr;
+	int64_t offset = ftell(fpIn);
+	while (bin_readRegister(fpIn, &dr, NULL)) {
+		if (dr.removido == '*') {
+			offset = ftell(fpIn);
+			continue;
+		}
+
+		btree_insertRegister(fpOut, dr.idServidor, offset);
+		offset = ftell(fpIn);
+	}
+
+	btree_updateHeaderStatus(fpOut, '1');
+
+	fclose(fpOut);
+	bin_printScreenClosed(filenameOut);
+}
+
+void btree_search() {
+	char filenameData[MAXSTR], filenameBTree[MAXSTR];
+	char fieldName[MAXSTR], fieldValue[MAXSTR];
+	int idServidor;
+
+	scanf(" %s %s", filenameData, filenameBTree);
+	scanf(" %s %s", fieldName, fieldValue);
+
+	if (strcmp(fieldName, "idServidor")) {
+		printf("Falha no processamento do arquivo.\n");
+		return;
+	} else {
+		sscanf(fieldValue, "%d", &idServidor);
+	}
+
+	FILE *fpData, *fpBTree;
+	fpData = fopen(filenameData, "rb");
+
+	if (fpData == NULL) {
+		printf("Falha no processamento do arquivo.\n");
+		return;
+	}
+
+	fpBTree = fopen(filenameBTree, "rb");
+	if (fpBTree == NULL) {
+		fclose(fpData);
+		printf("Falha no processamento do arquivo.\n");
+		return;
+	}
+
+	HeaderRegister hr;
+	bin_loadHeader(fpData, &hr);
+
+	HeaderBTree ht;
+	btree_loadHeader(fpBTree, &ht);
+
+	if (hr.status == '0' || ht.status == '0') {
+		printf("Falha no processamento do arquivo.\n");
+		fclose(fpData);
+		fclose(fpBTree);
+		return;
+	}
+
+	int level = 0;
+	int64_t offset = btree_findRegister(fpBTree, ht, idServidor, &level);
+
+	if (offset == -1) {
+		printf("Registro inexistente.\n");
+	} else {
+		fseek(fpData, offset, SEEK_SET);
+		DataRegister dr;
+		bin_readRegister(fpData, &dr, NULL);
+		register_printFormatted(dr, hr);
+
+		printf("Número de níveis do índice árvore-B percorridos: %d\n", level);
+	}
+
+	fclose(fpData);
+	fclose(fpBTree);
+}
+
 /** Main function to manage function calls according to input option */
 int main() {
 	int op;
@@ -1477,9 +1592,13 @@ int main() {
 		bin_addRegUpdateIndex();
 	} else if (op == 14) {	// compare statistics between direct disk access and access with index file
 		bin_compareDiskAcces();
+	} else if (op == 15) { // create b-tree based on data file
+		btree_create();
+	} else if (op == 16) { // search specified registers on b-tree
+		btree_search();
 	} else { // invalid input
 		printf("Falha no processamento do arquivo.\n");
-	}	
+	}
 
 	return 0;
 }
