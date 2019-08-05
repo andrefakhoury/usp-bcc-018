@@ -12,7 +12,7 @@ typedef struct {
 	int m, n;	// nro de linhas e colunas
 } Imagem;
 
-int ordem[NUMVIZINHOS][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; // ordem de visita
+const int ordem[NUMVIZINHOS][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; // ordem de visita
 
 /** Aloca uma matriz na heap */ 
 int** alocaMatriz(int n, int m) {

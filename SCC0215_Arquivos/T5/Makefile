@@ -37,10 +37,13 @@ endif
 # `make bin f=1` vai mostrar a diferenca binaria do esperado do 1
 bin:
 ifdef f
-	vbindiff binarios/binario-$(f)-depois.index binario-$(f).index
+	vbindiff binarios/binario-$(f).btree binario-$(f).btree
 else
 	echo "Especifique o caso de teste com f=N"
 endif
+
+hex:
+	hexdump -Cv binario-$(f)
 
 # `make clean` vai limpar tudo que eh inutil
 clean:

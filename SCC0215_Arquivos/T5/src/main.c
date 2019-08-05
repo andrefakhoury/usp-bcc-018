@@ -1447,10 +1447,12 @@ void bin_compareDiskAcces() {
 
 /** Create b-tree based on data file */
 void btree_create() {
-	char filenameIn[MAXSTR], filenameOut[MAXSTR];
 
+	// scan file names
+	char filenameIn[MAXSTR], filenameOut[MAXSTR];
 	scanf(" %s %s", filenameIn, filenameOut);
 
+	// try to open files
 	FILE *fpIn, *fpOut;
 	fpIn = fopen(filenameIn, "rb");
 
@@ -1459,60 +1461,77 @@ void btree_create() {
 		return;
 	}
 
-	fpOut = fopen(filenameOut, "wb");
+	fpOut = fopen(filenameOut, "wb+");
 	if (fpOut == NULL) {
 		fclose(fpIn);
 		printf("Falha no processamento do arquivo.\n");
 		return;
 	}
 
+	// read the header register from input file
 	HeaderRegister hr;
 	bin_loadHeader(fpIn, &hr);
-	if (hr.status == '0') {
+	if (hr.status == '0') { // invalid status
 		printf("Falha no processamento do arquivo.\n");
 		fclose(fpIn);
 		fclose(fpOut);
 		return;
 	}
 
+	// print a new header to b-tree
 	HeaderBTree hbt;
-	hbt.status = '0';
-	hbt.rootNode = 0;
+	hbt.status = '0'; // invalid status
+	hbt.rootNode = -1; // invalid root
 	btree_printHeader(fpOut, hbt);
 
+	// jump the first page - only contains the header
+	fseek(fpIn, MAXPAGE, SEEK_SET);
+
+	// read all the registers from data file, and insert to b-tree
 	DataRegister dr;
 	int64_t offset = ftell(fpIn);
 	while (bin_readRegister(fpIn, &dr, NULL)) {
-		if (dr.removido == '*') {
+		if (dr.removido == '*') { // logically removed
 			offset = ftell(fpIn);
 			continue;
 		}
 
+		// insert to b-tree
 		btree_insertRegister(fpOut, dr.idServidor, offset);
 		offset = ftell(fpIn);
 	}
 
+	// update the status to valid
 	btree_updateHeaderStatus(fpOut, '1');
 
+	// close files
+	fclose(fpIn);
 	fclose(fpOut);
+
+	// print info from b-tree file
 	bin_printScreenClosed(filenameOut);
 }
 
+/** Search for specified registers on b-tree */
 void btree_search() {
+	// read filenames
 	char filenameData[MAXSTR], filenameBTree[MAXSTR];
-	char fieldName[MAXSTR], fieldValue[MAXSTR];
-	int idServidor;
-
 	scanf(" %s %s", filenameData, filenameBTree);
+
+	// read field names and values
+	char fieldName[MAXSTR], fieldValue[MAXSTR];
+	int idServidor; // key to find
 	scanf(" %s %s", fieldName, fieldValue);
 
+	// invalid field name (only idServidor was expected)
 	if (strcmp(fieldName, "idServidor")) {
 		printf("Falha no processamento do arquivo.\n");
 		return;
 	} else {
-		sscanf(fieldValue, "%d", &idServidor);
+		sscanf(fieldValue, "%d", &idServidor); // convert fieldValue to integer
 	}
 
+	// try to open files
 	FILE *fpData, *fpBTree;
 	fpData = fopen(filenameData, "rb");
 
@@ -1528,30 +1547,35 @@ void btree_search() {
 		return;
 	}
 
+	// test header info from both files
 	HeaderRegister hr;
 	bin_loadHeader(fpData, &hr);
 
 	HeaderBTree ht;
 	btree_loadHeader(fpBTree, &ht);
 
-	if (hr.status == '0' || ht.status == '0') {
+	if (hr.status == '0' || ht.status == '0') { // invalid status
 		printf("Falha no processamento do arquivo.\n");
 		fclose(fpData);
 		fclose(fpBTree);
 		return;
 	}
 
-	int level = 0;
+	int level = 0; // depth percurred on b-tree
+
+	// try to find the offset of key on b-tree index
 	int64_t offset = btree_findRegister(fpBTree, ht, idServidor, &level);
 
-	if (offset == -1) {
+	if (offset == -1) { // not found
 		printf("Registro inexistente.\n");
 	} else {
+		// found - read info from data file and print it
 		fseek(fpData, offset, SEEK_SET);
 		DataRegister dr;
 		bin_readRegister(fpData, &dr, NULL);
 		register_printFormatted(dr, hr);
 
+		// print qtt of levels of b-tree
 		printf("Número de níveis do índice árvore-B percorridos: %d\n", level);
 	}
 
@@ -1594,7 +1618,7 @@ int main() {
 		bin_compareDiskAcces();
 	} else if (op == 15) { // create b-tree based on data file
 		btree_create();
-	} else if (op == 16) { // search specified registers on b-tree
+	} else if (op == 16) { // search for specified registers on b-tree
 		btree_search();
 	} else { // invalid input
 		printf("Falha no processamento do arquivo.\n");
