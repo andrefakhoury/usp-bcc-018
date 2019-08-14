@@ -60,3 +60,26 @@ Heranças: seta ligando atores
 
 Exemplo nos slides
 
+## Descrição dos casos de uso ou Casos de Uso textuais
+
+### Formatos
+
+#### Resumido
+
+Resumo apenas com o cenário de sucesso principal
+
+##### Completo
+
+Várias sessões, completinho.
+
+- Atores
+
+- Interessados e interesses
+
+- Pré-condições
+
+- Pós-condições
+
+- Cenário sucesso
+
+- Sequências alternativas
