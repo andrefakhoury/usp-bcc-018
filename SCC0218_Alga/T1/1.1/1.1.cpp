@@ -1,3 +1,8 @@
+/**
+ * Dado um conjunto de tarefas, com prazos de entrega e o lucro aferido ao completar cada uma,
+ * encontra o lucro máximo obtido ao executar um conjunto de tarefas
+ */
+
 #include <bits/stdc++.h>
 using namespace std;
 
