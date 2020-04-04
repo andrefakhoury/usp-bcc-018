@@ -1,0 +1,14 @@
+
+ Performance counter stats for './atividade_1 i 10':
+
+           814.561      L1-dcache-loads                                             
+            34.932      L1-dcache-load-misses     #    4,29% of all L1-dcache hits  
+           543.311      branch-instructions                                         
+            15.113      branch-misses             #    2,78% of all branches        
+
+       0,001102553 seconds time elapsed
+
+       0,001129000 seconds user
+       0,000000000 seconds sys
+
+
