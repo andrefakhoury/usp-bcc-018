@@ -1,8 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+using Matrix = vector<vector<int>>;
+
 // loop interchange trick
-inline void mat_mult_interchange(vector<vector<int>> const& A, vector<vector<int>> const& B, vector<vector<int>>& C, int const n) {
+inline void mat_mult_interchange(Matrix const& A, Matrix const& B, Matrix& C, int const n) {
 	for (int i = 0; i < n; i++)
 		for (int k = 0; k < n; k++)
 			for (int j = 0; j < n; j++)
@@ -10,7 +12,7 @@ inline void mat_mult_interchange(vector<vector<int>> const& A, vector<vector<int
 }
 
 // loop unrolling trick
-inline void mat_mult_unrolling(vector<vector<int>> const& A, vector<vector<int>> const& B, vector<vector<int>>& C, int const n) {
+inline void mat_mult_unrolling(Matrix const& A, Matrix const& B, Matrix& C, int const n) {
 	for (int i = 0; i < n; i++)
 		for (int k = 0; k < n; k++)
 			for (int j = 0; j < n; j += 5) {
@@ -31,9 +33,9 @@ int main(int argc, char* argv[]) {
 	int n;
 	sscanf(argv[2], "%d", &n);
 
-	vector<vector<int>> a(n, vector<int>(n));
-	vector<vector<int>> b(n, vector<int>(n));
-	vector<vector<int>> c(n, vector<int>(n));
+	Matrix a(n, vector<int>(n));
+	Matrix b(n, vector<int>(n));
+	Matrix c(n, vector<int>(n));
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			a[i][j] = rand()%1000;

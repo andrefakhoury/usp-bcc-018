@@ -1,0 +1,19 @@
+André Luís Mendes Fakhoury
+SSC0547 - Engenharia de Segurança
+
+Lab. 2
+
+================================================
+1. Pesquise outras ferramentas para montar uma vpn.
+
+Também pode-se montar VPN com outras ferramentas como Algo, WireGuard, SoftEther, Streisand, StrongSwan.
+
+================================================
+2. Existe um modo de comunicação chamado TLS, que faz a permuta de chaves. Pesquise e faça a configuração do modo TLS neste laboratório.
+
+É possível configurar o OpenVPN utilizando o TLS em vez de utilizar uma chave compartilhada estática. O TLS é um protocolo de criptografia também simétrica, que faz um handshake utilizando PKI realizar a troca de chaves (Fonte e passo a passo da instalação: https://docs.netgate.com/pfsense/en/latest/book/openvpn/site-to-site-example-configuration-ssl-tls.html)
+
+================================================
+3. Qual a vantagem do uso do OpenVPN sobre o SSH?
+
+O OpenVPN é mais configurável que o SSH, então é mais poderoso e robusto. Quando se utiliza SSH, é necessário configurar cada aplicação para utilizar os proxys do túnel SSH, enquanto que com OpenVPN isto não é necessário - quando se utiliza OpenVPN, é possível configurar a máquina para operar como se estivesse na mesma rede almejada. Assim, embora o SSH seja mais fácil para ser inicialmente configurado, a OpenVPN configura diversas vantagens.
