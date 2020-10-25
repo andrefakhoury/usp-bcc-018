@@ -1,0 +1,34 @@
+\begin{thebibliography}{1}
+
+\bibitem{garey1979}
+Michael~R. Garey and David~S. Johnson.
+\newblock {\em Computers and Intractability - A Guide to the Theory of
+  NP-Completeness}.
+\newblock 1979.
+
+\bibitem{harel2004}
+David Harel and Yishai Feldman.
+\newblock {\em Algorithmics - Spirit of Computing}.
+\newblock Addison Wesley, 2004.
+
+\bibitem{karp1972}
+Richard~M. Karp.
+\newblock Reducibility among combinatorial problems.
+\newblock 1972.
+
+\bibitem{peng2016}
+Richard Peng.
+\newblock Cs 3510 design and analysis of algorithms - np-complete problems,
+  2016.
+
+\bibitem{sipster2013}
+Michael Sipster.
+\newblock {\em Introduction to the Theory of Computation}.
+\newblock 3rd edition, 2013.
+
+\bibitem{valeri2019}
+Túlio~Ferreira Valeri.
+\newblock Aplicabilidade do problema do caixeiro viajante na roteirização de
+  visitas de representantes de empresas aos clientes., 2019.
+
+\end{thebibliography}

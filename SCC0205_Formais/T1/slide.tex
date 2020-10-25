@@ -1,0 +1,375 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx,hyperref,icmc,url}
+
+\usepackage{pdfpages}
+\usepackage{caption}
+\usepackage{enumitem}
+
+\usepackage{multirow}
+\definecolor{blue(pigment)}{rgb}{0.2, 0.2, 0.6}
+
+% The title of the presentation:
+%  - first a short version which is visible at the bottom of each slide;
+%  - second the full title shown on the title slide;
+\title[Intratabilidade]{Intratabilidade}
+
+% Optional: a subtitle to be dispalyed on the title slide
+\subtitle{}
+
+% The author(s) of the presentation:
+%  - again first a short version to be displayed at the bottom;
+%  - next the full list of authors, which may include contact information;
+\author[André, Eduardo, Gustavo, Matheus, Thiago]{
+André Luís Mendes Fakhoury\\ Eduardo Dias Pennone\\ Gustavo Vinícius Vieira Silva Soares\\ Matheus Steigenberg Populim\\ Thiago Preischadt Pinheiro\\ \bigskip
+\textsc{SCC0205 - Teoria da Computação e Linguagens Formais}\\
+Prof. Diego Raphael Amancio
+}
+
+% The institute:
+%  - to start the name of the university as displayed on the top of each slide
+%    this can be adjusted such that you can also create a Dutch version
+%  - next the institute information as displayed on the title slide
+\institute[ICMC/USP]{ICMC - USP}
+
+% Add a date and possibly the name of the event to the slides
+%  - again first a short version to be shown at the bottom of each slide
+%  - second the full date and event name for the title slide
+\date[2020]{\footnotesize{Novembro de 2020}}
+
+\AtBeginSection[]
+{
+	\begin{frame}<beamer>{Sumário}
+	\tableofcontents[currentsection]
+\end{frame}
+}
+
+\begin{document}
+
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Sumário}
+\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introdução} %2min
+
+\begin{frame}
+\frametitle{Introdução}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Computação eficiente} %2min
+
+\begin{frame}
+\frametitle{Computação eficiente}
+\framesubtitle{Visão geral}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Classes P e NP}
+
+\begin{frame}
+\frametitle{Classes P e NP}
+\framesubtitle{Visão geral}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Hipóteses P $\neq$ NP}
+
+\begin{frame}
+\frametitle{Hipóteses P $\neq$ NP}
+\framesubtitle{Visão geral}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Reduções em tempo polinomial}
+
+\begin{frame}
+\frametitle{Reduções em tempo polinomial}
+\framesubtitle{Visão geral}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{NP-difícil}
+
+\begin{frame}
+\frametitle{NP-difícil}
+\framesubtitle{Visão geral}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{NP-completo}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Introdução}
+
+\begin{itemize}
+    \item $\bullet$ Década de 1970 - Stephen Cook e Leonid Levin
+    \item $\bullet$ Alguns problemas em NP possuem complexidade individual relacionada com toda a classe
+    \item $\bullet$ Caso um algoritmo em tempo polinomial exista para algum deles, todos os problemas em NP podem ser resolvidos em tempo polinomial
+\end{itemize}
+\bigskip
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Definição}
+
+
+\begin{block}{Definição}
+Uma linguagem $B$ é dita \textit{NP-completa} caso satisfaça estas duas características:
+\begin{itemize}
+	\item 1. $B$ está em $NP$;
+	\item 2. Todo $A$ em $NP$ é redutível em tempo polinomial para $B$.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Definição}
+
+Também pode-se definir a partir da classe NP-difícil:
+
+\begin{block}{Definição}
+	Uma linguagem $B$ é dita \textit{NP-completa} caso satisfaça estas duas características:
+	\begin{itemize}
+		\item 1. $B$ está em $NP$;
+		\item 2. $B$ é NP-difícil.
+	\end{itemize}
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Definição}
+
+\begin{block}{Teorema}
+	Se $B$ é \textit{NP-completo} e $B \leq_p C$ ($B$ é redutível em tempo polinomial para $C$), para $C$ em $NP$, então $C$ é \textit{NP-completo}.
+\end{block}
+
+Com isso, pode-se utilizar um problema NP-completo para encontrar outros problemas NP-completos!
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Consequências}
+
+\begin{itemize}
+    \item $\bullet$ Novos problemas NP-completos podem ser encontrados a partir de problemas NP-completos já conhecidos
+    \item $\bullet$ Achar uma solução polinomial para algum NP-completo implica que todos os NP possuem solução polinomial
+    \item $\bullet$ Estudos podem ser mais focados diretamente nos NP-completos
+\end{itemize}
+
+\bigskip
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Problemas}
+
+\begin{itemize}
+    \item $\bullet$ \textbf{Teorema de Cook-Levin: }SAT
+    \item $\bullet$ 21 problemas de Karp - \textit{Reducibility among combinatorial problems} \cite{karp1972}
+    \item $\bullet$ SAT, 3SAT, clique, caixeiro viajante (decisão), ...
+\end{itemize}
+
+\bigskip
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{SAT (Satisfatibilidade booleana)}
+
+\textcolor{blue(pigment)}{\textbf{SAT}}
+
+Verificar se existe uma valoração para as variáveis que compõe uma fórmula booleana, de forma que esta tenha saída verdadeira.
+
+$$\text{Exemplo: }(x \lor y \lor z) \wedge (\neg x \lor y) \wedge (y \lor \neg z)$$
+
+Neste caso, pode-se atribuir $x, y, z$ como \textit{verdadeiros}, a saída será \textit{verdadeira}.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{SAT (Satisfatibilidade booleana)}
+
+\begin{itemize}
+    \item $\bullet$ Primeiro problema provado NP-completo, pelo \textbf{Teorema de Cook-Levin};
+    \item $\bullet$ Auto-redutível: algoritmo que resolve o problema (e verifica se existe tal composição de valores para variáveis) também consegue encontrar a atribuição de variáveis satisfatórias;
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{3SAT}
+
+\textcolor{blue(pigment)}{\textbf{3SAT}}
+
+SAT com expressões na forma normal conjuntiva, e cada cláusula contém exatamente três variáveis.
+
+$$(x \lor y \lor z) \wedge (\neg x \lor \neg w \lor z) \wedge (x \lor w \lor \neg z)$$  
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{3SAT}
+
+\textcolor{blue}{\textbf{Ideia da demonstração}}
+
+É \textbf{NP} pois dada uma coleção de cláusulas e uma valoração para as variáveis, é possível verificar em tempo polinomial se estas cláusulas são satisfeitas.
+
+\bigskip
+
+$\text{SAT} \leq_p \text{3SAT}$ - expressões são denotadas na forma normal conjuntiva, e cláusulas com mais de três termos são substituídas por mais cláusulas com três termos.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Clique}
+\textcolor{blue(pigment)}{\textbf{Clique}}
+
+Dado um grafo $G(V, A)$ e um inteiro $k$, encontrar se existe um subgrafo de $k$ ou mais vértices, em que todos nós dois a dois são conectados por uma arestas - ou seja, se $G$ possui um conjunto de $k$ nós mutualmente adjacentes.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Clique}
+
+\textcolor{blue}{\textbf{Ideia da demonstração}}
+
+É \textbf{NP} pois é possível construir um verificador que recebe um grafo $G(V, A)$, um inteiro $k$ e um conjunto $S$, e verifica se $S$ é um clique válido em $\mathcal{O}(|S|^2)$.
+
+\bigskip
+
+$\text{3SAT} \leq_p \text{CLIQUE}$ - constrói-se um grafo a partir da expressão booleana. Será feita a construção de uma função que recebe qualquer instância do 3SAT e retorna uma instância de Clique, que é verdadeira se e somente se a instância do 3SAT for verdadeira.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Cobertura de vértices (decisão)}
+
+\textcolor{blue(pigment)}{\textbf{Cobertura de vértices (decisão)}}
+
+Dado um grafo $G(V, A)$ e um inteiro $k$, encontrar se existe um subconjunto de vértices $V'$ de tamanho $k$ tal que toda aresta em $A$ esteja conectada em no mínimo um vértice em $V'$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Cobertura de vértices (decisão)}
+
+\textcolor{blue}{\textbf{Ideia da demonstração}}
+
+\textbf{NP: } dado um subconjunto $V'$, pode-se verificar com complexidade polinomial se este é um subconjunto correto (basta percorrer por todas as arestas e verificar se algum de seus vértices pertence ao conjunto $V'$).
+
+\bigskip
+
+$\text{CLIQUE} \leq_p \text{Vertex Cover}$: dado um grafo $G(V, A)$, seu complemento $\bar G(V, \bar A)$ possui os mesmos vértices de $G$, e nenhuma de suas arestas (mas sim todas as arestas que não estão em $G$). Se existe um clique $V'$ em $\bar G$, então $V - V'$ é uma cobertura de vértices em $G$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Caminho hamiltoniano}
+
+\textcolor{blue(pigment)}{\textbf{Caminho hamiltoniano (HAMPATH)}}
+
+O problema do caminho hamiltoniano consiste em, dado um grafo $G(V, A)$ e dois vértices $s, t \in V$, verificar se existe um caminho de $s$ até $t$ que passa por todos os vértices $\in V$ exatamente uma vez.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Caminho hamiltoniano}
+
+\textcolor{blue}{\textbf{Ideia da demonstração}}
+
+\textbf{NP: } Dado um caminho $C$, pode-se facilmente verificar se este é um caminho válido com complexidade polinomial $\mathcal{O}(|V| + |A|)$.
+
+\bigskip
+
+É possível mostrar que $\text{3SAT} \leq_p \text{HAMPATH}$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Caixeiro viajante (decisão)}
+
+\textcolor{blue(pigment)}{\textbf{Caixeiro viajante (decisão)}}
+
+Dados um grafo $G(V, A)$ e uma distância $L$, retornar se existe um ciclo (que visite todos os vértices exatamente uma vez) com distância total no máximo $L$.
+\end{frame}
+
+\begin{frame}
+\frametitle{NP-completo}
+\framesubtitle{Caixeiro viajante (decisão)}
+
+\textcolor{blue}{\textbf{Ideia da demonstração}}
+
+Dado um grafo $G(V, A)$, um inteiro $L$ e um ciclo $c$, pode-se verificar se o ciclo $c$ de fato é um ciclo válido neste grafo e se a soma de suas arestas não ultrapassa $L$, com complexidade $\mathcal{O}(|c|)$.
+
+\bigskip
+
+É possível mostrar que $\text{HamCycle} \leq_p \text{TSP}$.
+
+\end{frame}
+
+% \begin{figure}[hbt]
+%     \begin{center}
+%     \caption{Análise em um labirinto aleatório (735x304)}
+%     \includegraphics[width=0.8\textwidth]{graphs/maze1.png}
+%     \end{center}
+% \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusão}
+
+\begin{frame}
+\frametitle{Conclusão}
+
+\begin{itemize}
+	\item $\bullet$ Área muito importante e interessante.
+    \item $\bullet$ Classificação de problemas em classes;
+    \item $\bullet$ Provar que determinados problemas são "tão difíceis" quanto vários outros estudados;
+    \item $\bullet$ Não ``perder tempo'' com problemas já considerados difíceis;
+    \item $\bullet$ Espera-se que $P \neq NP$, mas ainda não foi provado;
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Referências}
+
+\nocite{*}
+
+\begin{frame}[allowframebreaks]
+\frametitle{Referência Bibliográfica}
+
+\bibliographystyle{plain} % We choose the "plain" reference style
+\bibliography{refs} % Entries are in the "refs.bib" file
+
+\end{frame}
+
+\end{document}
