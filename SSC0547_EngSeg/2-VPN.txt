@@ -17,3 +17,4 @@ Também pode-se montar VPN com outras ferramentas como Algo, WireGuard, SoftEthe
 3. Qual a vantagem do uso do OpenVPN sobre o SSH?
 
 O OpenVPN é mais configurável que o SSH, então é mais poderoso e robusto. Quando se utiliza SSH, é necessário configurar cada aplicação para utilizar os proxys do túnel SSH, enquanto que com OpenVPN isto não é necessário - quando se utiliza OpenVPN, é possível configurar a máquina para operar como se estivesse na mesma rede almejada. Assim, embora o SSH seja mais fácil para ser inicialmente configurado, a OpenVPN configura diversas vantagens.
+
