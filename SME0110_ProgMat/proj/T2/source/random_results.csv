@@ -1,0 +1,9 @@
+name,solution,total_nodes,best_iteration,time,hint,optimal_value
+data/toy.tsp,21,1,1,0.02,random,21.0
+data/western_sahara.tsp,27603,4,4,0.29,random,27603.0
+data/djibouti.tsp,6656,4,4,0.56,random,6656.0
+data/qatar.tsp,9352,73,13,400.17,random,9352.0
+data/uruguay.tsp,90444,3,2,335.38,random,79114.0
+data/luxemburgo.tsp,13027,3,1,301.42,random,11340.0
+data/rwanda.tsp,30618,6,4,854.47,random,26051.0
+data/zimbabwe.tsp,107822,7,1,1321.01,random,95345.0
