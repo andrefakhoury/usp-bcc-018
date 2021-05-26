@@ -1,5 +1,0 @@
-Matriz Esparsa:
-	Excessivo num de elementos nulos
-	Nao precisa gastar a caralhada de zero
-
-

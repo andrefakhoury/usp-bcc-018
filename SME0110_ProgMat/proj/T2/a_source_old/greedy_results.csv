@@ -1,9 +1,0 @@
-name,solution,total_nodes,best_iteration,time,hint,optimal_value
-data/toy.tsp,21.469413449533647,1,1,0.01,greedy,21.4
-data/western_sahara.tsp,27601.173774493764,4,4,0.36,greedy,27603.0
-data/dijibouti.tsp,6659.431532931465,4,4,0.52,greedy,6656.0
-data/qatar.tsp,9353.517538535598,75,13,380.92,greedy,9352.0
-data/uruguay.tsp,90778.54011607054,1,1,99.08,greedy,79114.0
-data/luxemburgo.tsp,12732.003651586609,3,3,280.65,greedy,11340.0
-data/rwanda.tsp,29675.68190700728,4,4,494.84,greedy,26051.0
-data/zimbabwe.tsp,110761.21338794027,1,1,164.79,greedy,95345.0

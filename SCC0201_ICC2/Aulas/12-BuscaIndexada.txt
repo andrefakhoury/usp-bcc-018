@@ -1,4 +1,0 @@
-Vc tem um vetor ordenado de k em k
-vc faz um vetor auxiliar de tamanho k
-que armazena o indice e o ponteiro pra posicao ik
-e com isso vc consegue buscar em logk + n/k

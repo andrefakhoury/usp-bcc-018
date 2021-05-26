@@ -1,3 +1,0 @@
-As vantagens de se programar com TADs é a facilidade de programar, manutenção e reutilização,
-além de aspectos como segurança, independência com relação à outros projetos e portabilidade,
-tudo isso causado pela abstração.

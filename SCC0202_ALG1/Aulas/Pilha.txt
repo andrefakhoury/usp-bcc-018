@@ -1,4 +1,0 @@
-Pilha/Stack - FILO
-
-Operacoes ocorrem no final do conjunto
-Bem suave
