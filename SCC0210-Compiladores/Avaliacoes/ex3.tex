@@ -1,0 +1,118 @@
+\documentclass{article}
+\usepackage[brazil,portuges]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ebgaramond}
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{todonotes}
+\usepackage{enumitem}
+\usepackage{tikz}
+
+\title{Compiladores - Exercício 3}
+\author{André L. Mendes Fakhoury\\
+Gustavo V. V. Silva Soares\\
+Eduardo Dias Pennone\\
+Matheus S. Populim\\
+Thiago Preischadt\\
+}
+\date{2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Encontre o conjunto primeiro e seguidor para cada um dos símbolos não terminais das gramáticas abaixo}
+
+\subsection{Gramática 1}
+
+\begin{align*}
+    V_n &= \{S, A, B, C\}\\
+    V_t &= \{+,-,1,2,3,(,)\}
+\end{align*}
+
+\noindent Símbolo inicial $S$ e produções:
+
+\begin{align*}
+    S &\rightarrow A\ |\ B\ |\ \lambda\\
+    A &\rightarrow A+B\ |\ A-B\ |\ 1\ |\ 2\ |\ 3\ |\ \lambda\\
+    B &\rightarrow A\ |\ C\\
+    C &\rightarrow (A)
+\end{align*}
+
+\noindent\rule{0.95 \textwidth}{1.pt}\\
+
+Iniciaremos a resolução encontrando o conjunto Primeiro para cada símbolo.
+
+Pela regra de formação de $C$, podemos ver que o primeiro símbolo é não terminal. Assim, $P(C) = \{(\}$.
+
+Pelas regras de formação de $B$, vemos que ele terá os conjuntos Primeiro de $A$ e de $C$, ou seja: $P(B) = P(A) + P(C) = P(A) + \{(\}$.
+
+Para calcular $P(A)$, temos que observar todas as suas regras de formação. Assim, temos vários símbolos não terminais como regra, e já podemos adicionar $\{1, 2, 3, \lambda\}$ à $P(A)$. Vendo a primeira regra de formação de $A$ e sabendo que $\lambda \in P(A)$, podemos adicionar $+$ ao conjunto $P(A)$. De modo similar, observando a segunda regra de formação de $A$, podemos adicionar o símbolo terminal $-$ à $P(A)$. Com isso, terminamos de analisar este conjunto, tendo:
+
+$$P(A) = \{\lambda, 1, 2, 3, +, -\}$$
+
+Finalizando $P(A)$, podemos voltar a analisar $P(B)$, adicionando os elementos de $P(A)$ nele:
+
+$$P(B) = \{\lambda, (, 1, 2, 3, +, -\}$$
+
+Agora resta apenas calcular $P(S)$. Porém, todas suas regras de formação levam diretamente a um símbolo terminal ou a apenas um símbolo não-terminal, portanto:
+
+$$P(S) = P(A) + P(B) + \{\lambda\} = \{\lambda, (, 1, 2, 3, +, -\}$$
+
+Assim, temos todos os conjuntos primeiros:
+
+\begin{align*}
+    P(S) &= \{\lambda, (, 1, 2, 3, +, -\}\\
+    P(A) &= \{\lambda, 1, 2, 3, +, -\}\\
+    P(B) &= \{\lambda, (, 1, 2, 3, +, -\}\\
+    P(C) &= \{(\}
+\end{align*}
+
+Com os conjuntos Primeiro, podemos encontrar os conjuntos Seguidor.
+
+O símbolo $S$ é inicial e não aparece do lado direito de nenhuma derivação, logo $S(S)$ terá pelo menos o símbolo $\lambda$.
+
+Analisando o símbolo $C$, vemos que ele aparece somente na regra de formação de $B$, e é o último símbolo desta regra. Assim, $S(C) = S(B)$.
+
+Analisando o símbolo $B$, vemos que ele aparece como último símbolo em regras de formação de $S$ e de $A$. Assim, $S(B) = S(S) + S(A)$.
+
+Analisando o símbolo $A$, vemos que ele aparece como último símbolo em regras de formação de $S$ e de $B$, além de aparecer acompanhado do símbolo terminal $)$ em uma das regras de formação de $C$ e dos símbolos $+$ e $-$ nas regras de formação de $A$. Assim, $S(A) = \{), +, -\} + S(S) + S(B)$.
+
+Encontramos um ``ciclo'' no cálculo, porém nenhum símbolo a mais poderá ser adicionado. Assim, podemos concluir as regras de formação:
+
+\begin{align*}
+    S(S) &= \{\lambda\}\\
+    S(A) &= \{\lambda, +, -, )\}\\
+    S(B) &= \{\lambda, +, -, )\}\\
+    S(C) &= \{\lambda, +, -, )\}
+\end{align*}
+
+\subsection{Gramática 2}
+
+\begin{align*}
+    V_n &= \{S, A, B, C\}\\
+    V_t &= \{a, b, c, d\}
+\end{align*}
+
+\noindent Símbolo inicial $S$ e produções:
+
+\begin{align*}
+    S &\rightarrow \lambda\ |\ abA\ |\ abB\ |\ abC\\
+    A &\rightarrow aSaa\ |\ b\\
+    B &\rightarrow bSbb\ |\ c\\
+    C &\rightarrow cScc\ |\ d
+\end{align*}
+O conjunto primeiro $P$ pode ser encontrado analisando as produções:\\
+$S \rightarrow \lambda\ |\ abA\ |\ abB\ |\ abC$, como $S$ gera $\lambda$ e $a$ é não terminal, determinamos $P(S) = \{\lambda, a\}$.\\
+$A \rightarrow aSaa\ |\ b$, como $a$ e $b$ são não terminais, determinamos $P(A) = \{a, b\}$.\\
+$B \rightarrow bSbb\ |\ c$, como $b$ e $c$ são não terminais, determinamos $P(B) = \{b, c\}$.\\
+$C \rightarrow cScc\ |\ d$, como $c$ e $d$ são não terminais, determinamos $P(C) = \{c, d\}$.\\
+
+Após encontrar o conjunto primeiro $P$, podemos encontrar o conjunto seguidor $S$ da seguinte forma:\\
+$S$ é o símbolo inicial, logo $\lambda \in S(S)$. Analisando as produções $A \rightarrow aSaa$, $B \rightarrow bSbb$, $C \rightarrow cScc$, conclui-se que $\{a, b, c\} \subset S(S)$. Logo, $S(S) = \{\lambda, a, b, c\}$.\\
+$S \rightarrow abA$, logo $S(S) \subseteq S(A)$. Como não há outra produção que gere $A$, $S(A) = S(S) = \{\lambda, a, b, c\}$.\\
+$S \rightarrow abB$, logo $S(S) \subseteq S(B)$. Como não há outra produção que gere $B$, $S(B) = S(S) = \{\lambda, a, b, c\}$.\\
+$S \rightarrow abC$, logo $S(S) \subseteq S(C)$. Como não há outra produção que gere $C$, $S(C) = S(S) = \{\lambda, a, b, c\}$.\\
+\end{document}

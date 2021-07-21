@@ -1,0 +1,126 @@
+\documentclass{article}
+\usepackage[brazil,portuges]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ebgaramond}
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{todonotes}
+\usepackage{enumitem}
+\usepackage{tikz}
+
+\title{Compiladores - Exercício 4}
+\author{André L. Mendes Fakhoury\\
+Gustavo V. V. Silva Soares\\
+Eduardo Dias Pennone\\
+Matheus S. Populim\\
+Thiago Preischadt\\
+}
+\date{2021}
+
+\begin{document}
+
+\maketitle
+
+
+
+
+\section{No  contexto  da  análise  léxica,  crie  um  autômato  para  reconhecer  números  em  ponto flutuante.}
+Na seguinte figura, temos $D$ sendo dígitos $[0-9]$, e $S$ sendo um sinal $+|-$\\
+O estado $q_0$ representa o início. \\
+$q_1$ representa que + ou - foi inserido e aguarda um dígito. \\
+$q_2$ representa a parte inteira do ponto flutuante. \\
+$q_3$ representa que e ou E foi digitado e aguarda um dígito ou um + ou -. \\
+$q_4$ representa que + ou - menos foi digitado e aguarda um dígito. \\
+$q_5$ representa o expoente da potência. \\
+$q_6$ representa que “.” foi inserido e aguarda um dígito. \\
+$q_7$ representa a parte fracionária do ponto flutuante. \\
+$q_8$ representa o fim do ponto flutuante.\\
+
+\input{ex4/q1.tikz}
+
+
+
+
+\section{No contexto da análise léxica, construir autômatos para consumir comentários:}
+
+\subsection{\{ essa função serve para... \}}
+
+O autômato pode ser descrito graficamente como:
+
+\begin{center}
+\begin{tikzpicture}[scale=0.2]
+\tikzstyle{every node}+=[inner sep=0pt]
+\draw [black] (15,-23.7) circle (3);
+\draw (15,-23.7) node {$q_0$};
+\draw [black] (26.7,-23.7) circle (3);
+\draw (26.7,-23.7) node {$q_1$};
+\draw [black] (41,-23.7) circle (3);
+\draw (41,-23.7) node {$q_2$};
+\draw [black] (41,-23.7) circle (2.4);
+\draw [black] (7.2,-23.7) -- (12,-23.7);
+\fill [black] (12,-23.7) -- (11.2,-23.2) -- (11.2,-24.2);
+\draw [black] (18,-23.7) -- (23.7,-23.7);
+\fill [black] (23.7,-23.7) -- (22.9,-23.2) -- (22.9,-24.2);
+\draw (20.85,-24.2) node [below] {$\{$};
+\draw [black] (29.7,-23.7) -- (38,-23.7);
+\fill [black] (38,-23.7) -- (37.2,-23.2) -- (37.2,-24.2);
+\draw (33.85,-24.2) node [below] {$\}$};
+\draw [black] (25.377,-21.02) arc (234:-54:2.25);
+\draw (26.7,-16.45) node [above] {$outro$};
+\fill [black] (28.02,-21.02) -- (28.9,-20.67) -- (28.09,-20.08);
+\draw (44.5,-23.7) node [right] {$Retornar\mbox{ }(cadeia,\mbox{ }comentario)$};
+\end{tikzpicture}
+\end{center}
+
+O estado $q_0$ representa o início, $q_1$ representa o ``corpo'' da mensagem do comentário, e o estado $q_2$ representa o fim do comentário.
+
+\subsection{/* essa função serve para...*/}
+
+O autômato pode ser descrito graficamente como:
+
+\begin{center}
+\begin{tikzpicture}[scale=0.2]
+\tikzstyle{every node}+=[inner sep=0pt]
+\draw [black] (24,-23.7) circle (3);
+\draw (24,-23.7) node {$q_0$};
+\draw [black] (37.3,-23.7) circle (3);
+\draw (37.3,-23.7) node {$q_1$};
+\draw [black] (51.2,-23.7) circle (3);
+\draw (51.2,-23.7) node {$q_2$};
+\draw [black] (51.2,-36.6) circle (3);
+\draw (51.2,-36.6) node {$q_3$};
+\draw [black] (37.3,-36.6) circle (3);
+\draw (37.3,-36.6) node {$q_4$};
+\draw [black] (37.3,-36.6) circle (2.4);
+\draw [black] (16.2,-23.7) -- (21,-23.7);
+\fill [black] (21,-23.7) -- (20.2,-23.2) -- (20.2,-24.2);
+\draw [black] (34.509,-24.786) arc (-74.63297:-105.36703:14.563);
+\fill [black] (34.51,-24.79) -- (33.61,-24.52) -- (33.87,-25.48);
+\draw (30.65,-25.81) node [below] {$/$};
+\draw [black] (40.3,-23.7) -- (48.2,-23.7);
+\fill [black] (48.2,-23.7) -- (47.4,-23.2) -- (47.4,-24.2);
+\draw (44.25,-24.2) node [below] {$*$};
+\draw [black] (50.211,-33.773) arc (-166.32451:-193.67549:15.324);
+\fill [black] (50.21,-33.77) -- (50.51,-32.88) -- (49.54,-33.11);
+\draw (49.28,-30.15) node [left] {$*$};
+\draw [black] (49.877,-21.02) arc (234:-54:2.25);
+\draw (51.2,-16.45) node [above] {$outro$};
+\fill [black] (52.52,-21.02) -- (53.4,-20.67) -- (52.59,-20.08);
+\draw [black] (48.2,-36.6) -- (40.3,-36.6);
+\fill [black] (40.3,-36.6) -- (41.1,-37.1) -- (41.1,-36.1);
+\draw (44.25,-36.1) node [above] {$/$};
+\draw (33.05,-36.6) node [left] {$Retornar\mbox{ }(cadeia,\mbox{ }comentario)$};
+\draw [black] (52.307,-26.482) arc (15.45233:-15.45233:13.767);
+\fill [black] (52.31,-26.48) -- (52.04,-27.39) -- (53,-27.12);
+\draw (53.3,-30.15) node [right] {$outro$};
+\draw [black] (53.88,-35.277) arc (144:-144:2.25);
+\draw (58.45,-36.6) node [right] {$*$};
+\fill [black] (53.88,-37.92) -- (54.23,-38.8) -- (54.82,-37.99);
+\end{tikzpicture}
+\end{center}
+
+O estado $q_0$ representa o início, $q_1$ representa que um $/$ foi inserido e aguarda um $*$, estado $q_2$ representa o ``corpo'' do comentário, o estado $q_3$ está prestes a fechar, já tendo recebido um $*$ e o estado $q_4$ representa o fim do comentário.
+
+\end{document}

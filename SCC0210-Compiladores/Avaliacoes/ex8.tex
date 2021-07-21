@@ -1,0 +1,336 @@
+\documentclass{article}
+\usepackage[a4paper, total={7in, 9in}]{geometry}
+\usepackage[brazil,portuges]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ebgaramond}
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{todonotes}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{listings}% http://ctan.org/pkg/listings
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape
+}
+% oi abiguinhos %
+\title{Compiladores - Exercício 8}
+\author{André L. Mendes Fakhoury\\
+Gustavo V. V. Silva Soares\\
+Eduardo Dias Pennone\\
+Matheus S. Populim\\
+Thiago Preischadt\\
+}
+\date{2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Crie a tabela sintática para a gramática }
+\begin{lstlisting}
+S' := S 
+S := a | [L] 
+L := L ; S | S 
+\end{lstlisting}
+
+
+Estados e suas relações:
+
+
+\begin{table}[h]
+\begin{tabular}{|l|l|}
+\hline
+Estado & Conjunto de itens aceitos \\ \hline
+0 &   \{$S' \rightarrow \bullet S \lambda ,\: S \rightarrow \bullet a,\: S \rightarrow \bullet [ L ] $\} \\\hline
+1 & \{$S \rightarrow a \bullet $\}  \\ \hline
+2 & \{$S \rightarrow [ \bullet L ],\: L \rightarrow \bullet L ; S,\: L \rightarrow \bullet S,\: S \rightarrow \bullet a,\: S \rightarrow \bullet [ L ]  $\} \\ \hline
+3 & \{$ S' \rightarrow S \bullet \lambda $\} \\ \hline
+4 & \{$ S' \rightarrow S \lambda \bullet $\} \\ \hline
+5 & \{$ L \rightarrow S \bullet $\} \\ \hline
+6 & \{$ S \rightarrow [ L \bullet ],\: L \rightarrow \bullet ; S $\} \\ \hline
+7 & \{$ S \rightarrow [ L ]\bullet $\} \\ \hline
+8 & \{$ L \rightarrow L ; \bullet S,\: S \rightarrow \bullet a,\: S \rightarrow \bullet [ L ] $\} \\ \hline
+9 & \{$ L \rightarrow L ; S \bullet $\} \\ \hline
+\end{tabular}
+\end{table}
+
+
+\newpage
+
+Autômato finito determinístico:
+
+
+
+\begin{center}
+\begin{tikzpicture}[scale=0.15]
+\tikzstyle{every node}+=[inner sep=0pt]
+\draw [black] (20.3,-15.6) circle (3);
+\draw (20.3,-15.6) node {$0$};
+\draw [black] (4.4,-27.9) circle (3);
+\draw (4.4,-27.9) node {$3$};
+\draw [black] (4.4,-48.4) circle (3);
+\draw (4.4,-48.4) node {$4$};
+\draw [black] (20.3,-48.4) circle (3);
+\draw (20.3,-48.4) node {$1$};
+\draw [black] (36.2,-27.9) circle (3);
+\draw (36.2,-27.9) node {$2$};
+\draw [black] (54.4,-15.6) circle (3);
+\draw (54.4,-15.6) node {$5$};
+\draw [black] (54.4,-27.9) circle (3);
+\draw (54.4,-27.9) node {$6$};
+\draw [black] (70.2,-27.9) circle (3);
+\draw (70.2,-27.9) node {$7$};
+\draw [black] (54.4,-48.4) circle (3);
+\draw (54.4,-48.4) node {$8$};
+\draw [black] (68.2,-48.4) circle (3);
+\draw (68.2,-48.4) node {$9$};
+\draw [black] (20.3,-6.5) -- (20.3,-12.6);
+\fill [black] (20.3,-12.6) -- (20.8,-11.8) -- (19.8,-11.8);
+\draw [black] (17.93,-17.44) -- (6.77,-26.06);
+\fill [black] (6.77,-26.06) -- (7.71,-25.97) -- (7.1,-25.18);
+\draw (11.29,-21.25) node [above] {$S$};
+\draw [black] (4.4,-30.9) -- (4.4,-45.4);
+\fill [black] (4.4,-45.4) -- (4.9,-44.6) -- (3.9,-44.6);
+\draw (3.9,-38.15) node [left] {$\lambda$};
+\draw [black] (20.3,-18.6) -- (20.3,-45.4);
+\fill [black] (20.3,-45.4) -- (20.8,-44.6) -- (19.8,-44.6);
+\draw (19.8,-32) node [left] {$a$};
+\draw [black] (22.67,-17.44) -- (33.83,-26.06);
+\fill [black] (33.83,-26.06) -- (33.5,-25.18) -- (32.89,-25.97);
+\draw (27.41,-22.25) node [below] {$[$};
+\draw [black] (34.36,-30.27) -- (22.14,-46.03);
+\fill [black] (22.14,-46.03) -- (23.02,-45.7) -- (22.23,-45.09);
+\draw (27.68,-36.74) node [left] {$a$};
+\draw [black] (38.69,-26.22) -- (51.91,-17.28);
+\fill [black] (51.91,-17.28) -- (50.97,-17.31) -- (51.53,-18.14);
+\draw (46.36,-22.25) node [below] {$S$};
+\draw [black] (39.2,-27.9) -- (51.4,-27.9);
+\fill [black] (51.4,-27.9) -- (50.6,-27.4) -- (50.6,-28.4);
+\draw (45.3,-28.4) node [below] {$L$};
+\draw [black] (54.4,-30.9) -- (54.4,-45.4);
+\fill [black] (54.4,-45.4) -- (54.9,-44.6) -- (53.9,-44.6);
+\draw (53.9,-38.15) node [left] {$;$};
+\draw [black] (52.41,-46.16) -- (38.19,-30.14);
+\fill [black] (38.19,-30.14) -- (38.35,-31.07) -- (39.1,-30.41);
+\draw (45.84,-36.7) node [right] {$[$};
+\draw [black] (57.4,-48.4) -- (65.2,-48.4);
+\fill [black] (65.2,-48.4) -- (64.4,-47.9) -- (64.4,-48.9);
+\draw (61.3,-48.9) node [below] {$S$};
+\draw [black] (57.4,-27.9) -- (67.2,-27.9);
+\fill [black] (67.2,-27.9) -- (66.4,-27.4) -- (66.4,-28.4);
+\draw (62.3,-28.4) node [below] {$]$};
+\draw [black] (51.4,-48.4) -- (23.3,-48.4);
+\fill [black] (23.3,-48.4) -- (24.1,-48.9) -- (24.1,-47.9);
+\draw (37.35,-47.9) node [above] {$a$};
+\draw [black] (34.877,-25.22) arc (234:-54:2.25);
+\draw (36.2,-20.65) node [above] {$[$};
+\fill [black] (37.52,-25.22) -- (38.4,-24.87) -- (37.59,-24.28);
+\end{tikzpicture}
+\end{center}
+
+
+Tabela sintática: 
+
+% Please add the following required packages to your document preamble:
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
+\hline
+\multirow{2}{*}{Estado} & \multirow{2}{*}{Ação} & \multirow{2}{*}{Regra} & \multicolumn{5}{l|}{Input} & \multicolumn{2}{l|}{Transições} \\ \cline{4-10} 
+ &  &  & a & {[} & {]} & ; & $\lambda$ & S & L \\ \hline
+0 & Empilha &  & 1 & 2 &  &  &  & 3 &  \\ \hline
+1 & Reduz & $ S \rightarrow a $ &  &  &  &  &  &  &  \\ \hline
+2 & Empilha &  & 1 & 2 &  &  &  & 5 & 6 \\ \hline
+3 & Empilha &  &  &  &  &  & 4 &  &  \\ \hline
+4 & Reduz & $ S' \rightarrow  \lambda $ &  &  &  &  &  &  &  \\ \hline
+5 & Reduz & $ L \rightarrow S $ &  &  &  &  &  &  &  \\ \hline
+6 & Empilha &  &  &  & 7 & 8 &  &  &  \\ \hline
+7 & Reduz & $ S \rightarrow [ L ] $ &  &  &  &  &  &  &  \\ \hline
+8 & Empilha &  & 1 & 2 &  &  &  & 9 &  \\ \hline
+9 & Reduz & $ L \rightarrow L ; S $ &  &  &  &  &  &  &  \\ \hline
+\end{tabular}
+\end{table}
+
+
+\newpage
+
+\section{Crie a tabela sintática para a gramática abaixo e reconheça a cadeia if a then b}
+
+\begin{lstlisting}
+S := if E then C | C
+E := a 
+C := b
+\end{lstlisting}
+
+
+Estados e suas relações:
+
+\begin{table}[h]
+\begin{tabular}{|l|l|}
+\hline
+Estado & Conjunto de itens aceitos \\ \hline
+0 &   \{$S' \rightarrow \bullet S \lambda,\: S \rightarrow \bullet if E then C,\: S \rightarrow \bullet C,\: C \rightarrow \bullet b$\} \\\hline
+1 & \{$S \rightarrow if \bullet E then C,\: E \rightarrow \bullet a$\}  \\ \hline
+2 & \{$C \rightarrow b \bullet $\} \\ \hline
+3 & \{$S' \rightarrow S \bullet $\} \\ \hline
+4 & \{$S \rightarrow C \bullet $\} \\ \hline
+5 & \{$S' \rightarrow S \lambda \bullet $\} \\ \hline
+6 & \{$E \rightarrow a \bullet \lambda $\} \\ \hline
+7 & \{$S \rightarrow if E \bullet then C$\} \\ \hline
+8 & \{$S \rightarrow if E then \bullet C,\: C \rightarrow \bullet b$\} \\ \hline
+9 & \{$S \rightarrow if E then C \bullet $\} \\ \hline
+\end{tabular}
+\end{table}
+% oieeeee safe safe
+% dps manda o PDF lá no grupo???
+% valeu valeu até mais <3
+% olá, to formatando pro automato ficar do lado da  tabela,
+% okay!!!
+% manod sim <3 <3
+\newpage
+Autômato finito determinístico:
+
+
+\begin{center}
+\begin{tikzpicture}[scale=0.2,baseline]
+\tikzstyle{every node}+=[inner sep=0pt]
+\draw [black] (34.2,-5.2) circle (3);
+\draw (34.2,-5.2) node {$0$};
+\draw [black] (7.1,-15.4) circle (3);
+\draw (7.1,-15.4) node {$4$};
+\draw [black] (21.5,-15.4) circle (3);
+\draw (21.5,-15.4) node {$3$};
+\draw [black] (21.5,-31) circle (3);
+\draw (21.5,-31) node {$5$};
+\draw [black] (34.2,-46.3) circle (3);
+\draw (34.2,-46.3) node {$2$};
+\draw [black] (45.4,-15.4) circle (3);
+\draw (45.4,-15.4) node {$1$};
+\draw [black] (45.4,-29.4) circle (3);
+\draw (45.4,-29.4) node {$6$};
+\draw [black] (61.1,-15.4) circle (3);
+\draw (61.1,-15.4) node {$7$};
+\draw [black] (61.1,-31) circle (3);
+\draw (61.1,-31) node {$8$};
+\draw [black] (61.1,-46.3) circle (3);
+\draw (61.1,-46.3) node {$9$};
+\draw [black] (9.014,-13.092) arc (137.10115:84.14989:26.633);
+\fill [black] (9.01,-13.09) -- (9.93,-12.85) -- (9.19,-12.17);
+\draw (18.05,-5.77) node [above] {$C$};
+\draw [black] (31.86,-7.08) -- (23.84,-13.52);
+\fill [black] (23.84,-13.52) -- (24.78,-13.41) -- (24.15,-12.63);
+\draw (28.91,-10.79) node [below] {$S$};
+\draw [black] (21.5,-18.4) -- (21.5,-28);
+\fill [black] (21.5,-28) -- (22,-27.2) -- (21,-27.2);
+\draw (21,-23.2) node [left] {$\lambda$};
+\draw [black] (34.2,-8.2) -- (34.2,-43.3);
+\fill [black] (34.2,-43.3) -- (34.7,-42.5) -- (33.7,-42.5);
+\draw (33.7,-25.75) node [left] {$b$};
+\draw [black] (36.42,-7.22) -- (43.18,-13.38);
+\fill [black] (43.18,-13.38) -- (42.93,-12.47) -- (42.25,-13.21);
+\draw (40.93,-9.81) node [above] {$if$};
+\draw [black] (45.4,-18.4) -- (45.4,-26.4);
+\fill [black] (45.4,-26.4) -- (45.9,-25.6) -- (44.9,-25.6);
+\draw (44.9,-22.4) node [left] {$a$};
+\draw [black] (48.4,-15.4) -- (58.1,-15.4);
+\fill [black] (58.1,-15.4) -- (57.3,-14.9) -- (57.3,-15.9);
+\draw (53.25,-14.9) node [above] {$E$};
+\draw [black] (61.1,-18.4) -- (61.1,-28);
+\fill [black] (61.1,-28) -- (61.6,-27.2) -- (60.6,-27.2);
+\draw (61.6,-23.2) node [right] {$then$};
+\draw [black] (61.1,-34) -- (61.1,-43.3);
+\fill [black] (61.1,-43.3) -- (61.6,-42.5) -- (60.6,-42.5);
+\draw (61.6,-38.65) node [right] {$C$};
+\draw [black] (58.49,-32.48) -- (36.81,-44.82);
+\fill [black] (36.81,-44.82) -- (37.75,-44.86) -- (37.26,-43.99);
+\draw (46.65,-38.15) node [above] {$b$};
+\end{tikzpicture}
+\end{center}
+
+
+Tabela Sintática:
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+\multirow{2}{*}{Estado} & \multirow{2}{*}{Ação} & \multirow{2}{*}{Regra} & \multicolumn{5}{l|}{Input} & \multicolumn{3}{l|}{Transições} \\ \cline{4-11} 
+ &  &  & if & then & a & b & $\lambda$ & S & C & E \\ \hline
+0 & Empilha &  & 1 &  &  & 2 &  & 3 & 4 &  \\ \hline
+1 & Empilha &  &  &  & 6 &  &  &  &  & 7 \\ \hline
+2 & Reduz & $ C \rightarrow b $ &  &  &  &  &  &  &  &  \\ \hline
+3 & Empilha &  &  &  &  &  & 5 &  &  &  \\ \hline
+4 & Reduz & $ S \rightarrow C $ &  &  &  &  &  &  &  &  \\ \hline
+5 & Reduz & $ S' \rightarrow S \lambda $ &  &  &  &  &  &  &  &  \\ \hline
+6 & Reduz & $ E \rightarrow a $ &  &  &  &  &  &  &  &  \\ \hline
+7 & Empilha &  &  & 8 &  &  &  &  &  &  \\ \hline
+8 & Empilha &  &  &  &  & 2 &  &  & 9 &  \\ \hline
+9 & Reduz & $ S \rightarrow $if E then C  &  &  &  &  &  &  &  &  \\ \hline
+\end{tabular}
+\end{table}
+
+
+Reconhecimento da cadeia if a then b:
+
+\begin{table}[h]
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Pilha} & \textbf{Entrada} & \textbf{Ação} \\ \hline
+0 & if a then b & Empilha \\ \hline
+0if1 & a then b & Empilha \\ \hline
+0if1a5 & then b & Reduz $E \rightarrow a$ \\ \hline
+0if1E6 & then b & Empilha \\ \hline
+0if1E6then8 & b & Empilha \\ \hline
+0if1E6then8b2 & $\lambda$ & Reduz $C \rightarrow b$ \\ \hline
+0if1E6then8C9 & $\lambda$ & Reduz $S \rightarrow if E then C$ \\ \hline
+0 & $\lambda$ & Aceita \\ \hline
+\end{tabular}
+\end{table}
+
+\end{document}
+
+
+
+
+% \begin{center}
+% \begin{table}[h]
+% \begin{tabular}{|l|l|l|l|l|}
+% \hline
+%     & a & {[} & {]} & ; \\ \hline
+% a   &   &     &     &   \\ \hline
+% {[} &   &     &     &   \\ \hline
+% {]} &   &     &     &   \\ \hline
+% ;   &   &     &     &   \\ \hline
+% \end{tabular}
+% \end{table}
+% \end{center}
+
+% \section{Crie a tabela sintática para a gramática abaixo e reconheça a cadeia \textit{if a then b}}
+
+% \begin{lstlisting}
+% S := if E then C | C 
+% E := a 
+% C := b 
+% \end{lstlisting}
+
+% \begin{center}
+% \begin{table}[h]
+% \begin{tabular}{|l|l|l|l|l|}
+% \hline
+%      & if & then & a & b \\ \hline
+% if   &    &      &   &   \\ \hline
+% then &    &      &   &   \\ \hline
+% a    &    &      &   &   \\ \hline
+% b    &    &      &   &   \\ \hline
+% \end{tabular}
+% \end{table}
+% \end{center}
+
+
+% \end{document}

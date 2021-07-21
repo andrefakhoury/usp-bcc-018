@@ -1,0 +1,175 @@
+\documentclass{article}
+\usepackage[brazil,portuges]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ebgaramond}
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{todonotes}
+\usepackage{enumitem}
+\usepackage{tikz}
+
+\title{Compiladores - Exercício 2}
+\author{André L. Mendes Fakhoury\\
+Gustavo V. V. Silva Soares\\
+Eduardo Dias Pennone\\
+Matheus S. Populim\\
+Thiago Preischadt\\
+}
+\date{2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Caminho inverso: definir a gramática das seguintes linguagens}
+
+Podemos definir uma gramática G como uma quádrupla $(V_n, V_t, P, S)$, em que $V_n$ é o conjunto dos símbolos não terminais, $V_t$ é o conjunto dos símbolos terminais, $P$ são as regras de produção e $S$ o símbolo inicial.
+
+\subsection{$L(G): \{a^mb^n\ |\ m, n \geq 1\}$}
+
+$$G = (\{S, B\}, \{a, b\}, P, S)$$
+$P = \{$
+\begin{align*}
+S &\rightarrow aS\\
+S &\rightarrow aB\\
+B &\rightarrow bB\\
+B &\rightarrow b
+\end{align*}
+$\}$. No caso, $G$ é uma gramática regular.
+
+\subsection{$L(G): \{a^nb^n\ |\ n \geq 1\}$}
+
+
+$$G = (\{S\}, \{a, b\}, P, S)$$
+$P = \{$
+\begin{align*}
+& S \rightarrow aSb\ |\ ab
+\end{align*}
+$\}$. No caso, $G$ é uma gramática livre de contexto.
+
+\section{Escreva uma gramática que reconheça as expressões aritméticas (considere números e não variáveis). É possível identificar que a gramática construída é ambígua?}
+$$G = (\{E, S, N, C, P\}, \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, +, -, /, *, (, )\}, P, E)$$
+$P = \{$
+\begin{align*}
+ E &\rightarrow N\\
+ E &\rightarrow (ESE)\\
+ E &\rightarrow ESE\\
+ N &\rightarrow PC\\
+ N &\rightarrow 0\ | \ 1\ | \ 2\ | \ 3\ | \ 4\ | \ 5\ | \ 6\ | \ 7\ | \ 8\ | \ 9\\
+ P &\rightarrow 1\ | \ 2\ | \ 3\ | \ 4\ | \ 5\ | \ 6\ | \ 7\ | \ 8\ | \ 9\\
+ C &\rightarrow CC\\
+ C &\rightarrow 0\ | \ 1\ | \ 2\ | \ 3\ | \ 4\ | \ 5\ | \ 6\ | \ 7\ | \ 8\ | \ 9\\
+ S &\rightarrow +\ | \ -\ | \ /\ | \ *
+\end{align*}
+$\}$.\\*
+A gramática é ambígua pois existem múltiplas formas de produzir a sequencia $(10 + 1)$.\\
+$E \rightarrow (ESE) \rightarrow (NSE) \rightarrow (PCSE) \rightarrow (1CSE) \rightarrow (10SE) \rightarrow (10+E) \rightarrow (10+N) \rightarrow (10+1)$\\
+$E \rightarrow (ESE) \rightarrow (ESN) \rightarrow (ES1) \rightarrow (NS1) \rightarrow (PCS1) \rightarrow (P0S1) \rightarrow (P0+1) \rightarrow (10+1)$
+
+
+\newpage
+\section{Classifique a gramática abaixo e identifique sua linguagem}
+
+
+\subsection{Gramática 1}
+$G= ( \{ S,A,B,C,D,E \} , \{ a \} , P,S )$\\
+$ P = \{ $
+\begin{enumerate}
+    \item $S \rightarrow ACaB$
+    \item $Ca \rightarrow aaC $
+    \item $CB \rightarrow DB$
+    \item $CB \rightarrow E$
+    \item $aD \rightarrow Da$
+    \item $AD \rightarrow AC$
+    \item $aE \rightarrow Ea$
+    \item $AE \rightarrow \lambda$
+\end{enumerate}
+$\}$\\
+% não entendi muito bem esse exercício
+% mas vou dar uma olhada melhor nos vídeos
+
+
+$
+S \rightarrow
+ACaB \rightarrow
+AaaCB \rightarrow
+AaaE \rightarrow
+AaEa \rightarrow
+AEaa \rightarrow
+\lambda aa \rightarrow 
+aa \rightarrow a^2
+$
+\\
+
+$
+S \rightarrow
+ACaB \rightarrow
+AaaCB \rightarrow
+AaaDB \rightarrow
+AaDaB \rightarrow
+ADaaB \rightarrow
+ACaaB \rightarrow
+AaaCaB \rightarrow
+AaaaaCB \rightarrow ...
+$
+\\
+
+$
+4) AaaaaCB \rightarrow 
+AaaaaE \rightarrow 
+... \rightarrow 
+AEaaaa \rightarrow 
+\lambda aaaa \rightarrow 
+a^4
+$
+\\
+
+$
+3)
+AaaaaDB \rightarrow 
+... \rightarrow 
+ADaaaaB \rightarrow 
+ACaaaaB \rightarrow 
+AaaCaaaB \rightarrow 
+AaaaaCaaB \rightarrow 
+AaaaaaaCaB \rightarrow
+AaaaaaaaaCB \rightarrow 
+... \rightarrow 
+AEaaaaaaaa \rightarrow 
+a^8
+$\\
+\\
+
+Como essa gramática possui a regra $CB \rightarrow E$, em que a substituição reduz o comprimento da forma sentencial, ela é definida como \textbf{com estrutura de frase ou irrestrita} e possui linguagem definida formalmente por $L(G):\{a^{2^n}$| $n\geq 1\}$\\
+\\
+
+
+\newpage
+
+\subsection{Gramática 2}
+$G= ( {S,A,B}, {a}, P,S )$\\
+$ P = \{ $
+\begin{enumerate}
+    \item $S \rightarrow aB | bA$
+    \item $A \rightarrow a | aS | bAA$
+    \item $B \rightarrow b | bS | aBB$
+\end{enumerate}
+$\}$\\
+
+Exemplos de cadeias aceitas por essa linguagem:\\
+$
+S \rightarrow aB \rightarrow ab\\
+S \rightarrow bA \rightarrow ba\\
+S \rightarrow aB \rightarrow aaBB \rightarrow aabb\\
+S \rightarrow bA \rightarrow bbAA \rightarrow bbaa\\
+S \rightarrow aB \rightarrow abS \rightarrow abbA \rightarrow abba\\
+S \rightarrow aB \rightarrow abS \rightarrow abaB \rightarrow abab\\
+S \rightarrow bA \rightarrow baS \rightarrow baaB \rightarrow baab\\
+$
+\\
+
+Ou seja, essa linguagem apresenta um número igual e não nulo de símbolos $a$ e $b$. A gramática pode ser classificada como uma \textbf{gramática livre de contexto}, e a linguagem formalmente definida por $L(G): \{ \{a,b\}^{*} , |a| = |b| = n \geq 1 \}$
+
+\end{document}

@@ -1,0 +1,34 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ebgaramond}
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{tikz}
+
+\title{Compiladores - Exercício 1}
+\author{André L. Mendes Fakhoury\\
+Gustavo V. V. Silva Soares\\
+Eduardo Dias Pennone\\
+Matheus S. Populim\\
+Thiago Preischadt\\
+}
+\date{2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Quais as características de uma linguagem que determinam que ela deve ser compilada ou interpretada? %Atenção: a questão refere-se à linguagem em si, independentemente do uso que é feito dela
+}
+
+A princípio, uma linguagem pode ser implementada tanto como compilada quanto interpretada, ou até mesmo híbrida, a depender primordialmente do uso a que se quer atingir (linguagens interpretadas precisam executar trechos do código fonte diversas vezes e portanto não tem como prioridade tanta velocidade, enquanto linguagens compiladas tem como foco realizar a compilação apenas uma vez para que a execução seja repetida mais de uma vez). Porém, costumeiramente, as linguagens podem ter algumas características que guiam se ela será compilada ou interpretada. Por exemplo, o comando ``eval'' (que executa instruções do código fonte durante a interpretação) normalmente é utilizado em linguagens interpretadas (como \textit{javascript} e \textit{python}), por praticidades de implementação.
+
+\section{Por que estudar compiladores? %(outras razões)?
+}
+
+O entendimento de como uma linguagem é transformada em código de máquina permite que possamos tomar escolhas conscientes ao longo do processo de programação, evitando tomar decisões que possam comprometer o desempenho de um programa, e planejando o código de forma que aproveite ao máximo o processo de otimização do compilador.
+
+\end{document}

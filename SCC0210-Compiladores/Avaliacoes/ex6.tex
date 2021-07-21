@@ -1,0 +1,133 @@
+\documentclass{article}
+\usepackage[a4paper, total={7in, 9in}]{geometry}
+\usepackage[brazil,portuges]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ebgaramond}
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{todonotes}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{listings}% http://ctan.org/pkg/listings
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape
+}
+
+\title{Compiladores - Exercício 6}
+\author{André L. Mendes Fakhoury\\
+Gustavo V. V. Silva Soares\\
+Eduardo Dias Pennone\\
+Matheus S. Populim\\
+Thiago Preischadt\\
+}
+\date{2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Construa a tabela sintática para a gramática abaixo e reconheça a cadeia $id+id*id$ utilizando análise sintática preditiva não recursiva.}
+
+\begin{lstlisting}
+<E>  ::= <T><E'>
+<E'> ::= +<T><E'> | $\lambda$
+<T>  ::= <F><T'>
+<T'> ::= *<F><T'> | $\lambda$
+<F>  ::= (E) | id
+\end{lstlisting}
+
+Primeiramente, devemos calcular o conjunto primeiro e seguidor de cada símbolo não terminal. Começando com o conjunto primeiro:
+
+\begin{lstlisting} 
+P(E') = {+, $\lambda$}
+P(T') = {*, $\lambda$}
+P(F)  = {(, id}
+P(T)  = P(F) = {(, id}
+P(E)  = P(T) = {(, id}
+\end{lstlisting}
+
+Calculando o seguidor:
+
+\begin{lstlisting} 
+S(E)  = {), $\lambda$}
+S(E') = S(E) = {), $\lambda$}
+S(T)  = P(E') U S(E) U S(E') = {+, ), $\lambda$}
+S(T') = S(T) = {+, ), $\lambda$}
+S(F)  = P(T') U S(T) U S(T') = {*, +, $\lambda$}
+\end{lstlisting}
+
+A partir destes conjuntos, podemos construir a tabela sintática. Iniciando o processo a partir de informações do conjunto primeiro, temos:
+
+\begin{center}
+\begin{tabular}{ |c|m{2cm}|m{2cm}|m{2cm}|m{2cm}|m{2cm}|m{2cm}| } 
+ \hline
+ & $id$ & $+$ & $*$ & $($ & $)$ & $\lambda$ \\
+ \hline
+ $E$ & $E \rightarrow TE'$ & $ $ & $ $ & $E \rightarrow TE'$ & $ $ & $ $ \\
+ \hline
+ $E'$ & $ $ & $E' \rightarrow +TE'$ & $ $ & $ $ & $ $ & $E' \rightarrow \lambda$ \\
+ \hline
+ $T$ & $T \rightarrow FT'$ & $ $ & $ $ & $T \rightarrow FT'$ & $ $ & $ $ \\
+ \hline
+ $T'$ & $ $ & $ $ & $T' \rightarrow *FT'$ & $ $ & $ $ & $T' \rightarrow \lambda$ \\
+ \hline
+ $F$ & $F \rightarrow id$ & $ $ & $ $ & $F \rightarrow (E)$ & $ $ & $ $ \\
+ \hline
+\end{tabular}
+\end{center}
+
+Porém, também temos que analisar os casos em que temos $A \rightarrow \alpha$, e $P(\alpha)$ contém $\lambda$. Fazendo isso, temos a tabela sintática:
+
+\begin{center}
+\begin{tabular}{ |c|m{2cm}|m{2cm}|m{2cm}|m{2cm}|m{2cm}|m{2cm}| } 
+ \hline
+ & $id$ & $+$ & $*$ & $($ & $)$ & $\lambda$ \\
+ \hline
+ $E$ & $E \rightarrow TE'$ & $ $ & $ $ & $E \rightarrow TE'$ & $ $ & $ $ \\
+ \hline
+ $E'$ & $ $ & $E' \rightarrow +TE'$ & $ $ & $ $ & $E' \rightarrow \lambda$ & $E' \rightarrow \lambda$ \\
+ \hline
+ $T$ & $T \rightarrow FT'$ & $ $ & $ $ & $T \rightarrow FT'$ & $ $ & $ $ \\
+ \hline
+ $T'$ & $ $ & $T' \rightarrow \lambda$ & $T' \rightarrow *FT'$ & $ $ & $T' \rightarrow \lambda$ & $T' \rightarrow \lambda$ \\
+ \hline
+ $F$ & $F \rightarrow id$ & $ $ & $ $ & $F \rightarrow (E)$ & $ $ & $ $ \\
+ \hline
+\end{tabular}
+\end{center}
+
+As células vazias indicam erro.
+
+A partir da tabela sintática, podemos reconhecer (ou não) a cadeia $id + id * id$. O passo a passo é o seguinte:
+
+\begin{center}
+\begin{tabular}{c|c|c}
+Pilha & Cadeia & Regra\\
+\hline
+$\lambda E$ & $id + id * id\lambda$ & $E \rightarrow TE'$\\
+$\lambda E'T$ & $id + id * id\lambda$ & $T \rightarrow FT'$\\
+$\lambda E'T'F$ & $id + id * id\lambda$ & $F \rightarrow id'$\\
+$\lambda E'T'id$ & $id + id * id\lambda$ & $\cdots$\\
+$\lambda E'T'$ & $+ id * id\lambda$ & $T' \rightarrow \lambda$\\
+$\lambda E'$ & $+ id * id\lambda$ & $E' \rightarrow +TE'$\\
+$\lambda E'T+$ & $+ id * id\lambda$ & $\cdots$\\
+$\lambda E'T$ & $id * id\lambda$ & $T \rightarrow FT'$\\
+$\lambda E'T'F$ & $id * id\lambda$ & $F \rightarrow id$\\
+$\lambda E'T'id$ & $id * id\lambda$ & $\cdots$\\
+$\lambda E'T'$ & $* id\lambda$ & $T' \rightarrow *FT'$\\
+$\lambda E'T'F*$ & $* id\lambda$ & $\cdots$\\
+$\lambda E'T'F$ & $id\lambda$ & $F \rightarrow id$\\
+$\lambda E'T'id$ & $id\lambda$ & $\cdots$\\
+$\lambda E'T'$ & $\lambda$ & $T' \rightarrow \lambda$\\
+$\lambda E'$ & $\lambda$ & $E' \rightarrow \lambda$\\
+$\lambda$ & $\lambda$ & $SUCESSO$\\
+\end{tabular}
+\end{center}
+
+Assim, reconhecemos a cadeia citada anteriormente utilizando análise sintática preditiva não recursiva.
+
+\end{document}

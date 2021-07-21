@@ -1,0 +1,150 @@
+\documentclass{article}
+\usepackage[a4paper, total={7in, 9in}]{geometry}
+\usepackage[brazil,portuges]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ebgaramond}
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{todonotes}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{listings}% http://ctan.org/pkg/listings
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape
+}
+% oi abiguinhos %
+\title{Compiladores - Exercício 7}
+\author{André L. Mendes Fakhoury\\
+Gustavo V. V. Silva Soares\\
+Eduardo Dias Pennone\\
+Matheus S. Populim\\
+Thiago Preischadt\\
+}
+\date{2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Método mecânico}
+
+Construir  a  tabela  sintática  para  a  gramática  abaixo  pelo  método mecânico e reconhecer cadeia $(a*b)$
+
+\begin{lstlisting}
+S ::= ( S O S ) | a | b
+O ::= + | *
+\end{lstlisting}
+
+A gramática não é de precedência de operadores, pois há símbolos não terminais adjacentes. Transformando-a em uma gramática de precedência de operadores:
+\begin{lstlisting}
+S ::= ( S + S ) | ( S * S ) | a | b
+\end{lstlisting}
+
+Os primeiros terminais de $S$ são $\{(, a, b\}$ e os últimos são $\{), a, b\}$
+
+A partir dos pares do tipo $aX$, que são $( S$, $+ S$ e $* S$, podemos extrair as seguintes relações: $\{ (, +, * \} < \{ (, a, b \}$.
+
+A partir dos pares do tipo $Xb$, que são $S +$, $S )$ e $S *$, podemos extrair as seguintes relações: $\{ ), a, b \} > \{ +, ), * \}$.
+
+A partir das sequências do tipo $a\beta b$, que são $( S +$, $+ S )$, $( S *$ e $* S )$, podemos extrair as seguintes relações: $( = +$, $+ = )$, $( = *$ e $* = )$.
+
+Para $\$$, tem-se as relações: $\$ < \{ (, a, b \}$ e $\{ ), a, b \} > \$$.
+
+A tabela sintática é:
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c|c|c| } 
+\hline
+  & + & * & ( & ) & a & b & \$ \\
+\hline
++ &   &   & < & = & < & < &  \\
+\hline
+* &   &   & < & = & < & < &  \\
+\hline
+( & = & = & < &   & < & < &  \\
+\hline
+) & > & > &   & > &   &   & >\\
+\hline
+a & > & > &   & > &   &   & >\\
+\hline
+b & > & > &   & > &   &   & >\\
+\hline
+\$ &   &   & < &   & < & < &  \\
+\hline
+\end{tabular}
+\end{center}
+
+O reconhecimento da cadeia $(a*b)$ é feito da seguinte forma:
+\begin{center}
+\begin{tabular}{ |c|c|c| } 
+\hline
+pilha & cadeia & ação\\
+\hline
+\$< & (a*b)\$ & empilha\\
+\hline
+\$<(< & a*b)\$ & empilha\\
+\hline
+\$<(<a> & *b)\$ & reduz\\
+\hline
+\$<(= & *b)\$ & empilha\\
+\hline
+\$<(=*< & b)\$ & empilha\\
+\hline
+\$<(=*<b> & )\$ & reduz\\
+\hline
+\$<(=*= & )\$ & empilha\\
+\hline
+\$<(=*=)> & \$ & reduz\\
+\hline
+\$ & \$ & aceita\\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Método intuitivo}
+
+Construir a tabela sintática para a gramática abaixo:
+
+\begin{lstlisting}
+<E> ::= <E>+<E> | <E>*<E> | <E>**<E> | (<E>) | id
+\end{lstlisting}
+
+Como sabemos que a ordem das precedências, em ordem decrescente, é: \texttt{**} (que é associativo a direita), \texttt{*} (que é associativo à esquerda); \texttt{+} (que também é associativo à esquerda), podemos gerar a tabela sintática:
+
+\begin{itemize}
+    \item Pela ordem das precedências dos operadores: \texttt{**>*, *<**, **>+, +<**, *>+, +<*}
+    \item Pela associatividade dos operadores: \texttt{*>*, +>+, **<**}
+    \item As outras relações são fixas: operador x tem x>\$, \$<x, x<id, id>x, x<(, (<x, x>), )>x; entre operandos, (<(, )>), id>), \$<(, (=), )>\$, id>\$, \$<id, (<id
+\end{itemize}
+
+Com estes itens, podemos gerar a seguinte tabela sintática:
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c|c|c| } 
+\hline
+& id & ** & * & + & ( & ) & \$ \\
+\hline
+id &  & > & > & > &  & > & > \\
+\hline
+** & <  & <  & > & > & < & > & > \\
+\hline
+* & < & < & > & > & < & > & > \\
+\hline
++ & < & < & < & > & < & > & > \\
+\hline
+( & < & < & < & < & < & = & \\
+\hline
+) &   & > & > & > &   & > & > \\
+\hline
+\$ & < & < & < & < & < &   &   \\
+\hline
+
+ 
+\end{tabular}
+\end{center}
+
+
+\end{document}

@@ -1,0 +1,87 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx,hyperref,icmc,url}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{minted}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{listings}% http://ctan.org/pkg/listings
+\newcommand{\destaq}[1]{\textcolor{purple}{\textbf{#1}}}
+
+
+% The title of the presentation:
+%  - first a short version which is visible at the bottom of each slide;
+%  - second the full title shown on the title slide;
+\title[Paradigma orientado a objetos]{Paradigma orientado a objetos}
+
+% Optional: a subtitle to be displayed on the title slide
+
+
+% The author(s) of the presentation:
+%  - again first a short version to be displayed at the bottom;
+%  - next the full list of authors, which may include contact information;
+\author[André, Eduardo, Gustavo, Matheus, Thiago]{
+André Luís Mendes Fakhoury\\ Eduardo Dias Pennone\\ Gustavo Vinícius Vieira Silva Soares\\ Matheus Steigenberg Populim\\ Thiago Preischadt Pinheiro\\ \bigskip
+\textsc{SCC0217 - Linguagens de Programação e Compiladores}\\
+Prof. Diego Raphael Amancio
+}
+
+% \\ \bigskip
+    % \large{}
+
+% The institute:
+%  - to start the name of the university as displayed on the top of each slide
+%    this can be adjusted such that you can also create a Dutch version
+%  - next the institute information as displayed on the title slide
+\institute[ICMC/USP]{ICMC - USP}
+
+% Add a date and possibly the name of the event to the slides
+%  - again first a short version to be shown at the bottom of each slide
+%  - second the full date and event name for the title slide
+\date[2021]{\footnotesize{1 de julho de 2021}}
+
+\AtBeginSection[]
+{
+    \begin{frame}<beamer>{Sumário}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
+
+\begin{document}
+    
+    \begin{frame}[plain]
+        \titlepage
+    \end{frame}
+    
+    \begin{frame}
+      \frametitle{Sumário}
+      \tableofcontents
+    \end{frame}
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\include{tex/01-intro}
+
+\include{tex/02-conceitos}
+
+\include{tex/03-smalltalk}
+
+\include{tex/04-cppjava}
+
+\include{tex/05-issues}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Referências}
+
+\nocite{*}
+\begin{frame}[allowframebreaks]
+  \frametitle{Referência Bibliográfica}
+  \bibliographystyle{siam}
+  
+  \bibliography{refs}
+\end{frame}
+
+\end{document}
